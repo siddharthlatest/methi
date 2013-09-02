@@ -12,16 +12,21 @@ class FTPconnection:
 		ftp.storbinary("STOR %s" % filename, obj)
 		ftp.quit()
 
-	def download(self, filename, localFile, remotePath="."):
+	def uploadFile(self, filename, localFile, remotePath="."):
 		obj = open(localFile, "wb")
-		self.downloadObj(filename,obj,remotePath)
+		self.upload(filename,obj,remotePath)
 		obj.close()
 
-	def downloadObj(self, filename, obj, remotePath="."):
+	def download(self, filename, obj, remotePath="."):
 		ftp = FTP(server, username, password)
 		ftp.cwd(remotePath)
 		ftp.retrbinary("RETR %s" % filename, obj.write)
 		ftp.quit()
+
+	def downloadFile(self, filename, localFile, remotePath="."):
+		obj = open(localFile, "wb")
+		self.download(filename,obj,remotePath)
+		obj.close()
 
 	def delete_file(self, filename, remotePath="."):
 		ftp = FTP(server, username, password)

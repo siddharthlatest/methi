@@ -1,23 +1,17 @@
 import uuid
 import os
-import subprocess
-import sys
 import Queue
-import thread
 import threading
 import time
 import ConfigParser
-import tempfile
 from time import gmtime, strftime
 
 import FTPconnection
+import DataManager
 
 class SyncClient:
 
 	def __init__(self):
-		#Creating FTP connection
-		conn = FTPconnection("37.139.14.74", "chronomancer", "password")
-
 		#system paths
 		userProfile = os.getenv("USERPROFILE")
 		cDrive = "C:"
@@ -28,11 +22,11 @@ class SyncClient:
 		#Appbin data
 		rdir_config = "./config"
 		adir_config = os.path.abspath(rdir_config)
-		afile_configIni = "%s/config.ini" % adir_config
-		afile_dirsIni = "%s/appDirs.ini" % adir_config
-		
-		rdir_appIni = dir_config + "/apps"
-		adir_appIni =  os.path.abspath(rdir_appIni)
+		afile_configIni = "%s\\config.ini" % adir_config
+		afile_dirsIni = "%s\\appDirs.ini" % adir_config
+
+		rdir_appIni = rdir_config + "/apps"
+		adir_appIni = os.path.abspath(rdir_appIni)
 
 		rdir_temp = rdir_config + "/temp"
 		adir_temp = os.path.abspath(rdir_temp)
@@ -61,27 +55,22 @@ class SyncClient:
 		else:
 			machineid = cfg.get("main", "machineId")
 
-		#counters
-		nAppsTotalInSync = len(self.apps)
-		nAppsInProcess = 0
-
 		#starting required Queues for multithreading
 		initQ = Queue.Queue(0)		
 		printQ = Queue.Queue(0)
 
-		zipQ = Queue.Queue(0)
-		nZipThreads = 1
-		
-		ftpQ = Queue.Queue(0)
-		nFtpThreads = 1
-
-		hashQ = Queue.Queue(0)
-		nHashThreads = 1
-
 		#initiating variable for multithread control
 		isAppQRunning = False
-		isZipQRunning = False
 		isPrintQRunning = False
+
+		#Number of threads
+		initThreads = 4
+
+		#Creating FTP connection
+		conn = FTPconnection("37.139.14.74", "chronomancer", "password")
+
+		#Creating Data Manager
+		dataManager = DataManager(conn)
 
 	def getAppIni(self, app, afile_appIni):
 		filename = app + ".ini"
@@ -92,7 +81,7 @@ class SyncClient:
 			os.mkdir(os.path.abspath("./config/apps"))
 		afile_appIni = "%s\\%s.ini" % self.adir_appIni, app
 
-		getAppIni(app, afile_appIni)
+		self.getAppIni(app, afile_appIni)
 
 		if os.path.isfile(afile_appIni):
 			cfg = ConfigParser.SafeConfigParser()
@@ -133,6 +122,17 @@ class SyncClient:
 
 		return paths
 
+	def adir_appTemp(self, app):
+		return self.adir_temp + "\\" + app
+
+	def dirToLocalPath(x):
+    	return (eval("self."+x[0])+"\\"+x[1]).lower()
+
+	def processDir(self, dirEntry, command):
+		dirEntry["zipDirection"] = command
+		dirEntry["dir"] = self.dirToLocalPath(dirEntry["dir"])
+		self.DataManager.syncDirWithZip(dirEntry)
+
 	def syncApp(self, app):
 		printQ(app+" : Init Sync...")
 		self.nAppsInProcess += 1
@@ -143,107 +143,22 @@ class SyncClient:
 		n = len(dirs)
 		for i in range(n-1,-1):
 			x = dirs[i]
-			dirEntry = {"app":app,"dir":x,"dirI":dirI,"direction":direction,"appCfg":appCfg,"temp":adir_appTemp(app)}
-			processDir(dirEntry)
-			
-	def adir_appTemp(app):
-		return self.adir_temp + "\\" + app
-
-	def processDir(dirEntry,command):
-		dirEntry["zipDirection"] = "up"
-		syncDirWithZip(dirEntry)
-
-	def syncDirWithZip(dirEntry):
-		adir_local = dirToLocalPath(dirEntry["dir"])
-		azip_name = "dir%d.7z" % dirEntry["dirI"])
-		azip_local = "%s\\%s" % dirEntry["temp"] , azip_name
-
-		dirEntry["adir_local"] = adir_local
-		dirEntry["azip_name"] = azip_name
-		dirEntry["azip_local"] = azip_local
-
-		if(dirEntry["zipDirection"] == "up"): #dir -> 7zip
-			zipCmd = "7za a -t7z %s %s -mx3" % azip_local, adir_local
-			dirEntry["zipCmd"] = zipCmd
-			addToZipQ(dirEntry)
-		else: # zip to dir
-			zipCmd = "balh"
-			dirEntry["zipCmd"] = zipCmd
-			addToZipQ(dirEntry)
-			pass
-
-		def addToZipQ(dirEntry):
-			self.zipQ.put(dirEntry)
-
-			if not (self.isZipQRunning):
-					self.isZipQRunning = True
-					for i in range(self.nZipThreads):
-						#thread.start_new_thread(newProcess,(i,))
-						t = threading.Thread(target=zipThread)
-						t.setDaemon(True)
-						t.start()
-
-			def zipThread():
-				while not (self.zipQ.empty()):
-					dirEntry = zipQ.get()
-					subprocess.call(dirEntry["zipCmd"])
-					zipFinish(dirEntry)
-
-				self.isZipQRunning = False
-
-			def zipFinish(dirEntry):
-				if dirEntry["zipDirection"] == "up":
-					hashDir(dirEntry)
-				else:
-					if dirEntry["dirI"] == 0: # this is the last directory of the app
-						syncAppFinish(dirEntry)
-
-	def hashDir(dirEntry):
-		hashCmd = "blah blah"
-		dirEntry["hashCmd"] = hashCmd
-		addToZipQ(dirEntry)
-
-		def addToHashQ(cmd):
-			self.hashQ.put(dirEntry)
-
-			if not (self.isHashQRunning):
-					self.isHashQRunning = True
-					for i in range(self.nHashThreads):
-						#thread.start_new_thread(newProcess,(i,))
-						t = threading.Thread(target=hashThread)
-						t.setDaemon(True)
-						t.start()
-
-			def hashThread():
-				while not (self.hashQ.empty()):
-					dirEntry = hashQ.get()
-					#do hash
-					hash = "as" # hash of dirEntry["azip_local"]
-					dirEntry["hash"] = hash
-					hashFinish(dirEntry)
-
-				self.isHashQRunning = False
-
-			def hashFinish(dirEntry):
-				syncZipWithRemote(dirEntry)
+			dirEntry = {"app":app,"dir":x,"dirIndex":i,"direction":direction,"appCfg":appCfg,"temp":adir_appTemp(app)}
+			processDir(dirEntry, direction)
 
 	def syncZipWithRemote(dirEntry):
 		if not dirEntry["appCfg"].has_section("Hash"):
-			dirEntry["appCfg"].set("Hash","Dir%d" % dirEntry["dirI"], ",".join(dirEntry["dir"]))
-			dirEntry["appCfg"].set("Hash","Dir%d_Hash" % dirEntry["dirI"] , dirEntry["hash"])
+			dirEntry["appCfg"].set("Hash","Dir%d" % dirEntry["dirIndex"], ",".join(dirEntry["dir"]))
+			dirEntry["appCfg"].set("Hash","Dir%d_Hash" % dirEntry["dirIndex"] , dirEntry["hash"])
 
 		else:
-			if not dirEntry["appCfg"].get("Hash", "Dir%d_Hash" % dirEntry["dirI"]) == dirEntry["hash"]
+			if not dirEntry["appCfg"].get("Hash", "Dir%d_Hash" % dirEntry["dirIndex"]) == dirEntry["hash"]
 				if direction == "up":
 					# upload dirEntry["azip_local"] to ftp://user@server/user/app/dirEntry["azip_name"]
 				else:
 					# download ftp://user@server/user/app/dirEntry["azip_name"] to  dirEntry["azip_local"]
 					dirEntry["zipDirection"] = "down"
 					syncDirWithZip(dirEntry)
-
-
-	def dirToLocalPath(x):
-    return (eval("self."+x[0])+"\\"+x[1]).lower()
 
 	def newAppProcess(self):
 		while not self.appQ.empty():
@@ -253,7 +168,7 @@ class SyncClient:
 
 	def startAppQ(self):
 		self.isAppQRunning = True
-		for i in range(2):
+		for i in range(iniThreads):
 			t = threading.Thread(target=newAppProcess)
 			t.start()
 
