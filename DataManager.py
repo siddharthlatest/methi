@@ -23,10 +23,12 @@ class DataManager:
 		#Creating hasher
 		hasher = pyhash.murmur3_32()
 
+		@staticmethod
 	def uploadZip(self,dirEntry):
 		dirEntry["adir_remote"] = "%s/%s" % dirEntry["app"],"inprocess"
 		conn.uploadFile(dirEntry["azip_name"],dirEntry["azip_local"],dirEntry["adir_remote"])
 
+		@staticmethod
 	def finalizeUpload(self, dirEntry):
 		appCfg = dirEntry["appCfg"]
 		original_digest = appCfg.get("data", str("dir") + str(dirEntry["dirIndex"]))
@@ -39,6 +41,7 @@ class DataManager:
 		if dirEntry["index"] == 0:
 			syncAppFinish()
 
+		@staticmethod
 	def hashThread(self, dirEntry):
 		while not self.hashQ.empty():
 			dirEntry = hashQ.get()
@@ -50,6 +53,7 @@ class DataManager:
 
 		self.isHashQRunning = False
 
+		@staticmethod
 	def addToHashQueue(self, dirEntry):
 		self.hashQ.put(dirEntry)
 
@@ -58,6 +62,7 @@ class DataManager:
 			t = threading.Thread(target=hashThread)
 			t.start()
 
+		@staticmethod
 	def compresssThread(self):
 		while not self.compressQ.empty():
 			dirEntry = compressQ.get()
@@ -66,6 +71,7 @@ class DataManager:
 
 		self.isCompressQRunning = False
 
+		@staticmethod
 	def addToCompressQ(self, dirEntry):
 		self.compressQ.put(dirEntry)
 
@@ -89,6 +95,7 @@ class DataManager:
 			t = threading.Thread(target=decompressThread)
 			t.start()"""
 
+		@staticmethod
 	def syncDirWithZip(self, dirEntry):
 		adir_local = dirEntry["dir"]
 		azip_name = "dir%d.7z" % dirEntry["dirIndex"])
