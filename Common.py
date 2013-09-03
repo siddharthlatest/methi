@@ -1,6 +1,4 @@
-
-class Common:
-	#msgs
-	finishMsg = "Finish"
-	errorMsg = "Error"
-	newMsg = "New"
+finishMsg = "Finish"
+errorMsg = "Error"
+newMsg = "New"
+finalizeMsg = "Finalize"
