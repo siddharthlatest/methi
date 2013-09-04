@@ -64,11 +64,10 @@ class AppThreadManager:
 	def finalizeApp(self,appEntry):
 		f = open(appEntry["appIni"], "wb")
 		appEntry["appCfg"].write(f)
-		f.write()
 		f.close()
-
-		#upload appIni
-		#ftp move inProcess to main folder
+		conn = self.mainObj.conn
+		conn.uploadFile(appEntry["app"], appEntry["appIni"], "%s/%s" % (appEntry["app"], self.mainObj.rdir_remote_temp))
+		self.onFinishApp(appEntry)
 
 	def newDir(self,dirEntry):
 		self.mainQ.put([self.name,Common.newMsg,dirEntry])
@@ -242,15 +241,15 @@ class FtpThreadManager:
 	def ftpThread(self):
 		while True:
 			dirEntry = self.ftpQ.get()
-			dirEntry["adir_remote"] = "%s/inProcess" % dirEntry["appEntry"]["app"]
+			dirEntry["adir_remote"] = "%s/%s" % (dirEntry["appEntry"]["app"], mainObj.rdir_remote_temp)
 			if (dirEntry["appEntry"]["direction"] == "up"):
 				self.mainObj.conn.uploadFile(dirEntry["azip_name"],dirEntry["azip_local"],dirEntry["adir_remote"])
 			else:
 				self.mainObj.conn.downloadFile(dirEntry["azip_name"],dirEntry["azip_local"],dirEntry["adir_remote"])
-			onFinishEntry(dirEntry)
+			self.onFinishEntry(dirEntry)
 
 	def uploadZip(self,dirEntry):
-		dirEntry["adir_remote"] = "%s/%s" % (dirEntry["appEntry"]["app"],"inprocess")
+		dirEntry["adir_remote"] = "%s/%s" % (dirEntry["appEntry"]["app"],mainObj.rdir_remote_temp)
 		self.mainObj.conn.uploadFile(dirEntry["azip_name"],dirEntry["azip_local"],dirEntry["adir_remote"])
 
 	def onFinishEntry(self,dirEntry):

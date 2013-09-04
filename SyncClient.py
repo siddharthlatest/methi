@@ -1,5 +1,6 @@
 import uuid
 import os
+import sys
 import Queue
 import threading
 import time
@@ -34,6 +35,8 @@ class SyncClient:
 
 		self.rdir_bin = "./bin"
 
+		self.rdir_remote_temp = "inProcess"
+
 		#temporarily adding binaries to path
 		os.environ['PATH'] = "%s;%s" % (os.getenv('PATH'), os.path.abspath(self.rdir_bin))
 
@@ -61,6 +64,7 @@ class SyncClient:
 		self.mainQ =  Queue.Queue(0)
 
 		#Creating FTP connection
+		#get cedentials from database
 		self.conn = FTPconnection("37.139.14.74", "chronomancer", "sachin",self.printQ)
 
 		#objs of thread managers
@@ -101,8 +105,8 @@ class SyncClient:
 				self.nAppsInProcess -= 1
 
 				if self.nAppsInProcess ==0:
-					#notify sync over
-					#exit()
+					self.printQ.put("Sync Over.")
+					sys.exit()
 					pass
 				else:
 					#notify app sync finish. show remaining apps

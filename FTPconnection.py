@@ -7,16 +7,33 @@ class FTPconnection:
 		self.password = password
 		self.printQ = printQ
 
+	def directory_exists(self, ftp, dir):
+		filelist = []
+		ftp.retrlines('LIST',filelist.append)
+		for f in filelist:
+			if f.split()[-1] == dir and f.upper().startswith('D'):
+				return True
+		return False
 
 	def upload(self, filename, obj, remotePath="."):
 		ftp = FTP(self.server, self.username, self.password)
-		ftp.cwd(remotePath)
+		remoteDirs = remotePath.split("/")
+		i = 0
+		while i<len(remoteDirs):
+			if not self.directory_exists(ftp, remoteDirs[i]):
+				ftp.mkd(remoteDirs[i])
+				ftp.cwd(remoteDirs[i])
+				i = i+1
+			else:
+				ftp.cwd(remoteDirs[i])
+				i = i+1
+
 		ftp.storbinary("STOR %s" % filename, obj)
 		ftp.quit()
 
 
 	def uploadFile(self, filename, localFile, remotePath="."):
-		obj = open(localFile, "wb")
+		obj = open(localFile, "rb")
 		self.upload(filename,obj,remotePath)
 		obj.close()
 
