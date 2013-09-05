@@ -18,17 +18,24 @@ class AppThreadManager:
 		#thread msg strings
 		self.name = "App"
 
-		self.appQ = Queue.Queue(0)
-		#self.unZipQ = Queue.Queue(0)\
+		self.appQ = self.mainObj.newQ()
+		#self.unZipQ = self.mainObj.newQ()\
 
-		t = threading.Thread(target=self.appThread)
-		t.start()
+		self.t = threading.Thread(target=self.appThread)
+		self.t.start()
+
+	def notifyDirFinish(self,dirEntry):
+		#time.sleep(1)
+		os.remove(dirEntry["azip_local"])
+		dirEntry["appEntry"]["nRemainDirs"] -= 1
+		if dirEntry["appEntry"]["nRemainDirs"] == 0:
+			self.finalizeApp(dirEntry["appEntry"])
 
 	def addEntry(self,obj,msg):
-
 		self.printQ.put("%s %s %s"%(self.name,obj,msg))
 		if not isinstance(obj,dict):
-			obj = {"app":obj,"temp": self.mainObj.createPath(self.adir_appTemp(obj)),"appIni":self.afile_appIni(obj)}
+			obj = {"app":obj,"temp": self.mainObj.createPath(self.adir_appTemp(obj))}
+			obj["appIni"] = "%s\\app.ini" % obj["temp"]
 
 		#self.printQ.put(obj)
 		self.appQ.put([obj,msg])
@@ -36,6 +43,9 @@ class AppThreadManager:
 	def appThread(self):
 		while True:
 			x = self.appQ.get()
+			if Common.isExitMsg(x):
+				break
+
 			appEntry = x[0]
 			msg = x[1]
 			if(msg == Common.newMsg):
@@ -46,14 +56,12 @@ class AppThreadManager:
 				#"Error"
 				pass
 
-	def afile_appIni(self,app):
-		return "%s\\%s.ini" % (self.mainObj.adir_appIni, app)
-
 	def newApp(self,appEntry):
 		app = appEntry["app"]
 		appEntry["direction"], appEntry["appCfg"] = self.decideDirection(appEntry)
 
 		dirs = self.getAppLocalDirs(app)
+		appEntry["nRemainDirs"] = len(dirs)
 		n = len(dirs)
 		for i in range(n-1,-1,-1):
 			x = dirs[i]
@@ -66,7 +74,14 @@ class AppThreadManager:
 		appEntry["appCfg"].write(f)
 		f.close()
 		conn = self.mainObj.conn
-		conn.uploadFile(appEntry["app"], appEntry["appIni"], "%s/%s" % (appEntry["app"], self.mainObj.rdir_remote_temp))
+		conn.uploadFile("app.ini", appEntry["appIni"], "%s/%s" % (appEntry["app"], self.mainObj.rdir_remote_temp))
+
+		conn.delete_dir(self.mainObj.rdir_remote_old, appEntry["app"])
+		conn.rename(self.mainObj.rdir_remote_current,self.mainObj.rdir_remote_old, appEntry["app"])
+		conn.rename(self.mainObj.rdir_remote_temp, self.mainObj.rdir_remote_current, appEntry["app"])
+		conn.delete_dir(self.mainObj.rdir_remote_old, appEntry["app"])
+
+		os.remove(appEntry["appIni"])
 		self.onFinishApp(appEntry)
 
 	def newDir(self,dirEntry):
@@ -99,6 +114,7 @@ class AppThreadManager:
 				direction = cfg.get(self.mainObj.machineId, "nextSyncDirection")
 				if direction == "up":
 					sections = cfg.sections()
+					sections.remove("Digest")
 					for s in sections:
 						cfg.set(s, "nextSyncDirection", "down")
 
@@ -116,8 +132,8 @@ class AppThreadManager:
 		return direction,cfg
 
 	def getAppIni(self,appEntry):
-		filename = appEntry["app"] + ".ini"
-		self.mainObj.conn.download(filename,appEntry["appIni"],appEntry["app"])
+		filename = "app.ini"
+		self.mainObj.conn.downloadFile(filename,appEntry["appIni"],"%s/%s" % (appEntry["app"], self.mainObj.rdir_remote_current))
 
 	def adir_appTemp(self, app):
 		return self.mainObj.adir_temp + "\\" + app
@@ -136,15 +152,15 @@ class ZipThreadManager:
 		#thread msg strings
 		self.name = "Zipper"
 
-		self.zipQ = Queue.Queue(0)
-		#self.unZipQ = Queue.Queue(0)\
+		self.zipQ = self.mainObj.newQ()
+		#self.unZipQ = self.mainObj.newQ()\
 
-		t = threading.Thread(target=self.zipperThread)
-		t.start()
+		self.t = threading.Thread(target=self.zipperThread)
+		self.t.start()
 
 
 	def addEntry(self,dirEntry):
-		#self.printQ.put("%s %s" % (self.name,dirEntry))
+		self.printQ.put("%s %s" % (self.name,dirEntry))
 		adir_local = self.mainObj.dirToLocalPath(dirEntry["dir"])
 		azip_name = "dir%d.7z" % dirEntry["dirIndex"]
 		azip_local = "%s\\%s" % (dirEntry["appEntry"]["temp"] , azip_name)
@@ -157,7 +173,7 @@ class ZipThreadManager:
 			zipCmd = "7za a -t7z \"%s\" \"%s\" -mx3" % (azip_local, adir_local)
 			dirEntry["zipCmd"] = zipCmd
 		else:
-			zipCmd = "7za x \"%s\" -o\"%s\"" % (azip_local, adir_local)
+			zipCmd = "7za x -y \"%s\" -o\"%s\" -mmt on" % (azip_local, adir_local)
 			dirEntry["zipCmd"] = zipCmd
 
 		self.printQ.put("%s"%zipCmd)
@@ -165,7 +181,11 @@ class ZipThreadManager:
 
 	def zipperThread(self):
 		while True:
-			dirEntry = self.zipQ.get()
+			x = self.zipQ.get()
+			if Common.isExitMsg(x):
+				break
+
+			dirEntry = x
 			subprocess.call(dirEntry["zipCmd"])
 			self.onFinishEntry(dirEntry)
 
@@ -192,10 +212,10 @@ class HashThreadManager:
 
         #thread msg strings
 		self.name = "Hasher"
-		self.hashQ = Queue.Queue(0)
+		self.hashQ = self.mainObj.newQ()
 
-		t = threading.Thread(target=self.hashThread)
-		t.start()
+		self.t = threading.Thread(target=self.hashThread)
+		self.t.start()
 
 	def addEntry(self,dirEntry):
 		self.printQ.put("%s %s" % (self.name,dirEntry))
@@ -203,7 +223,10 @@ class HashThreadManager:
 
 	def hashThread(self):
 		while True:
-			dirEntry = self.hashQ.get()
+			x = self.hashQ.get()
+			if Common.isExitMsg(x):
+				break
+			dirEntry = x
 			f = open(dirEntry["azip_local"],"r")
 			dirEntry["digest"] = str(self.hasher(f.read()))
 			f.close()
@@ -229,10 +252,10 @@ class FtpThreadManager:
 		#thread msg strings
 		self.name = "Ftp"
 
-		self.ftpQ = Queue.Queue(0)
+		self.ftpQ = self.mainObj.newQ()
 
-		t = threading.Thread(target=self.ftpThread)
-		t.start()
+		self.t = threading.Thread(target=self.ftpThread)
+		self.t.start()
 
 	def addEntry(self,dirEntry):
 		self.printQ.put("%s %s" % (self.name,dirEntry))
@@ -240,17 +263,17 @@ class FtpThreadManager:
 
 	def ftpThread(self):
 		while True:
-			dirEntry = self.ftpQ.get()
-			dirEntry["adir_remote"] = "%s/%s" % (dirEntry["appEntry"]["app"], mainObj.rdir_remote_temp)
+			x = self.ftpQ.get()
+			if Common.isExitMsg(x):
+				break
+			dirEntry = x
 			if (dirEntry["appEntry"]["direction"] == "up"):
+				dirEntry["adir_remote"] = "%s/%s" % (dirEntry["appEntry"]["app"], self.mainObj.rdir_remote_temp)
 				self.mainObj.conn.uploadFile(dirEntry["azip_name"],dirEntry["azip_local"],dirEntry["adir_remote"])
 			else:
+				dirEntry["adir_remote"] = "%s/%s" % (dirEntry["appEntry"]["app"], self.mainObj.rdir_remote_current)
 				self.mainObj.conn.downloadFile(dirEntry["azip_name"],dirEntry["azip_local"],dirEntry["adir_remote"])
 			self.onFinishEntry(dirEntry)
-
-	def uploadZip(self,dirEntry):
-		dirEntry["adir_remote"] = "%s/%s" % (dirEntry["appEntry"]["app"],mainObj.rdir_remote_temp)
-		self.mainObj.conn.uploadFile(dirEntry["azip_name"],dirEntry["azip_local"],dirEntry["adir_remote"])
 
 	def onFinishEntry(self,dirEntry):
 		self.mainQ.put([self.name,Common.finishMsg,dirEntry])

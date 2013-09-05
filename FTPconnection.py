@@ -57,20 +57,31 @@ class FTPconnection:
 		self.download(filename,obj,remotePath)
 		obj.close()
 
-
 	def delete_file(self, filename, remotePath="."):
 		ftp = FTP(self.server, self.username, self.password)
 		ftp.cwd(remotePath)
 		ftp.delete(filename)
 		ftp.quit()
 
-
 	def delete_dir(self, dirname, remotePath="."):
 		ftp = FTP(self.server, self.username, self.password)
 		ftp.cwd(remotePath)
-		ftp.rmd(dirname)
+		try:
+			ftp.cwd(dirname)
+			for f in ftp.nlst():
+				ftp.delete(f)
+			ftp.cwd("..")
+			ftp.rmd(dirname)
+		except:
+			pass
 		ftp.quit()
 
+	def rename(self, original, changed, remotePath="."):
+		ftp = FTP(self.server, self.username, self.password)
+		ftp.cwd(remotePath)
+		if self.directory_exists(ftp, original):
+			ftp.rename(original, changed)
+		ftp.quit()
 
 	def make_dir(self, dirname, remotePath="."):
 		ftp = FTP(self.server, self.username, self.password)

@@ -4,6 +4,9 @@ finishMsg = "Finish"
 errorMsg = "Error"
 newMsg = "New"
 finalizeMsg = "Finalize"
+startMsg = "Start"
+stopMsg = "Stop"
+exitMsg = "Exit"
 
 def createPath(x):
 	if x == "":
@@ -16,3 +19,6 @@ def createPath(x):
 		os.mkdir(y)
 
 	return x
+
+def isExitMsg(x):
+    return (isinstance(x,str) and x == exitMsg)
