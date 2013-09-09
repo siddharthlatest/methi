@@ -15,6 +15,7 @@ class SyncClient:
 
 	def __init__(self):
 		self.name = "Main" #thread name
+		self.digestCheck = False
 
 		#system paths
 		self.userProfile = os.getenv("USERPROFILE")
@@ -68,8 +69,8 @@ class SyncClient:
 
 		#Creating FTP connection
 		#get cedentials from database
-		#self.conn = FTPconnection("192.3.29.173", "testuser", "testuserpassword",self.printQ)
-		self.conn = FTPconnection("37.139.14.74", "chronomancer", "sachin",self.printQ)
+		self.conn = FTPconnection("192.3.29.173", "user1", "secret",self.printQ)
+		#self.conn = FTPconnection("37.139.14.74", "chronomancer", "sachin",self.printQ)
 
 		#objs of thread managers
 		self.appT = AppThreadManager(self.mainQ,self)
@@ -159,7 +160,7 @@ class SyncClient:
 					payLoad["appEntry"]["appCfg"].set("Digest","Dir%d" % payLoad["dirIndex"], ",".join(payLoad["dir"]))
 					payLoad["appEntry"]["appCfg"].set("Digest","Dir%d_Hash" % payLoad["dirIndex"] , payLoad["digest"])
 
-					if not orgDigest  == payLoad["digest"]:
+					if not (orgDigest  == payLoad["digest"] and self.digestCheck):
 						self.ftpT.addEntry(payLoad)
 					else:
 						self.appT.notifyDirFinish(payLoad)
@@ -170,7 +171,7 @@ class SyncClient:
 				if payLoad["appEntry"]["direction"] == "up":
 				    self.appT.notifyDirFinish(payLoad)
 				else:
-					payLoad["zipDirection"] == "down"
+					payLoad["zipDirection"] = "down"
 					self.zipT.addEntry(payLoad)
 
 	def sync(self):

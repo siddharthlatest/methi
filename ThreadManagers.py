@@ -58,9 +58,8 @@ class AppThreadManager:
 
 	def newApp(self,appEntry):
 		app = appEntry["app"]
+		dirs = self.getAppLocalDirs(appEntry)
 		appEntry["direction"], appEntry["appCfg"] = self.decideDirection(appEntry)
-
-		dirs = self.getAppLocalDirs(app)
 		appEntry["nRemainDirs"] = len(dirs)
 		n = len(dirs)
 		for i in range(n-1,-1,-1):
@@ -69,6 +68,7 @@ class AppThreadManager:
 			dirEntry = {"appEntry":appEntry,"dir":x,"dirIndex":i}
 			self.newDir(dirEntry)
 
+
 	def finalizeApp(self,appEntry):
 		f = open(appEntry["appIni"], "wb")
 		appEntry["appCfg"].write(f)
@@ -76,10 +76,21 @@ class AppThreadManager:
 		conn = self.mainObj.conn
 		conn.uploadFile("app.ini", appEntry["appIni"], "%s/%s" % (appEntry["app"], self.mainObj.rdir_remote_temp))
 
+
+		"""
+		ftp = conn.login()
+		conn.delete_dir_nologin(ftp,self.mainObj.rdir_remote_old, appEntry["app"])
+		conn.rename_nologin(ftp,self.mainObj.rdir_remote_current,self.mainObj.rdir_remote_old, appEntry["app"])
+		conn.rename_nologin(ftp,self.mainObj.rdir_remote_temp, self.mainObj.rdir_remote_current, appEntry["app"])
+		conn.delete_dir_nologin(ftp,self.mainObj.rdir_remote_old, appEntry["app"])
+		conn.logout(ftp)
+		"""
+
 		conn.delete_dir(self.mainObj.rdir_remote_old, appEntry["app"])
 		conn.rename(self.mainObj.rdir_remote_current,self.mainObj.rdir_remote_old, appEntry["app"])
 		conn.rename(self.mainObj.rdir_remote_temp, self.mainObj.rdir_remote_current, appEntry["app"])
 		conn.delete_dir(self.mainObj.rdir_remote_old, appEntry["app"])
+
 
 		os.remove(appEntry["appIni"])
 		self.onFinishApp(appEntry)
@@ -87,11 +98,13 @@ class AppThreadManager:
 	def newDir(self,dirEntry):
 		self.mainQ.put([self.name,Common.newMsg,dirEntry])
 
-	def getAppLocalDirs(self, app):
+	def getAppLocalDirs(self, appEntry):
 		cfg = ConfigParser.SafeConfigParser()
 		cfg.read(self.mainObj.afile_dirsIni)
 
-		paths = cfg.get(app, "paths").split(";")
+		lockTimeOut = int(cfg.get(appEntry["app"], "lockTimeOut"))
+		appEntry["lockTimeOut"] = lockTimeOut
+		paths = cfg.get(appEntry["app"], "paths").split(";")
 		paths = [path.split(",") for path in paths if path != ""]
 
 		return paths
@@ -103,7 +116,7 @@ class AppThreadManager:
 
 		self.getAppIni(appEntry)
 
-		if os.path.isfile(appIni):
+		if os.path.isfile(appIni) and os.path.getsize(appIni) > 0:
 			cfg = ConfigParser.SafeConfigParser()
 			cfg.read(appIni)
 
