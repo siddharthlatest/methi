@@ -51,7 +51,7 @@ class SyncClient:
 		self.user = self.cfg.get("main", "name")
 		self.pwd = self.cfg.get("main", "pwd")
 		self.apps = filter(None, self.cfg.get("main", "apps").split(";"))
-		if not self.cfg.has_option("main", "machineId"):
+		if not self.cfg.has_option("main", "machineId") and (not self.cfg.get("main", "machineId") == ""):
 			self.machineId = str(uuid.uuid1())
 			self.cfg.set("main", "machineId", self.machineId)
 			f = open(self.afile_configIni, "wb")
@@ -84,6 +84,11 @@ class SyncClient:
 		#starting threads
 		self.t = threading.Thread(target=self.printerThread)
 		self.t.start()
+
+		#is the application currently running
+		self.isAppRunning = False
+		#down disable option while app is running
+		self.isDownDisabled = True
 
 	def newQ(self):
 		q = Queue.Queue(0)
@@ -127,15 +132,20 @@ class SyncClient:
 				self.nAppsInProcess -= 1
 
 				if self.nAppsInProcess ==0:
-					self.printQ.put("Sync Over.")
 					self.prepareToExit()
 				else:
 					#notify app sync finish. show remaining apps
 					pass
 
 			elif msg == Common.newMsg:
-				payLoad["zipDirection"] = "up"
-				self.zipT.addEntry(payLoad)
+				if self.isAppRunning:
+					if not payLoad["appEntry"]["direction"] == "down" and self.isDownDisabled:
+						pass
+						#payLoad["zipDirection"] = "up"
+						#self.zipT.addEntry(payLoad)
+				else:
+					payLoad["zipDirection"] = "up"
+					self.zipT.addEntry(payLoad)
 
 		if thread == self.zipT.name:
 			if msg == Common.finishMsg:
@@ -174,7 +184,8 @@ class SyncClient:
 					payLoad["zipDirection"] = "down"
 					self.zipT.addEntry(payLoad)
 
-	def sync(self):
+	def sync(self, isAppRunning):
+		self.isAppRunning = isAppRunning
 		self.mainQ.put([self.name,Common.startMsg,""])
 
 		# start msg parsing
@@ -189,7 +200,7 @@ class SyncClient:
 	def prepareToExit(self):
 		#self.isReadyToExit = True
 
-
+		self.printQ.put("Sync Over.")
 		for q in self.Qs:
 			q.put(Common.exitMsg)
 
