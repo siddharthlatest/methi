@@ -1,5 +1,5 @@
 import os
-import pyhash
+import hashlib
 import Common
 import Queue
 import threading
@@ -86,10 +86,12 @@ class AppThreadManager:
 		conn.logout(ftp)
 		"""
 
+		"""
 		conn.delete_dir(self.mainObj.rdir_remote_old, appEntry["app"])
 		conn.rename(self.mainObj.rdir_remote_current,self.mainObj.rdir_remote_old, appEntry["app"])
 		conn.rename(self.mainObj.rdir_remote_temp, self.mainObj.rdir_remote_current, appEntry["app"])
 		conn.delete_dir(self.mainObj.rdir_remote_old, appEntry["app"])
+		"""
 
 
 		os.remove(appEntry["appIni"])
@@ -220,7 +222,6 @@ class HashThreadManager:
 		self.mainObj = mO
 
 		#Creating hasher
-		self.hasher = pyhash.murmur3_32()
 		#self.hasher = pyhash.fnv1a_32()
 
         #thread msg strings
@@ -240,8 +241,10 @@ class HashThreadManager:
 			if Common.isExitMsg(x):
 				break
 			dirEntry = x
+			hasher = hashlib.md5()
 			f = open(dirEntry["azip_local"],"r")
-			dirEntry["digest"] = str(self.hasher(f.read()))
+			hasher.update(f.read())
+			dirEntry["digest"] = str(hasher.digest())
 			f.close()
 			self.onFinishEntry(dirEntry)
 

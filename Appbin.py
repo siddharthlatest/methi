@@ -5,7 +5,7 @@ from time import sleep
 from SyncClient import SyncClient
 
 sleepTime = 60
-processName = "appbin"
+processName = "appbin_nw"
 
 while True:
 	print "Daemon HAS STARTED"

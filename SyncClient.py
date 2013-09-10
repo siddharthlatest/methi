@@ -15,7 +15,7 @@ class SyncClient:
 
 	def __init__(self):
 		self.name = "Main" #thread name
-		self.digestCheck = False
+		self.digestCheck = True
 
 		#system paths
 		self.userProfile = os.getenv("USERPROFILE")
@@ -35,7 +35,7 @@ class SyncClient:
 
 		self.rdir_bin = "./bin"
 
-		self.rdir_remote_temp = "inprocess"
+		self.rdir_remote_temp = "current"
 		self.rdir_remote_current = "current"
 		self.rdir_remote_old = "old"
 
@@ -101,8 +101,8 @@ class SyncClient:
 			if Common.isExitMsg(x):
 				break
 
-			print
-			print x
+#			print
+#			print x
 
 	def mainQueueParser(self):
 		while True:
