@@ -5,9 +5,62 @@ import Queue
 import threading
 import time
 import ConfigParser
-from time import gmtime, strftime
+from time import gmtime, strftime,sleep
 import Common
 import subprocess
+
+import urllib2
+import urllib
+from psutil import Process
+from psutil import get_process_list
+
+class UpdateThreadManager:
+	def __init__(self,version,pN):
+		self.name = "Updater"
+		self.ver = version
+		self.processName = pN
+		
+		self.t = threading.Thread(target=self.updateThread)
+		self.t.start()
+		
+	def updateThread(self):
+		upData = urllib.urlencode({"hash":"thisishash"})
+		
+		while True:
+			print self.name+": Checking for update..."
+			page = urllib2.urlopen("http://getappbin.com/loadapp/version.php",upData)
+			downData = page.read()
+			print self.name+": data returned - "+str(downData)
+			data = downData.split(",")
+			onlineVersion = float(data[0])
+			downloadLink = data[1]
+			if onlineVersion > self.ver:
+				print self.name+": update found."
+				page = urllib2.urlopen(downloadLink)
+				updateData = page.read()
+				with open("../data/update.exe","wb") as f:
+					f.write(updateData)
+				while True:
+					isRunning = False
+					for p in plist:
+						if self.processName in p.name:
+							isRunning = True
+							break
+	
+					if not isRunning:
+						#wait for sync threads to complete
+						break
+	
+					print self.name+": waiting for appbin to close..."
+					sleep(300)
+				
+				print self.name+": updating - killing daemon..."
+				subprocess.Popen("../data/update.exe /SILENT")
+				os._exit(0)
+	
+			print self.name+": None found"
+			sleep(3600)
+	
 
 class AppThreadManager:
 	def __init__(self,mQ,mainObj):

@@ -15,10 +15,19 @@ import Common
 
 
 class SyncClient:
-
-	def __init__(self):
-		self.name = "Main" #thread name
+	
+	def initBuildParams(self):
 		self.digestCheck = True
+		#down disable option while app is running
+		self.isDownDisabled = True
+		self.isAppsOverridden = True
+		self.appsOverride = ["desk"]
+
+
+	def __init__(self,isAR):
+		self.isAppRunning = isAR
+		self.name = "Main" #thread name
+		self.initBuildParams()
 
 		#system paths
 		self.userProfile = os.getenv("USERPROFILE")
@@ -46,29 +55,13 @@ class SyncClient:
 		os.environ['PATH'] = "%s;%s" % (os.getenv('PATH'), os.path.abspath(self.rdir_bin))
 
 		#loading config file
-		self.cfg = ConfigParser.SafeConfigParser()
-		try:
-			self.cfg.read(self.afile_configIni)
-		except:
-			sys.exit(0)
-
-		#loading values from config file
-		try:
-			self.name = self.cfg.get("main", "name")
-		except:
-			sys.exit(0)
-		#self.apps = filter(None, self.cfg.get("main", "apps").split(";"))
-		self.apps = ["desk"]
-		if not self.cfg.has_option("main", "machineId") or self.cfg.get("main", "machineId") == "":
-			self.machineId = str(uuid.uuid1())
-			self.cfg.set("main", "machineId", self.machineId)
-			f = open(self.afile_configIni, "wb")
-			self.cfg.write(f)
-			f.close()
-		else:
-			self.machineId = self.cfg.get("main", "machineId")
-
-
+		self.isConfigIniOk = self.loadConfig()
+		if self.isConfigIniOk and not self.isAppRunning:
+			print "begin sync"
+			self.initQnThread()
+			self.syncNow()
+			
+	def initQnThread(self):
 		#Queues
 		self.Qs = []
 		self.printQ = self.newQ()
@@ -78,8 +71,8 @@ class SyncClient:
 
 		#Creating FTP connection
 		#get cedentials from database
-		server, password = self.getServerData(self.name)
-		self.conn = FTPconnection(server, self.name, password,self.printQ)
+		server, password = self.getServerData(self.username)
+		self.conn = FTPconnection(server, self.username, password,self.printQ)
 		#self.conn = FTPconnection("192.3.29.173", "user1", "secret1",self.printQ)
 		#self.conn = FTPconnection("37.139.14.74", "chronomancer", "sachin",self.printQ)
 
@@ -95,11 +88,45 @@ class SyncClient:
 		#starting threads
 		self.t = threading.Thread(target=self.printerThread)
 		self.t.start()
-
-		#is the application currently running
-		self.isAppRunning = False
-		#down disable option while app is running
-		self.isDownDisabled = True
+			
+	
+	def loadConfig(self):
+		if os.path.isfile(self.afile_configIni):
+			isConfigIniOk = True
+		else:
+			isConfigIniOk = False
+		
+		if isConfigIniOk:
+			self.cfg = ConfigParser.SafeConfigParser()
+			self.cfg.read(self.afile_configIni)
+			
+			if self.cfg.has_option("main", "name") and (not self.cfg.get("main", "machineId") == ""):
+				self.username = self.cfg.get("main", "name")
+			else:
+				print "no username in config"
+				isConfigIniOk = False
+						
+		else:
+			print "ini not found"
+		
+		if isConfigIniOk:
+			if not self.isAppsOverridden:
+				self.apps = filter(None, self.cfg.get("main", "apps").split(";"))
+			else:
+				print "overridden apps:"+str(self.appsOverride)
+				self.apps = self.appsOverride
+			
+			if (not self.cfg.has_option("main", "machineId")) or self.cfg.get("main", "machineId") == "":
+				self.machineId = str(uuid.uuid1())
+				self.cfg.set("main", "machineId", self.machineId)
+				f = open(self.afile_configIni, "wb")
+				self.cfg.write(f)
+				f.close()
+			else:
+				self.machineId = self.cfg.get("main", "machineId")
+			
+		return isConfigIniOk
+		
 
 	def getServerData(self, username):
 		try:
@@ -213,10 +240,9 @@ class SyncClient:
 					payLoad["zipDirection"] = "down"
 					self.zipT.addEntry(payLoad)
 
-	def sync(self, isAppRunning):
-		self.isAppRunning = isAppRunning
+	def syncNow(self):
+		
 		self.mainQ.put([self.name,Common.startMsg,""])
-
 		# start msg parsing
 		self.mainQueueParser()
 
