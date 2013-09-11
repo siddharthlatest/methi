@@ -6,6 +6,9 @@ import threading
 import time
 import ConfigParser
 from time import gmtime, strftime
+import urllib2
+import urllib
+
 from ThreadManagers import *
 from FTPconnection import FTPconnection
 import Common
@@ -25,7 +28,7 @@ class SyncClient:
 		self.userAppDataDir = os.getenv("APPDATA")
 
 		#Appbin data
-		self.rdir_config = "./config"
+		self.rdir_config = "../data"
 		self.adir_config = os.path.abspath(self.rdir_config)
 		self.afile_configIni = "%s\\config.ini" % self.adir_config
 		self.afile_dirsIni = "%s\\appDirs.ini" % self.adir_config
@@ -44,14 +47,19 @@ class SyncClient:
 
 		#loading config file
 		self.cfg = ConfigParser.SafeConfigParser()
-		self.cfg.read(self.afile_configIni)
+		try:
+			self.cfg.read(self.afile_configIni)
+		except:
+			sys.exit(0)
 
 		#loading values from config file
-		self.server = self.cfg.get("main", "syncServer")
-		self.user = self.cfg.get("main", "name")
-		self.pwd = self.cfg.get("main", "pwd")
-		self.apps = filter(None, self.cfg.get("main", "apps").split(";"))
-		if not self.cfg.has_option("main", "machineId") and (not self.cfg.get("main", "machineId") == ""):
+		try:
+			self.name = self.cfg.get("main", "name")
+		except:
+			sys.exit(0)
+		#self.apps = filter(None, self.cfg.get("main", "apps").split(";"))
+		self.apps = ["desk"]
+		if not self.cfg.has_option("main", "machineId") or self.cfg.get("main", "machineId") == "":
 			self.machineId = str(uuid.uuid1())
 			self.cfg.set("main", "machineId", self.machineId)
 			f = open(self.afile_configIni, "wb")
@@ -59,6 +67,7 @@ class SyncClient:
 			f.close()
 		else:
 			self.machineId = self.cfg.get("main", "machineId")
+
 
 		#Queues
 		self.Qs = []
@@ -69,7 +78,9 @@ class SyncClient:
 
 		#Creating FTP connection
 		#get cedentials from database
-		self.conn = FTPconnection("192.3.29.173", "user1", "secret",self.printQ)
+		server, password = self.getServerData(self.name)
+		self.conn = FTPconnection(server, self.name, password,self.printQ)
+		#self.conn = FTPconnection("192.3.29.173", "user1", "secret1",self.printQ)
 		#self.conn = FTPconnection("37.139.14.74", "chronomancer", "sachin",self.printQ)
 
 		#objs of thread managers
@@ -90,6 +101,24 @@ class SyncClient:
 		#down disable option while app is running
 		self.isDownDisabled = True
 
+	def getServerData(self, username):
+		try:
+			upData = urllib.urlencode({"id":username},{"hash":"thisishash"})
+			page = urllib2.urlopen("http://getappbin.com/loadapp/userdetails.php",upData)
+			downData = page.read()
+			print "!!"
+			print downData
+			print "!!"
+			data = downData.split(",")
+			server = data[0]
+			password = data[1]
+			print server, password
+
+			return server, password
+		except e:
+			print e
+			print "fail"
+
 	def newQ(self):
 		q = Queue.Queue(0)
 		self.Qs.append(q)
@@ -101,8 +130,8 @@ class SyncClient:
 			if Common.isExitMsg(x):
 				break
 
-#			print
-#			print x
+			print
+			print x
 
 	def mainQueueParser(self):
 		while True:
