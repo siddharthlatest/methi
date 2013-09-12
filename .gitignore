@@ -8,4 +8,4 @@ config/apps
 dist
 build
 .*project
-.settings
+.settings/
