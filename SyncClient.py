@@ -259,17 +259,6 @@ class SyncClient:
 		for q in self.Qs:
 			q.put(Common.exitMsg)
 
-		"""
-        #assuming followig treads can be killed: Main, App , Ftp, Zip, Hash
-		while True:
-
-
-			if self.printQ.empty() and self.stateQ.empty() and self.mainQ.empty():
-				self.appT
-				os._exit(0)
-			else:
-				time.sleep(0.5)"""
-
 
 	def createPath(self,x):
 		if x == "":

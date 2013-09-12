@@ -11,8 +11,6 @@ import subprocess
 
 import urllib2
 import urllib
-from psutil import Process
-from psutil import get_process_list
 
 class UpdateThreadManager:
 	def __init__(self,version,pN):
@@ -41,13 +39,7 @@ class UpdateThreadManager:
 				with open("../data/update.exe","wb") as f:
 					f.write(updateData)
 				while True:
-					isRunning = False
-					for p in plist:
-						if self.processName in p.name:
-							isRunning = True
-							break
-	
-					if not isRunning:
+					if Common.isProcessRunning(self.processName):
 						#wait for sync threads to complete
 						break
 	

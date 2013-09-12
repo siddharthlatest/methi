@@ -1,4 +1,5 @@
 import os
+import wmi
 
 finishMsg = "Finish"
 errorMsg = "Error"
@@ -10,6 +11,7 @@ okMsg = "Ok"
 lockedMsg = "Locked"
 stopMsg = "Stop"
 exitMsg = "Exit"
+
 
 def createPath(x):
 	if x == "":
@@ -25,3 +27,11 @@ def createPath(x):
 
 def isExitMsg(x):
     return (isinstance(x,str) and x == exitMsg)
+   
+def isProcessRunning(proc):
+	bool = False;
+	c = wmi.WMI (find_classes=False)
+	if len(c.query("SELECT Handle FROM Win32_Process WHERE Name = '%s'" % proc)):
+		bool = True
+	print proc,bool
+	return bool
