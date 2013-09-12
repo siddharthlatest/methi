@@ -100,7 +100,7 @@ class SyncClient:
 			self.cfg = ConfigParser.SafeConfigParser()
 			self.cfg.read(self.afile_configIni)
 			
-			if self.cfg.has_option("main", "name") and (not self.cfg.get("main", "machineId") == ""):
+			if self.cfg.has_option("main", "name"):
 				self.username = self.cfg.get("main", "name")
 			else:
 				print "no username in config"
