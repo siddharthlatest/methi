@@ -31,6 +31,7 @@ class SyncClient:
 
 		#system paths
 		self.userProfile = os.getenv("USERPROFILE")
+		self.appbinRoot = os.getenv("LOCALAPPDATA")+ "\\appbin"
 		self.cDrive = "C:"
 		self.programFiles86 = os.getenv("programfiles(x86)")
 		self.programFiles = os.getenv("ProgramW6432")
@@ -102,6 +103,7 @@ class SyncClient:
 			
 			if self.cfg.has_option("main", "name"):
 				self.username = self.cfg.get("main", "name")
+				self.userWebappsData= self.appbinRoot + "\\data\\" + self.username + "\\appsdata"
 			else:
 				print "no username in config"
 				isConfigIniOk = False
@@ -227,6 +229,7 @@ class SyncClient:
 					payLoad["appEntry"]["appCfg"].set("Digest","Dir%d_Hash" % payLoad["dirIndex"] , payLoad["digest"])
 
 					if not (orgDigest  == payLoad["digest"] and self.digestCheck):
+						payLoad["appEntry"]["isHashChanged"] = True
 						self.ftpT.addEntry(payLoad)
 					else:
 						self.appT.notifyDirFinish(payLoad)

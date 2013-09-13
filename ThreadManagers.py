@@ -106,6 +106,8 @@ class AppThreadManager:
 		dirs = self.getAppLocalDirs(appEntry)
 		appEntry["direction"], appEntry["appCfg"] = self.decideDirection(appEntry)
 		appEntry["nRemainDirs"] = len(dirs)
+		appEntry["isHashChanged"] = False
+
 		n = len(dirs)
 		for i in range(n-1,-1,-1):
 			x = dirs[i]
@@ -119,7 +121,8 @@ class AppThreadManager:
 		appEntry["appCfg"].write(f)
 		f.close()
 		conn = self.mainObj.conn
-		conn.uploadFile("app.ini", appEntry["appIni"], "%s/%s" % (appEntry["app"], self.mainObj.rdir_remote_temp))
+		if appEntry["isHashChanged"] or appEntry["direction"] == "down": 
+			conn.uploadFile("app.ini", appEntry["appIni"], "%s/%s" % (appEntry["app"], self.mainObj.rdir_remote_temp))
 
 
 		"""
@@ -233,7 +236,7 @@ class ZipThreadManager:
 			zipCmd = "7za a -t7z \"%s\" \"%s\" -mx3" % (azip_local, adir_local)
 			dirEntry["zipCmd"] = zipCmd
 		else:
-			zipCmd = "7za x -y \"%s\" -o\"%s\" -mmt on" % (azip_local, adir_local)
+			zipCmd = "7za x -y \"%s\" -o\"%s\" -mmt=on" % (azip_local, adir_local)
 			dirEntry["zipCmd"] = zipCmd
 
 		self.printQ.put("%s"%zipCmd)
