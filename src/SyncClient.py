@@ -1,5 +1,6 @@
 import uuid
 import os
+import shutil
 import sys
 import Queue
 import threading
@@ -178,6 +179,7 @@ class SyncClient:
 
 		if thread == self.name:
 			if msg == Common.startMsg:
+				shutil.rmtree("../data/temp")
 				for app in self.apps:
 					self.nAppsInProcess += 1
 					self.appT.addEntry(app,Common.newMsg)
