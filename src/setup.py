@@ -12,7 +12,8 @@ py2exe_options = dict(
 					optimize=2,
                     #includes=['_scproxy', '_sysconfigdata'], 
 					excludes=['optparse','doctest','pickle','calendar','pdb','inspect','bz2'],
-					dll_excludes=['API-MS-Win-Core-Interlocked-L1-1-0.dll','mswsock.dll','powrprof.dll','w9xpopen.exe','API-MS-Win-Core-DelayLoad-L1-1-0.dll','API-MS-Win-Core-ErrorHandling-L1-1-0.dll','API-MS-Win-Core-File-L1-1-0.dll','API-MS-Win-Core-Handle-L1-1-0.dll','API-MS-Win-Core-Heap-L1-1-0.dll','API-MS-Win-Core-IO-L1-1-0.dll','API-MS-Win-Core-LibraryLoader-L1-1-0.dll','API-MS-Win-Core-LocalRegistry-L1-1-0.dll','API-MS-Win-Core-Misc-L1-1-0.dll','API-MS-Win-Core-ProcessThreads-L1-1-0.dll','API-MS-Win-Core-Profile-L1-1-0.dll','API-MS-Win-Core-String-L1-1-0.dll','API-MS-Win-Core-Synch-L1-1-0.dll','API-MS-Win-Core-SysInfo-L1-1-0.dll','api-ms-win-core-threadpool-legacy-l1-1-0.dll','API-MS-Win-Security-Base-L1-1-0.dll']
+					dll_excludes=['API-MS-Win-Core-Interlocked-L1-1-0.dll','mswsock.dll','powrprof.dll','w9xpopen.exe','API-MS-Win-Core-DelayLoad-L1-1-0.dll','API-MS-Win-Core-ErrorHandling-L1-1-0.dll','API-MS-Win-Core-File-L1-1-0.dll','API-MS-Win-Core-Handle-L1-1-0.dll','API-MS-Win-Core-Heap-L1-1-0.dll','API-MS-Win-Core-IO-L1-1-0.dll','API-MS-Win-Core-LibraryLoader-L1-1-0.dll','API-MS-Win-Core-LocalRegistry-L1-1-0.dll','API-MS-Win-Core-Misc-L1-1-0.dll','API-MS-Win-Core-ProcessThreads-L1-1-0.dll','API-MS-Win-Core-Profile-L1-1-0.dll','API-MS-Win-Core-String-L1-1-0.dll','API-MS-Win-Core-Synch-L1-1-0.dll','API-MS-Win-Core-SysInfo-L1-1-0.dll','api-ms-win-core-threadpool-legacy-l1-1-0.dll','API-MS-Win-Security-Base-L1-1-0.dll'],
+                    dist_dir="../dist"
 					)
 
 setup(
