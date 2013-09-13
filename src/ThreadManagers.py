@@ -233,13 +233,14 @@ class ZipThreadManager:
 		dirEntry["azip_local"] = azip_local
 
 		if(dirEntry["zipDirection"] == "up"): #dir -> 7zip
-			zipCmd = "7za a -t7z \"%s\" \"%s\" -mx3" % (azip_local, adir_local)
+			zipCmd = "7za a -t7z \"%s\" \"%s\" -mx3 > %s" % (azip_local, adir_local,dirEntry["appEntry"]["temp"]+"\\ziplog.txt")
+			self.printQ.put(zipCmd)
 			dirEntry["zipCmd"] = zipCmd
 		else:
-			zipCmd = "7za x -y \"%s\" -o\"%s\" -mmt=on" % (azip_local, adir_local)
+			self.printQ.put(zipCmd)
+			zipCmd = "7za x -y \"%s\" -o\"%s\" -mmt=on > %s" % (azip_local, adir_local,dirEntry["appEntry"]["temp"]+"\\ziplog.txt")
 			dirEntry["zipCmd"] = zipCmd
 
-		self.printQ.put("%s"%zipCmd)
 		self.zipQ.put(dirEntry)
 
 	def zipperThread(self):
@@ -249,6 +250,7 @@ class ZipThreadManager:
 				break
 
 			dirEntry = x
+			#subprocess.call(dirEntry["zipCmd"])
 			subprocess.call(dirEntry["zipCmd"])
 			self.onFinishEntry(dirEntry)
 

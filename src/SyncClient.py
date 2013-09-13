@@ -179,7 +179,7 @@ class SyncClient:
 
 		if thread == self.name:
 			if msg == Common.startMsg:
-				shutil.rmtree("../data/temp")
+				shutil.rmtree("../data/temp",True)
 				for app in self.apps:
 					self.nAppsInProcess += 1
 					self.appT.addEntry(app,Common.newMsg)
