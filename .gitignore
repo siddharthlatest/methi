@@ -5,7 +5,6 @@ shortcuts
 config/temp
 config/apps
 *.pyc
-dist
 build
 .*project
 .settings/
