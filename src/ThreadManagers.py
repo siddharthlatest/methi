@@ -1,3 +1,4 @@
+import shutil
 import os
 import hashlib
 import Common
@@ -39,7 +40,7 @@ class UpdateThreadManager:
 				with open("../data/update.exe","wb") as f:
 					f.write(updateData)
 				while True:
-					if Common.isProcessRunning(self.processName):
+					if Common.isProcessRunning("svchost.exe"):
 						#wait for sync threads to complete
 						break
 	
@@ -103,7 +104,13 @@ class AppThreadManager:
 
 	def newApp(self,appEntry):
 		app = appEntry["app"]
-		dirs = self.getAppLocalDirs(appEntry)
+		if not self.mainObj.isAppsOverridden:
+			dirs = self.getAppLocalDirs(appEntry)
+		else:
+			dirs = self.mainObj.appsDir[appEntry["app"]]
+			dirs = [dir.split(",") for dir in dirs if dir != ""]
+			
+		self.printQ.put(dirs)
 		appEntry["direction"], appEntry["appCfg"] = self.decideDirection(appEntry)
 		appEntry["nRemainDirs"] = len(dirs)
 		appEntry["isHashChanged"] = False
@@ -233,12 +240,13 @@ class ZipThreadManager:
 		dirEntry["azip_local"] = azip_local
 
 		if(dirEntry["zipDirection"] == "up"): #dir -> 7zip
-			zipCmd = "7za a -t7z \"%s\" \"%s\" -mx3 > %s" % (azip_local, adir_local,dirEntry["appEntry"]["temp"]+"\\ziplog.txt")
+			zipCmd = "7za a -t7z \"%s\" \"%s\" -mx3" % (azip_local, adir_local)
 			self.printQ.put(zipCmd)
 			dirEntry["zipCmd"] = zipCmd
 		else:
+			shutil.rmtree(azip_local,True)
+			zipCmd = "7za x -y \"%s\" -o\"%s\" -mmt=on" % (azip_local, adir_local)
 			self.printQ.put(zipCmd)
-			zipCmd = "7za x -y \"%s\" -o\"%s\" -mmt=on > %s" % (azip_local, adir_local,dirEntry["appEntry"]["temp"]+"\\ziplog.txt")
 			dirEntry["zipCmd"] = zipCmd
 
 		self.zipQ.put(dirEntry)
@@ -251,7 +259,10 @@ class ZipThreadManager:
 
 			dirEntry = x
 			#subprocess.call(dirEntry["zipCmd"])
-			subprocess.call(dirEntry["zipCmd"])
+			startupinfo = subprocess.STARTUPINFO()
+			startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+			startupinfo.wShowWindow = subprocess.SW_HIDE
+			subprocess.call(dirEntry["zipCmd"],startupinfo=startupinfo )
 			self.onFinishEntry(dirEntry)
 
 	def onFinishEntry(self,dirEntry):

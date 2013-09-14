@@ -22,7 +22,8 @@ class SyncClient:
 		#down disable option while app is running
 		self.isDownDisabled = True
 		self.isAppsOverridden = True
-		self.appsOverride = ["desk"]
+		self.appsOverride = ["allapps"]
+		self.appsDir = {"allapps":["userAppDataRoot,appsdata"]}
 
 
 	def __init__(self,isAR):
@@ -32,15 +33,14 @@ class SyncClient:
 
 		#system paths
 		self.userProfile = os.getenv("USERPROFILE")
-		self.appbinRoot = os.getenv("LOCALAPPDATA")+ "\\appbin"
+		self.appbinRoot = os.getenv("APPDATA")+ "\\appbin"
 		self.cDrive = "C:"
 		self.programFiles86 = os.getenv("programfiles(x86)")
 		self.programFiles = os.getenv("ProgramW6432")
-		self.userAppDataDir = os.getenv("APPDATA")
 
 		#Appbin data
 		self.rdir_config = "../data"
-		self.adir_config = os.path.abspath(self.rdir_config)
+		self.adir_config = self.createPath(os.path.abspath(self.rdir_config))
 		self.afile_configIni = "%s\\config.ini" % self.adir_config
 		self.afile_dirsIni = "%s\\appDirs.ini" % self.adir_config
 
@@ -58,7 +58,8 @@ class SyncClient:
 
 		#loading config file
 		self.isConfigIniOk = self.loadConfig()
-		if self.isConfigIniOk and not self.isAppRunning:
+		#if self.isConfigIniOk and not self.isAppRunning:
+		if self.isConfigIniOk:
 			print "begin sync"
 			self.initQnThread()
 			self.syncNow()
@@ -102,9 +103,9 @@ class SyncClient:
 			self.cfg = ConfigParser.SafeConfigParser()
 			self.cfg.read(self.afile_configIni)
 			
-			if self.cfg.has_option("main", "name"):
+			if self.cfg.has_option("main", "name") and len(self.cfg.get("main", "name")) > 4  : # assuming email > 4 chars
 				self.username = self.cfg.get("main", "name")
-				self.userWebappsData= self.appbinRoot + "\\data\\" + self.username + "\\appsdata"
+				self.userAppDataRoot= self.appbinRoot + "\\data\\" + self.username
 			else:
 				print "no username in config"
 				isConfigIniOk = False
@@ -198,11 +199,8 @@ class SyncClient:
 					pass
 
 			elif msg == Common.newMsg:
-				if self.isAppRunning:
-					if not payLoad["appEntry"]["direction"] == "down" and self.isDownDisabled:
-						pass
-						#payLoad["zipDirection"] = "up"
-						#self.zipT.addEntry(payLoad)
+				if self.isAppRunning and self.isDownDisabled and payLoad["appEntry"]["direction"] == "down":
+					self.appT.notifyDirFinish(payLoad)
 				else:
 					payLoad["zipDirection"] = "up"
 					self.zipT.addEntry(payLoad)
@@ -218,23 +216,20 @@ class SyncClient:
 			if msg == Common.finishMsg:
 				if not payLoad["appEntry"]["appCfg"].has_section("Digest"):
 					payLoad["appEntry"]["appCfg"].add_section("Digest")
-					payLoad["appEntry"]["appCfg"].set("Digest","Dir%d" % payLoad["dirIndex"], ",".join(payLoad["dir"]))
-					payLoad["appEntry"]["appCfg"].set("Digest","Dir%d_Hash" % payLoad["dirIndex"] , payLoad["digest"])
+
+				if (payLoad["appEntry"]["appCfg"].has_option("Digest", "Dir%d_Hash" % payLoad["dirIndex"])):
+					orgDigest = payLoad["appEntry"]["appCfg"].get("Digest", "Dir%d_Hash" % payLoad["dirIndex"])
+				else:
+					orgDigest = ""
+
+				payLoad["appEntry"]["appCfg"].set("Digest","Dir%d" % payLoad["dirIndex"], ",".join(payLoad["dir"]))
+				payLoad["appEntry"]["appCfg"].set("Digest","Dir%d_Hash" % payLoad["dirIndex"] , payLoad["digest"])
+
+				if not (orgDigest  == payLoad["digest"] and self.digestCheck):
+					payLoad["appEntry"]["isHashChanged"] = True
 					self.ftpT.addEntry(payLoad)
 				else:
-					if (payLoad["appEntry"]["appCfg"].has_option("Digest", "Dir%d_Hash" % payLoad["dirIndex"])):
-						orgDigest = payLoad["appEntry"]["appCfg"].get("Digest", "Dir%d_Hash" % payLoad["dirIndex"])
-					else:
-						orgDigest = ""
-
-					payLoad["appEntry"]["appCfg"].set("Digest","Dir%d" % payLoad["dirIndex"], ",".join(payLoad["dir"]))
-					payLoad["appEntry"]["appCfg"].set("Digest","Dir%d_Hash" % payLoad["dirIndex"] , payLoad["digest"])
-
-					if not (orgDigest  == payLoad["digest"] and self.digestCheck):
-						payLoad["appEntry"]["isHashChanged"] = True
-						self.ftpT.addEntry(payLoad)
-					else:
-						self.appT.notifyDirFinish(payLoad)
+					self.appT.notifyDirFinish(payLoad)
 
 		if thread == self.ftpT.name:
 

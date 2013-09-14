@@ -11,11 +11,11 @@ def setupLogs():
 	f_print = file('../data/print_log.txt', 'a',0)
 	f_err = file('../data/error_log.txt', 'a',0)
 	sys.stderr = f_err
-	#sys.stdout = f_print
+	sys.stdout = f_print
 
 def main():
 	#sys.stderr = sys.stdout
-	setupLogs()
+	#setupLogs()
 	print "Daemon HAS STARTED"
 	version = 0.01
 	sleepTime = 60

@@ -8,3 +8,5 @@ config/apps
 build
 .*project
 .settings/
+/bin/
+/dist/data

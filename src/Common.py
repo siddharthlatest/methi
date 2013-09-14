@@ -1,5 +1,6 @@
 import os
 import wmi
+import pythoncom
 
 finishMsg = "Finish"
 errorMsg = "Error"
@@ -29,6 +30,7 @@ def isExitMsg(x):
     return (isinstance(x,str) and x == exitMsg)
    
 def isProcessRunning(proc):
+	pythoncom.CoInitialize()
 	bool = False;
 	c = wmi.WMI (find_classes=False)
 	if len(c.query("SELECT Handle FROM Win32_Process WHERE Name = '%s'" % proc)):
