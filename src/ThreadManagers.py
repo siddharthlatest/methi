@@ -9,6 +9,7 @@ import ConfigParser
 from time import gmtime, strftime,sleep
 import Common
 import subprocess
+from pyhash import murmur3_32
 
 import urllib2
 import urllib
@@ -72,7 +73,9 @@ class AppThreadManager:
 
 	def notifyDirFinish(self,dirEntry):
 		#time.sleep(1)
-		os.remove(dirEntry["azip_local"])
+		if dirEntry.has_key("azip_local"):
+			os.remove(dirEntry["azip_local"])
+		
 		dirEntry["appEntry"]["nRemainDirs"] -= 1
 		if dirEntry["appEntry"]["nRemainDirs"] == 0:
 			self.finalizeApp(dirEntry["appEntry"])
@@ -122,13 +125,12 @@ class AppThreadManager:
 			dirEntry = {"appEntry":appEntry,"dir":x,"dirIndex":i}
 			self.newDir(dirEntry)
 
-
 	def finalizeApp(self,appEntry):
 		f = open(appEntry["appIni"], "wb")
 		appEntry["appCfg"].write(f)
 		f.close()
 		conn = self.mainObj.conn
-		if appEntry["isHashChanged"] or appEntry["direction"] == "down": 
+		if appEntry["isHashChanged"] or (appEntry["direction"] == "down" and not( self.isAppRunning and self.isDownDisabled )): 
 			conn.uploadFile("app.ini", appEntry["appIni"], "%s/%s" % (appEntry["app"], self.mainObj.rdir_remote_temp))
 
 
@@ -244,7 +246,7 @@ class ZipThreadManager:
 			self.printQ.put(zipCmd)
 			dirEntry["zipCmd"] = zipCmd
 		else:
-			shutil.rmtree(azip_local,True)
+			shutil.rmtree(adir_local,True)
 			zipCmd = "7za x -y \"%s\" -o\"%s\" -mmt=on" % (azip_local, adir_local)
 			self.printQ.put(zipCmd)
 			dirEntry["zipCmd"] = zipCmd
@@ -283,7 +285,7 @@ class HashThreadManager:
 		self.mainObj = mO
 
 		#Creating hasher
-		#self.hasher = pyhash.fnv1a_32()
+		self.hasher = murmur3_32()
 
         #thread msg strings
 		self.name = "Hasher"
@@ -302,10 +304,10 @@ class HashThreadManager:
 			if Common.isExitMsg(x):
 				break
 			dirEntry = x
-			hasher = hashlib.md5()
+			#hasher = hashlib.md5()
 			f = open(dirEntry["azip_local"],"r")
-			hasher.update(f.read())
-			dirEntry["digest"] = str(hasher.digest())
+			#hasher.update(f.read())
+			dirEntry["digest"] = str(self.hasher(f.read()))
 			f.close()
 			self.onFinishEntry(dirEntry)
 

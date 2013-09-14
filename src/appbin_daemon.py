@@ -3,11 +3,13 @@ from time import sleep
 import threading
 import sys
 import Common
+import os
 
 from SyncClient import SyncClient
 from ThreadManagers import UpdateThreadManager
 
 def setupLogs():
+	Common.createPath(os.path.abspath('../data'))
 	f_print = file('../data/print_log.txt', 'a',0)
 	f_err = file('../data/error_log.txt', 'a',0)
 	sys.stderr = f_err
@@ -15,7 +17,7 @@ def setupLogs():
 
 def main():
 	#sys.stderr = sys.stdout
-	#setupLogs()
+	setupLogs()
 	print "Daemon HAS STARTED"
 	version = 0.01
 	sleepTime = 60
