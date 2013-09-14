@@ -117,6 +117,7 @@ class AppThreadManager:
 		appEntry["direction"], appEntry["appCfg"] = self.decideDirection(appEntry)
 		appEntry["nRemainDirs"] = len(dirs)
 		appEntry["isHashChanged"] = False
+		appEntry["isDownStopped"] = False
 
 		n = len(dirs)
 		for i in range(n-1,-1,-1):
@@ -130,7 +131,7 @@ class AppThreadManager:
 		appEntry["appCfg"].write(f)
 		f.close()
 		conn = self.mainObj.conn
-		if appEntry["isHashChanged"] or (appEntry["direction"] == "down" and not( self.isAppRunning and self.isDownDisabled )): 
+		if (appEntry["isHashChanged"] or appEntry["direction"] == "down") and not appEntry["isDownStopped"]: 
 			conn.uploadFile("app.ini", appEntry["appIni"], "%s/%s" % (appEntry["app"], self.mainObj.rdir_remote_temp))
 
 

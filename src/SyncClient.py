@@ -201,6 +201,7 @@ class SyncClient:
 			elif msg == Common.newMsg:
 				if self.isAppRunning and self.isDownDisabled and payLoad["appEntry"]["direction"] == "down":
 					self.printQ.put("Down disabled when nw active")
+					payLoad["appEntry"]["isDownStopped"] = True
 					self.appT.notifyDirFinish(payLoad)
 				else:
 					payLoad["zipDirection"] = "up"
