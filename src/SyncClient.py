@@ -9,6 +9,7 @@ import ConfigParser
 from time import gmtime, strftime
 import urllib2
 import urllib
+import logging
 
 from ThreadManagers import *
 from FTPconnection import FTPconnection
@@ -31,28 +32,35 @@ class SyncClient:
 		self.name = "Main" #thread name
 		self.initBuildParams()
 
-		#system paths
-		self.userProfile = os.getenv("USERPROFILE")
-		self.appbinRoot = os.getenv("APPDATA")+ "\\appbin"
-		self.cDrive = "C:"
-		self.programFiles86 = os.getenv("programfiles(x86)")
-		self.programFiles = os.getenv("ProgramW6432")
+		#setup logger
+		self.logger = logging.getLogger("daemon.syncclient")
 
-		#Appbin data
-		self.rdir_config = "../data"
-		self.adir_config = self.createPath(os.path.abspath(self.rdir_config))
-		self.afile_configIni = "%s\\config.ini" % self.adir_config
-		self.afile_machineIni = "%s\\machine.ini" % self.adir_config
-		self.afile_dirsIni = "%s\\appDirs.ini" % self.adir_config
+		try:
+			#system paths
+			self.userProfile = os.getenv("USERPROFILE")
+			self.appbinRoot = os.getenv("APPDATA")+ "\\appbin"
+			self.cDrive = "C:"
+			self.programFiles86 = os.getenv("programfiles(x86)")
+			self.programFiles = os.getenv("ProgramW6432")
 
-		self.rdir_temp = self.rdir_config + "/temp"
-		self.adir_temp = self.createPath(os.path.abspath(self.rdir_temp))
+			#Appbin data
+			self.rdir_config = "../data"
+			self.adir_config = self.createPath(os.path.abspath(self.rdir_config))
+			self.afile_configIni = "%s\\config.ini" % self.adir_config
+			self.afile_machineIni = "%s\\machine.ini" % self.adir_config
+			self.afile_dirsIni = "%s\\appDirs.ini" % self.adir_config
 
-		self.rdir_bin = "./bin"
+			self.rdir_temp = self.rdir_config + "/temp"
+			self.adir_temp = self.createPath(os.path.abspath(self.rdir_temp))
 
-		self.rdir_remote_temp = "current"
-		self.rdir_remote_current = "current"
-		self.rdir_remote_old = "old"
+			self.rdir_bin = "./bin"
+
+			self.rdir_remote_temp = "current"
+			self.rdir_remote_current = "current"
+			self.rdir_remote_old = "old"
+		except:
+			logger.exception("exception in creating synclient init")
+			pass
 
 		#temporarily adding binaries to path
 		os.environ['PATH'] = "%s;%s" % (os.getenv('PATH'), os.path.abspath(self.rdir_bin))
@@ -61,7 +69,7 @@ class SyncClient:
 		self.isConfigIniOk = self.loadConfig()
 		#if self.isConfigIniOk and not self.isAppRunning:
 		if self.isConfigIniOk:
-			print "begin sync"
+			self.logger.info("begin sync")
 			self.initQnThread()
 			self.syncNow()
 			
@@ -95,68 +103,70 @@ class SyncClient:
 			
 	
 	def loadConfig(self):
-		if os.path.isfile(self.afile_configIni):
-			isConfigIniOk = True
-		else:
-			isConfigIniOk = False
-		
-		if isConfigIniOk:
-			self.cfg = ConfigParser.SafeConfigParser()
-			self.cfg.read(self.afile_configIni)
-			
-			if self.cfg.has_option("main", "name") and len(self.cfg.get("main", "name")) > 4  : # assuming email > 4 chars
-				self.username = self.cfg.get("main", "name")
-				self.userAppDataRoot= self.appbinRoot + "\\data\\" + self.username
+		try:
+			if os.path.isfile(self.afile_configIni):
+				isConfigIniOk = True
 			else:
-				print "no username in config"
 				isConfigIniOk = False
-						
-		else:
-			print "ini not found"
-		
-		if isConfigIniOk:
-			if not self.isAppsOverridden:
-				self.apps = filter(None, self.cfg.get("main", "apps").split(";"))
-			else:
-				print "overridden apps:"+str(self.appsOverride)
-				self.apps = self.appsOverride
 			
-			
-			#yashness chudap begins
-			m = False
-			cfgm = ConfigParser.SafeConfigParser()
-			if os.path.isfile(self.afile_machineIni):
-				m = True
+			if isConfigIniOk:
+				self.cfg = ConfigParser.SafeConfigParser()
+				self.cfg.read(self.afile_configIni)
 				
-				cfgm.read(self.afile_machineIni)
-				if ((not cfgm.has_option("main", "machineId")) or cfgm.get("main", "machineId") == ""):
-				#print("machine id not found in config"+ str(cfgm.has_option("main", "machineId"))+ str(cfgm.get("main", "machineId") == "") )
-					m = False
+				if self.cfg.has_option("main", "name") and len(self.cfg.get("main", "name")) > 4  : # assuming email > 4 chars
+					self.username = self.cfg.get("main", "name")
+					self.userAppDataRoot= self.appbinRoot + "\\data\\" + self.username
 				else:
-					self.machineId = cfgm.get("main", "machineId")
-			
-			if not m:
-				self.machineId = str(uuid.uuid1())
-				cfgm.add_section("main")
-				cfgm.set("main", "machineId", self.machineId)
-				f = open(self.afile_machineIni, "wb")
-				cfgm.write(f)
-				f.close()
-			#yashness chudap over
-			
-			"""if ((not self.cfg.has_option("main", "machineId")) or self.cfg.get("main", "machineId") == ""):
-				print("machine id not found in config"+ str(self.cfg.has_option("main", "machineId"))+ str(self.cfg.get("main", "machineId") == "") )
-				self.machineId = str(uuid.uuid1())
-				self.cfg.set("main", "machineId", self.machineId)
-				f = open(self.afile_configIni, "wb")
-				self.cfg.write(f)
-				f.close()
+					self.logger.warning("no username in config")
+					isConfigIniOk = False
+							
 			else:
-				self.machineId = self.cfg.get("main", "machineId")"""
+				self.logger.warning("ini not found")
 			
-			
-			
-		return isConfigIniOk
+			if isConfigIniOk:
+				if not self.isAppsOverridden:
+					self.apps = filter(None, self.cfg.get("main", "apps").split(";"))
+				else:
+					self.logger.info("overridden apps:"+str(self.appsOverride))
+					self.apps = self.appsOverride
+
+				#yashness chudap begins
+				m = False
+				cfgm = ConfigParser.SafeConfigParser()
+				if os.path.isfile(self.afile_machineIni):
+					m = True
+					
+					cfgm.read(self.afile_machineIni)
+					if ((not cfgm.has_option("main", "machineId")) or cfgm.get("main", "machineId") == ""):
+					#print("machine id not found in config"+ str(cfgm.has_option("main", "machineId"))+ str(cfgm.get("main", "machineId") == "") )
+						m = False
+					else:
+						self.machineId = cfgm.get("main", "machineId")
+				
+				if not m:
+					self.machineId = str(uuid.uuid1())
+					cfgm.add_section("main")
+					cfgm.set("main", "machineId", self.machineId)
+					f = open(self.afile_machineIni, "wb")
+					cfgm.write(f)
+					f.close()
+				#yashness chudap over
+				
+				"""if ((not self.cfg.has_option("main", "machineId")) or self.cfg.get("main", "machineId") == ""):
+					print("machine id not found in config"+ str(self.cfg.has_option("main", "machineId"))+ str(self.cfg.get("main", "machineId") == "") )
+					self.machineId = str(uuid.uuid1())
+					self.cfg.set("main", "machineId", self.machineId)
+					f = open(self.afile_configIni, "wb")
+					self.cfg.write(f)
+					f.close()
+				else:
+					self.machineId = self.cfg.get("main", "machineId")"""
+
+			return isConfigIniOk
+
+		except:
+			self.logger.exception("problem in loading config")
+			return False
 		
 
 	def getServerData(self, username):
@@ -164,17 +174,13 @@ class SyncClient:
 			upData = urllib.urlencode({"id":username},{"hash":"thisishash"})
 			page = urllib2.urlopen("http://getappbin.com/loadapp/userdetails.php",upData)
 			downData = page.read()
-			print "!!"
-			print downData
-			print "!!"
 			data = downData.split(",")
 			server = data[0]
 			password = data[1]
-			print server, password
 
 			return server, password
 		except:
-			print "fail"
+			self.logger.warning("getting data from server failed")
 
 	def newQ(self):
 		q = Queue.Queue(0)
@@ -193,7 +199,7 @@ class SyncClient:
 	def mainQueueParser(self):
 		while True:
 			msg = self.mainQ.get()
-			self.printQ.put(msg)
+			self.logger.info(msg)
 
 			if Common.isExitMsg(msg):
 				break
@@ -226,7 +232,7 @@ class SyncClient:
 
 			elif msg == Common.newMsg:
 				if self.isAppRunning and self.isDownDisabled and payLoad["appEntry"]["direction"] == "down":
-					self.printQ.put("Down disabled when nw active")
+					self.logger.info("Down disabled when nw active")
 					payLoad["appEntry"]["isDownStopped"] = True
 					self.appT.notifyDirFinish(payLoad)
 				else:
@@ -250,7 +256,7 @@ class SyncClient:
 				else:
 					orgDigest = ""
 					
-				self.printQ.put("digestorg = "+ orgDigest)
+				self.logger.info("digestorg = "+ orgDigest)
 
 				payLoad["appEntry"]["appCfg"].set("Digest","Dir%d" % payLoad["dirIndex"], ",".join(payLoad["dir"]))
 				payLoad["appEntry"]["appCfg"].set("Digest","Dir%d_Hash" % payLoad["dirIndex"] , payLoad["digest"])
@@ -285,7 +291,7 @@ class SyncClient:
 	def prepareToExit(self):
 		#self.isReadyToExit = True
 
-		self.printQ.put("Sync Over.")
+		self.logger.info("Sync Over.")
 		for q in self.Qs:
 			q.put(Common.exitMsg)
 

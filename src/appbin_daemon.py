@@ -1,9 +1,9 @@
-
 from time import sleep
 import threading
 import sys
 import Common
 import os
+import logging
 
 from SyncClient import SyncClient
 from ThreadManagers import UpdateThreadManager
@@ -16,22 +16,29 @@ def setupLogs():
 	sys.stdout = f_print
 
 def main():
+	#creating log file and assigning stdout to logfile
+	logger = logging.getLogger("daemon")
+	logger.setLevel(logging.DEBUG)
+	fh = logging.FileHandler("../data/daemon_logs.log", delay=True)
+	formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+	fh.setFormatter(formatter)
+	logger.addHandler(fh)
 	
 	"""if Common.isProcessRunning("appbin_daemon.exe"):
 		sys.exit() #exit if another daemon already running"""
 	#sys.stderr = sys.stdout
 	setupLogs()
-	print "Daemon HAS STARTED"
+	logger.info("Daemon HAS STARTED")
 	version = 0.02
 	sleepTime = 60
 	processName = "appbin_nw.exe"
 	uT = UpdateThreadManager(version,processName)
 	
 	while True:
-		print "calling syncClient"
+		logger.info("calling syncClient")
 		SyncClient(Common.isProcessRunning(processName))
-		print "syncClient Done"
-		print "Waiting for %d secs" % sleepTime
+		logger.info("syncClient Done")
+		logger.info("Waiting for %d secs" % sleepTime)
 		sleep(sleepTime)
 	
 main()
