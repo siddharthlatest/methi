@@ -42,6 +42,7 @@ class SyncClient:
 		self.rdir_config = "../data"
 		self.adir_config = self.createPath(os.path.abspath(self.rdir_config))
 		self.afile_configIni = "%s\\config.ini" % self.adir_config
+		self.afile_machineIni = "%s\\machine.ini" % self.adir_config
 		self.afile_dirsIni = "%s\\appDirs.ini" % self.adir_config
 
 		self.rdir_temp = self.rdir_config + "/temp"
@@ -120,14 +121,40 @@ class SyncClient:
 				print "overridden apps:"+str(self.appsOverride)
 				self.apps = self.appsOverride
 			
-			if (not self.cfg.has_option("main", "machineId")) or self.cfg.get("main", "machineId") == "":
+			
+			#yashness chudap begins
+			m = False
+			cfgm = ConfigParser.SafeConfigParser()
+			if os.path.isfile(self.afile_machineIni):
+				m = True
+				
+				cfgm.read(self.afile_machineIni)
+				if ((not cfgm.has_option("main", "machineId")) or cfgm.get("main", "machineId") == ""):
+				#print("machine id not found in config"+ str(cfgm.has_option("main", "machineId"))+ str(cfgm.get("main", "machineId") == "") )
+					m = False
+				else:
+					self.machineId = cfgm.get("main", "machineId")
+			
+			if not m:
+				self.machineId = str(uuid.uuid1())
+				cfgm.add_section("main")
+				cfgm.set("main", "machineId", self.machineId)
+				f = open(self.afile_machineIni, "wb")
+				cfgm.write(f)
+				f.close()
+			#yashness chudap over
+			
+			"""if ((not self.cfg.has_option("main", "machineId")) or self.cfg.get("main", "machineId") == ""):
+				print("machine id not found in config"+ str(self.cfg.has_option("main", "machineId"))+ str(self.cfg.get("main", "machineId") == "") )
 				self.machineId = str(uuid.uuid1())
 				self.cfg.set("main", "machineId", self.machineId)
 				f = open(self.afile_configIni, "wb")
 				self.cfg.write(f)
 				f.close()
 			else:
-				self.machineId = self.cfg.get("main", "machineId")
+				self.machineId = self.cfg.get("main", "machineId")"""
+			
+			
 			
 		return isConfigIniOk
 		
@@ -146,8 +173,7 @@ class SyncClient:
 			print server, password
 
 			return server, password
-		except e:
-			print e
+		except:
 			print "fail"
 
 	def newQ(self):
@@ -223,11 +249,13 @@ class SyncClient:
 					orgDigest = payLoad["appEntry"]["appCfg"].get("Digest", "Dir%d_Hash" % payLoad["dirIndex"])
 				else:
 					orgDigest = ""
+					
+				self.printQ.put("digestorg = "+ orgDigest)
 
 				payLoad["appEntry"]["appCfg"].set("Digest","Dir%d" % payLoad["dirIndex"], ",".join(payLoad["dir"]))
 				payLoad["appEntry"]["appCfg"].set("Digest","Dir%d_Hash" % payLoad["dirIndex"] , payLoad["digest"])
 
-				if not (orgDigest  == payLoad["digest"] and self.digestCheck):
+				if orgDigest != payLoad["digest"] or (not self.digestCheck):
 					payLoad["appEntry"]["isHashChanged"] = True
 					self.ftpT.addEntry(payLoad)
 				else:

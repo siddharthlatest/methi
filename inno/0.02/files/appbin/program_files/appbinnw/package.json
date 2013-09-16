@@ -1,0 +1,15 @@
+{
+	"main":"app.html",
+	"name":"Appbin",
+        "window": {
+	    "min_width":860
+	    ,"min_height":600,
+		"max_width":860
+	    ,"max_height":600
+		,"height":600
+		,"width":860		
+		,"icon": "appbin.ico"
+		,"title": "Appbin - Sync Applications Seamlessly"
+		,"toolbar": false
+    }
+}

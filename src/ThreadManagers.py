@@ -4,7 +4,6 @@ import hashlib
 import Common
 import Queue
 import threading
-import time
 import ConfigParser
 from time import gmtime, strftime,sleep
 import Common
@@ -132,6 +131,7 @@ class AppThreadManager:
 		f.close()
 		conn = self.mainObj.conn
 		if (appEntry["isHashChanged"] or appEntry["direction"] == "down") and not appEntry["isDownStopped"]: 
+			self.printQ.put("%s: uploading ini" % appEntry["app"] )
 			conn.uploadFile("app.ini", appEntry["appIni"], "%s/%s" % (appEntry["app"], self.mainObj.rdir_remote_temp))
 
 
@@ -175,12 +175,13 @@ class AppThreadManager:
 		self.printQ.put("ini "+appIni)
 
 		self.getAppIni(appEntry)
-
+		
 		if os.path.isfile(appIni) and os.path.getsize(appIni) > 0:
 			cfg = ConfigParser.SafeConfigParser()
 			cfg.read(appIni)
 
 			if not cfg.has_section(self.mainObj.machineId):
+				self.printQ.put("%s: machine id not found in appini",appEntry["app"])
 				direction = "down"
 				cfg.add_section(self.mainObj.machineId)
 			else:
@@ -243,11 +244,11 @@ class ZipThreadManager:
 		dirEntry["azip_local"] = azip_local
 
 		if(dirEntry["zipDirection"] == "up"): #dir -> 7zip
-			zipCmd = "7za a -t7z \"%s\" \"%s\" -mx3" % (azip_local, adir_local)
+			zipCmd = "7za a -t7z \"%s\" \"%s\\*\" -mx3" % (azip_local, adir_local)
 			self.printQ.put(zipCmd)
 			dirEntry["zipCmd"] = zipCmd
 		else:
-			shutil.rmtree(adir_local,True)
+			
 			zipCmd = "7za x -y \"%s\" -o\"%s\" -mmt=on" % (azip_local, adir_local)
 			self.printQ.put(zipCmd)
 			dirEntry["zipCmd"] = zipCmd
@@ -261,7 +262,10 @@ class ZipThreadManager:
 				break
 
 			dirEntry = x
-			#subprocess.call(dirEntry["zipCmd"])
+			#enable below lines when sync is done per app
+			"""if dirEntry["zipDirection"] == "down":
+				shutil.rmtree(dirEntry["adir_local"],True) # delete target first"""
+			
 			startupinfo = subprocess.STARTUPINFO()
 			startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 			startupinfo.wShowWindow = subprocess.SW_HIDE

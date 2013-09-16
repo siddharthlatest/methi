@@ -16,10 +16,13 @@ def setupLogs():
 	sys.stdout = f_print
 
 def main():
+	
+	"""if Common.isProcessRunning("appbin_daemon.exe"):
+		sys.exit() #exit if another daemon already running"""
 	#sys.stderr = sys.stdout
 	setupLogs()
 	print "Daemon HAS STARTED"
-	version = 0.01
+	version = 0.02
 	sleepTime = 60
 	processName = "appbin_nw.exe"
 	uT = UpdateThreadManager(version,processName)
