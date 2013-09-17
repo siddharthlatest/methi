@@ -2,12 +2,11 @@ from ftplib import FTP_TLS
 import logging
 
 class FTPconnection:
-	def __init__(self, server, username, password,printQ):
+	def __init__(self, server, username, password):
 		self.server = server
 		self.username = username
 		self.password = password
 		self.logger = logging.getLogger("daemon.syncclient.ftpconn")
-		self.printQ = printQ
 
 	def directory_exists(self, ftp, dir):
 		try:

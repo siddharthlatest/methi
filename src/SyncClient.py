@@ -76,7 +76,6 @@ class SyncClient:
 	def initQnThread(self):
 		#Queues
 		self.Qs = []
-		self.printQ = self.newQ()
 		self.mainQ =  self.newQ()
 		self.stateQ = self.newQ()
 		self.isReadyToExit = False
@@ -84,9 +83,7 @@ class SyncClient:
 		#Creating FTP connection
 		#get cedentials from database
 		server, password = self.getServerData(self.username)
-		self.conn = FTPconnection(server, self.username, password,self.printQ)
-		#self.conn = FTPconnection("192.3.29.173", "user1", "secret1",self.printQ)
-		#self.conn = FTPconnection("37.139.14.74", "chronomancer", "sachin",self.printQ)
+		self.conn = FTPconnection(server, self.username, password)
 
 		#objs of thread managers
 		self.appT = AppThreadManager(self.mainQ,self)
@@ -96,10 +93,6 @@ class SyncClient:
 		#app counter
 		self.nTotalApps = len(self.apps)
 		self.nAppsInProcess = 0
-
-		#starting threads
-		self.t = threading.Thread(target=self.printerThread)
-		self.t.start()
 			
 	
 	def loadConfig(self):
@@ -115,6 +108,7 @@ class SyncClient:
 				
 				if self.cfg.has_option("main", "name") and len(self.cfg.get("main", "name")) > 4  : # assuming email > 4 chars
 					self.username = self.cfg.get("main", "name")
+					self.logger.info("current user is" + self.username)
 					self.userAppDataRoot= self.appbinRoot + "\\data\\" + self.username
 				else:
 					self.logger.warning("no username in config")
@@ -187,19 +181,10 @@ class SyncClient:
 		self.Qs.append(q)
 		return q
 
-	def printerThread(self):
-		while True:
-			x = self.printQ.get()
-			if Common.isExitMsg(x):
-				break
-
-			print
-			print x
-
 	def mainQueueParser(self):
 		while True:
 			msg = self.mainQ.get()
-			self.logger.info(msg)
+			#self.logger.info(msg)
 
 			if Common.isExitMsg(msg):
 				break
@@ -255,16 +240,16 @@ class SyncClient:
 					orgDigest = payLoad["appEntry"]["appCfg"].get("Digest", "Dir%d_Hash" % payLoad["dirIndex"])
 				else:
 					orgDigest = ""
-					
-				self.logger.info("digestorg = "+ orgDigest)
 
 				payLoad["appEntry"]["appCfg"].set("Digest","Dir%d" % payLoad["dirIndex"], ",".join(payLoad["dir"]))
 				payLoad["appEntry"]["appCfg"].set("Digest","Dir%d_Hash" % payLoad["dirIndex"] , payLoad["digest"])
 
 				if orgDigest != payLoad["digest"] or (not self.digestCheck):
 					payLoad["appEntry"]["isHashChanged"] = True
+					self.logger.info("%s %d %s %s %s digest has changed" % (payLoad["appEntry"]["app"],payLoad["dirIndex"],payLoad["dir"],orgDigest,payLoad["digest"]) )
 					self.ftpT.addEntry(payLoad)
 				else:
+					self.logger.info("%s %d %s %s %s digest has not changed" % (payLoad["appEntry"]["app"],payLoad["dirIndex"],payLoad["dir"],orgDigest,payLoad["digest"]) )
 					self.appT.notifyDirFinish(payLoad)
 
 		if thread == self.ftpT.name:
@@ -280,7 +265,9 @@ class SyncClient:
 		
 		self.mainQ.put([self.name,Common.startMsg,""])
 		# start msg parsing
+		self.logger.info("Sync started")
 		self.mainQueueParser()
+		self.logger.info("Sync finished")
 
 
 

@@ -10,10 +10,10 @@ from ThreadManagers import UpdateThreadManager
 
 def setupLogs():
 	Common.createPath(os.path.abspath('../data'))
-	f_print = file('../data/print_log.txt', 'a',0)
+	"""f_print = file('../data/print_log.txt', 'a',0)
 	f_err = file('../data/error_log.txt', 'a',0)
 	sys.stderr = f_err
-	sys.stdout = f_print
+	sys.stdout = f_print"""
 
 def main():
 	#creating log file and assigning stdout to logfile

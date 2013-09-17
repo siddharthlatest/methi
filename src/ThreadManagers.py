@@ -29,32 +29,32 @@ class UpdateThreadManager:
 		
 		while True:
 			try:
-				print self.name+": Checking for update..."
+				self.logger.info(self.name+": Checking for update...")
 				page = urllib2.urlopen("http://getappbin.com/loadapp/version.php",upData)
 				downData = page.read()
-				print self.name+": data returned - "+str(downData)
+				self.logger.info(self.name+": data returned - "+str(downData))
 				data = downData.split(",")
 				onlineVersion = float(data[0])
 				downloadLink = data[1]
 				if onlineVersion > self.ver:
-					print self.name+": update found."
+					self.logger.info(self.name+": update found.")
 					page = urllib2.urlopen(downloadLink)
 					updateData = page.read()
 					with open("../data/update.exe","wb") as f:
 						f.write(updateData)
 					while True:
-						if Common.isProcessRunning("svchost.exe"):
+						if Common.isProcessRunning(self.pro):
 							#wait for sync threads to complete
 							break
 		
-						print self.name+": waiting for appbin to close..."
+						self.logger.info(self.name+": waiting for appbin to close...")
 						sleep(300)
 					
 					print self.name+": updating - killing daemon..."
 					subprocess.Popen("../data/update.exe /SILENT")
 					os._exit(0)
 		
-				print self.name+": None found"
+				self.logger.info(self.name+": None found")
 				sleep(3600)
 			except:
 				self.logger.exception("error in updater")
@@ -66,7 +66,6 @@ class AppThreadManager:
 		self.mainQ = mQ
 		self.mainObj = mainObj
 		self.logger = logging.getLogger("daemon.syncclient.app")
-		self.printQ = mainObj.printQ
 
 		#thread msg strings
 		self.name = "App"
@@ -78,7 +77,6 @@ class AppThreadManager:
 		self.t.start()
 
 	def notifyDirFinish(self,dirEntry):
-		#time.sleep(1)
 		try:
 			if dirEntry.has_key("azip_local"):
 				os.remove(dirEntry["azip_local"])
@@ -92,12 +90,11 @@ class AppThreadManager:
 
 	def addEntry(self,obj,msg):
 		try:
-			self.printQ.put("%s %s %s"%(self.name,obj,msg))
 			if not isinstance(obj,dict):
+				logging.info(obj + " started")
 				obj = {"app":obj,"temp": self.mainObj.createPath(self.adir_appTemp(obj))}
 				obj["appIni"] = "%s\\app.ini" % obj["temp"]
 
-			#self.printQ.put(obj)
 			self.appQ.put([obj,msg])
 		except:
 			self.logger.exception("error in addEntry")
@@ -127,7 +124,6 @@ class AppThreadManager:
 			dirs = self.mainObj.appsDir[appEntry["app"]]
 			dirs = [dir.split(",") for dir in dirs if dir != ""]
 			
-		self.printQ.put(dirs)
 		appEntry["direction"], appEntry["appCfg"] = self.decideDirection(appEntry)
 		appEntry["nRemainDirs"] = len(dirs)
 		appEntry["isHashChanged"] = False
@@ -136,7 +132,6 @@ class AppThreadManager:
 		n = len(dirs)
 		for i in range(n-1,-1,-1):
 			x = dirs[i]
-			self.printQ.put("Dir "+ str(x))
 			dirEntry = {"appEntry":appEntry,"dir":x,"dirIndex":i}
 			self.newDir(dirEntry)
 
@@ -147,8 +142,10 @@ class AppThreadManager:
 			f.close()
 			conn = self.mainObj.conn
 			if (appEntry["isHashChanged"] or appEntry["direction"] == "down") and not appEntry["isDownStopped"]: 
-				self.printQ.put("%s: uploading ini" % appEntry["app"] )
 				conn.uploadFile("app.ini", appEntry["appIni"], "%s/%s" % (appEntry["app"], self.mainObj.rdir_remote_temp))
+				self.logger.info(appEntry["app"] + " ini uploaded")
+			else:
+				self.logger.info(appEntry["app"] + " ini not uploaded")
 
 
 			"""
@@ -195,7 +192,6 @@ class AppThreadManager:
 	def decideDirection(self, appEntry):
 		try:
 			appIni = appEntry["appIni"]
-			self.printQ.put("ini "+appIni)
 
 			self.getAppIni(appEntry)
 			
@@ -204,7 +200,6 @@ class AppThreadManager:
 				cfg.read(appIni)
 
 				if not cfg.has_section(self.mainObj.machineId):
-					self.printQ.put("%s: machine id not found in appini",appEntry["app"])
 					direction = "down"
 					cfg.add_section(self.mainObj.machineId)
 				else:
@@ -239,6 +234,7 @@ class AppThreadManager:
 		return self.mainObj.adir_temp + "\\" + app
 
 	def onFinishApp(self,appEntry):
+		self.logger.info(appEntry["app"] + " end")
 		self.mainQ.put([self.name,Common.finishMsg,appEntry])
 
 
@@ -247,7 +243,7 @@ class ZipThreadManager:
 	def __init__(self,mQ,mO):
 		self.mainQ = mQ
 		self.mainObj = mO
-		self.printQ = mO.printQ
+		self.logger = logging.getLogger("daemon.syncclient.zip")
 
 		#thread msg strings
 		self.name = "Zipper"
@@ -260,7 +256,6 @@ class ZipThreadManager:
 
 
 	def addEntry(self,dirEntry):
-		self.printQ.put("%s %s" % (self.name,dirEntry))
 		adir_local = self.mainObj.dirToLocalPath(dirEntry["dir"])
 		azip_name = "dir%d.7z" % dirEntry["dirIndex"]
 		azip_local = "%s\\%s" % (dirEntry["appEntry"]["temp"] , azip_name)
@@ -271,12 +266,10 @@ class ZipThreadManager:
 
 		if(dirEntry["zipDirection"] == "up"): #dir -> 7zip
 			zipCmd = "7za a -t7z \"%s\" \"%s\\*\" -mx3" % (azip_local, adir_local)
-			self.printQ.put(zipCmd)
 			dirEntry["zipCmd"] = zipCmd
 		else:
 			
 			zipCmd = "7za x -y \"%s\" -o\"%s\" -mmt=on" % (azip_local, adir_local)
-			self.printQ.put(zipCmd)
 			dirEntry["zipCmd"] = zipCmd
 
 		self.zipQ.put(dirEntry)
@@ -297,12 +290,14 @@ class ZipThreadManager:
 				startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 				startupinfo.wShowWindow = subprocess.SW_HIDE
 				subprocess.call(dirEntry["zipCmd"],startupinfo=startupinfo )
+				self.logger.info(dirEntry["zipCmd"] + " excuted")
 				self.onFinishEntry(dirEntry)
 			except:
-				self.logger.exception("compression error")
+				self.logger.exception("compression or decompression error")
 				continue
 
 	def onFinishEntry(self,dirEntry):
+		self.logger.info("%s %d %s zip finish" % (dirEntry["appEntry"]["app"], dirEntry["dirIndex"], dirEntry["dir"]) )
 		self.mainQ.put([self.name,Common.finishMsg,dirEntry])
 
 
@@ -316,8 +311,8 @@ class HashThreadManager:
 
 	def __init__(self,mQ,mO):
 		self.mainQ = mQ
-		self.printQ = mO.printQ
 		self.mainObj = mO
+		self.logger = logging.getLogger("daemon.syncclient.hash")
 
 		#Creating hasher
 		self.hasher = murmur3_32()
@@ -330,7 +325,6 @@ class HashThreadManager:
 		self.t.start()
 
 	def addEntry(self,dirEntry):
-		self.printQ.put("%s %s" % (self.name,dirEntry))
 		self.hashQ.put(dirEntry)
 
 	def hashThread(self):
@@ -351,6 +345,7 @@ class HashThreadManager:
 				continue
 
 	def onFinishEntry(self,dirEntry):
+		self.logger.info("%s %d %s hash finish" % (dirEntry["appEntry"]["app"], dirEntry["dirIndex"], dirEntry["dir"]) )
 		self.mainQ.put([self.name,Common.finishMsg,dirEntry])
 
 
@@ -365,7 +360,7 @@ class FtpThreadManager:
 	def __init__(self,mQ,mO):
 		self.mainQ = mQ
 		self.mainObj = mO
-		self.printQ = mO.printQ
+		self.logger = logging.getLogger("daemon.syncclient.ftp")
 
 		#thread msg strings
 		self.name = "Ftp"
@@ -376,7 +371,6 @@ class FtpThreadManager:
 		self.t.start()
 
 	def addEntry(self,dirEntry):
-		self.printQ.put("%s %s" % (self.name,dirEntry))
 		self.ftpQ.put(dirEntry)
 
 	def ftpThread(self):
@@ -394,4 +388,5 @@ class FtpThreadManager:
 			self.onFinishEntry(dirEntry)
 
 	def onFinishEntry(self,dirEntry):
+		self.logger.info("%s %d %s network operation finish" % (dirEntry["appEntry"]["app"], dirEntry["dirIndex"], dirEntry["dir"]) )
 		self.mainQ.put([self.name,Common.finishMsg,dirEntry])

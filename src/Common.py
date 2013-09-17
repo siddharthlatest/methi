@@ -35,5 +35,10 @@ def isProcessRunning(proc):
 	c = wmi.WMI (find_classes=False)
 	if len(c.query("SELECT Handle FROM Win32_Process WHERE Name = '%s'" % proc)):
 		bool = True
-	print proc,bool
 	return bool
+
+def numOfProcessRunning(proc):
+	pythoncom.CoInitialize()
+	bool = False;
+	c = wmi.WMI (find_classes=False)
+	return len(c.query("SELECT Handle FROM Win32_Process WHERE Name = '%s'" % proc))
