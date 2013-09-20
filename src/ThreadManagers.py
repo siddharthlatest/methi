@@ -37,6 +37,7 @@ class UpdateThreadManager:
 				onlineVersion = float(data[0])
 				downloadLink = data[1]
 				if onlineVersion > self.ver:
+					print "update found"
 					self.logger.info(self.name+": update found.")
 					page = urllib2.urlopen(downloadLink)
 					updateData = page.read()
@@ -85,6 +86,7 @@ class AppThreadManager:
 			if dirEntry["appEntry"]["nRemainDirs"] == 0:
 				self.finalizeApp(dirEntry["appEntry"])
 		except:
+			dirEntry["appEntry"]["isSuccessful"] = False
 			self.logger.exception("problem in notifyDirFinish")
 			return
 
@@ -94,6 +96,7 @@ class AppThreadManager:
 				logging.info(obj + " started")
 				obj = {"app":obj,"temp": self.mainObj.createPath(self.adir_appTemp(obj))}
 				obj["appIni"] = "%s\\app.ini" % obj["temp"]
+				obj["isSuccessful"] = True
 
 			self.appQ.put([obj,msg])
 		except:
@@ -168,6 +171,7 @@ class AppThreadManager:
 			os.remove(appEntry["appIni"])
 			self.onFinishApp(appEntry)
 		except:
+			appEntry["isSuccessful"] = False
 			self.logger.exception("error in finalizeApp")
 			return
 
@@ -186,6 +190,7 @@ class AppThreadManager:
 
 			return paths
 		except:
+			dirEntry["appEntry"]["isSuccessful"] = False
 			self.logger.exception("error in getting app directories")
 			return
 
@@ -223,6 +228,7 @@ class AppThreadManager:
 
 			return direction,cfg
 		except:
+			appEntry["isSuccessful"] = False
 			self.logger.exception("error in deciding sync direction")
 			return
 
@@ -234,6 +240,7 @@ class AppThreadManager:
 		return self.mainObj.adir_temp + "\\" + app
 
 	def onFinishApp(self,appEntry):
+		print appEntry["app"] + " " + str(appEntry["isSuccessful"])
 		self.logger.info(appEntry["app"] + " end")
 		self.mainQ.put([self.name,Common.finishMsg,appEntry])
 
@@ -341,6 +348,7 @@ class HashThreadManager:
 				f.close()
 				self.onFinishEntry(dirEntry)
 			except:
+				dirEntry["appEntry"]["isSuccessful"] = False
 				self.logger.exception("hashing error")
 				continue
 

@@ -17,6 +17,7 @@ class FTPconnection:
 					return True
 			return False
 		except:
+			print "Connection Error"
 			self.logger.exception("unable to verify existence of directory")
 			return False
 
@@ -38,6 +39,7 @@ class FTPconnection:
 			ftp.storbinary("STOR %s" % filename, obj)
 			ftp.quit()
 		except:
+			print "Connection Error"
 			self.logger.exception("unable to upload")
 			return
 
@@ -47,6 +49,7 @@ class FTPconnection:
 			self.upload(filename,obj,remotePath)
 			obj.close()
 		except:
+			print "Connection Error"
 			self.logger.exception("unable to upload file")
 			return
 
@@ -60,6 +63,7 @@ class FTPconnection:
 
 			ftp.quit()
 		except:
+			print "Connection Error"
 			self.logger.exception("unable to download")
 			return
 
@@ -69,6 +73,7 @@ class FTPconnection:
 			self.download(filename,obj,remotePath)
 			obj.close()
 		except:
+			print "Connection Error"
 			self.logger.exception("unable to download file")
 			return
 
@@ -80,6 +85,7 @@ class FTPconnection:
 			ftp.delete(filename)
 			ftp.quit()
 		except:
+			print "Connection Error"
 			self.logger.exception("unable to delete file")
 			return
 
@@ -97,6 +103,7 @@ class FTPconnection:
 
 			ftp.quit()
 		except:
+			print "Connection Error"
 			self.logger.exception("unable to delete directory")
 			return
 
@@ -109,6 +116,7 @@ class FTPconnection:
 				ftp.rename(original, changed)
 			ftp.quit()
 		except:
+			print "Connection Error"
 			self.logger.exception("unable to rename directory")
 			return
 
@@ -120,6 +128,7 @@ class FTPconnection:
 			ftp.mkd(dirname)
 			ftp.quit()
 		except:
+			print "Connection Error"
 			self.logger.exception("unable to make directory")
 			return
 
@@ -141,9 +150,11 @@ class FTPconnection:
 				ftp.cwd("..")
 				ftp.rmd(dirname)
 			except:
+				print "Connection Error"
 				self.logger.error("unable to delete directory")
 
 		except:
+			print "Connection Error"
 			self.logger.error("delete dir failed")
 
 	def rename_nologin(self, ftp, original, changed, remotePath="."):
@@ -154,11 +165,13 @@ class FTPconnection:
 				ftp.rename(original, changed)
 			ftp.quit()
 		except:
+			print "Connection Error"
 			self.logger.error("rename failed")
 
 	def logout(self,ftp):
 		try:
 			ftp.quit()
 		except:
+			print "Connection Error"
 			self.logger.error("Quit errror")
 			pass

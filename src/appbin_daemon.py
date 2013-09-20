@@ -10,7 +10,7 @@ from ThreadManagers import UpdateThreadManager
 
 def setupLogs():
 	Common.createPath(os.path.abspath('../data'))
-	f_print = file('../data/print_log.txt', 'a',0)
+	f_print = file('../data/comm_path.txt', 'w',0)
 	f_err = file('../data/error_log.txt', 'a',0)
 	sys.stderr = f_err
 	sys.stdout = f_print
@@ -36,6 +36,7 @@ def main():
 	
 	while True:
 		logger.info("calling syncClient")
+		print "sync start"
 		SyncClient(Common.isProcessRunning(processName))
 		logger.info("syncClient Done")
 		logger.info("Waiting for %d secs" % sleepTime)
