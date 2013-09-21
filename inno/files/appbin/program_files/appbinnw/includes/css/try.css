@@ -1,0 +1,139 @@
+.da-thumbs li {
+	width:100%;
+	background: #fff;
+	position: relative;
+	list-style:none;
+	display:block;
+}
+.app-image{
+	display: block;
+	left: 0px;
+	top: 0px;
+	transition: all 500ms ease;
+	-webkit-transition: all 500ms ease;
+}
+.da-thumbs li article,
+.da-thumbs li article > img {
+	width:100%;
+	display: block;
+	position: relative;
+}
+.da-thumbs li article {
+	width:100%;
+	overflow: hidden;
+	border: 1px solid rgb(112, 95, 95);
+}
+.da-thumbs li article section{
+	position:absolute;
+	top:5px;
+	left:10px;
+	right:10px;
+	bottom:10px;
+}
+.da-thumbs li article > div {
+	width:100%;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+.da-thumbs li article div > span {
+	width:100%;
+	display: block;
+	font-weight: normal;
+}
+.installed h3{
+	line-height:15px;
+}
+.installed{
+	position:absolute;
+	color:white;
+	top:0px;
+	height:30px;
+	background:#5eaf00;
+	text-align:center;
+/*	top:-50px;
+	right:-50px;
+	width:30px;
+	height:30px;
+	background:#5eaf00;
+	transform:rotate(45deg);
+	-ms-transform:rotate(45deg);
+	-moz-transform:rotate(45deg);
+	-webkit-transform:rotate(45deg);
+*/
+}
+.app-image .appp{
+	height:100%;
+}
+.app-image> .appp > img{
+	height:100%;
+}
+.modal-backdrop {background: #ffffff;}
+/*
+::-webkit-scrollbar {
+      width: 8px;
+}
+::-webkit-scrollbar-track {
+      background-color: #1BC9E0;
+} *//* the new scrollbar will have a flat appearance with the set background color */
+/*::-webkit-scrollbar-thumb {
+//      background-color: rgba(0, 0, 0, 0.2);
+	height:1px;
+} *//* this will style the thumb, ignoring the track */
+/*::-webkit-scrollbar-button {
+      background-color: #1B8EE0;
+} /* optionally, you can style the top and the bottom buttons (left and right for horizontal bars) */
+::-webkit-scrollbar{
+    width: 7px;
+    padding-top: 40px;
+}
+
+::-webkit-scrollbar-track{
+    -webkit-box-shadow: inset 0 0 1px rgba(0,0,0,0.3);
+    //border: 1px solid black;
+    background: rgb(41,41,41);
+    border-radius: 10px;
+
+}
+::-webkit-scrollbar-thumb{
+    border-radius:10px;
+    height: 30px;
+    width: 8px;
+    border: 1px solid black;
+    background: rgb(111,111,111);
+    -webkit-box-shadow: 0 1px 1px rgb(0,0,0);
+    background: -webkit-linear-gradient(rgb(200,200,200), rgb(150,150,150));
+}
+
+::-webkit-scrollbar-track-piece {
+    height: 30px;
+}
+			@media only screen and (max-width: 767px) {
+				#sidebar {
+					margin-top: 85px !important;
+				}
+				#sidebar.fixed {
+					position: fixed;
+				}
+			}
+			#sidebar {
+				margin-top: 86px;
+				z-index: 0px;
+			}
+			.app-des{
+				max-height: 140px;
+				overflow-y: auto;
+				margin-top: 0px;
+			}
+			.app-title{
+				margin-top:0px;
+			}
+			.app-name {
+				font-size:14px;
+			}
+			.app-category{
+				font-size:12px;
+			}
+			
+
+

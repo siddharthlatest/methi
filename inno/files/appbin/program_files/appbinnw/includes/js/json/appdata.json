@@ -1,0 +1,134 @@
+[
+        {
+			"id":1,
+            "title":"Cut The Ropes"
+            ,"imgurl":"apps/cut_the_rope/cut_the_rope.jpg"
+            ,"des":"Cut the Rope, catch a star, and feed Om Nom candy in this award-winning game!"
+            ,"moredes":"A mysterious package has arrived, and the little monster inside has only one request… CANDY!"
+            ,"iconurl":"apps/cut_the_rope/cut_the_rope_icon.png"
+			,"category":"Game"
+			,"appurl":"apps/cut_the_rope/cut_the_rope.nw"
+			,"installed":false
+        }
+        ,{
+	    "id":2,
+            "title":"Gif Rocket"
+            ,"imgurl":"apps/gifrocket/gifrocket.jpg"
+            ,"des":"Create GIF from Videos"
+            ,"moredes":"Create GIF Images from Videos within few clicks !"
+            ,"iconurl":"apps/gifrocket/gifrocket_icon.jpg"
+			,"category":"Utility"
+            ,"appurl":"apps/gifrocket/gifrocket.nw"
+			,"installed":false
+        }
+        ,{
+	    "id":3,
+            "title":"Postman - REST Client"
+            ,"imgurl":"apps/postman/postman.jpg"
+            ,"des":"Postman helps you be more efficient while working with APIs. Postman is a scratch-your-own-itch project. The need for it arose…"
+            ,"moredes":"Postman helps you be more efficient while working with APIs. Postman is a scratch-your-own-itch project. The need for it arose while one of the developers was creating an API for his project."
+            ,"iconurl":"apps/postman/postman_icon.png"
+			,"category":"Productivity"
+            ,"appurl":"apps/postman/postman.nw"
+			,"installed":false
+        }
+        ,{
+	    "id":4,
+            "title":"Memo Notepad"
+            ,"imgurl":"apps/memo_notepad/memo_notepad.jpg"
+            ,"des":"A simple and easy place for your thoughts and notes"
+            ,"moredes":"Memo Notepad is a very easy and simple way to write your notes in Chrome. Your notes are saved as you type to your local computer, and you can also sync and backup your notes via the cloud service."
+            ,"iconurl":"apps/memo_notepad/memo_notepad_icon.png"
+			,"category":"Utility"
+            ,"appurl":"apps/memo_notepad/memo_notepad.nw"
+			,"installed":false
+        }
+        ,{
+			"id":5,
+            "title":"Mini Code Editor"
+            ,"imgurl":"apps/mini_code_editor/mini_code_editor.jpg"
+            ,"des":"In Forge of Empires you control the fate of your city throughout different historical periods."
+            ,"moredes":"You can expect exciting tasks and demanding challenges. Beginning in the Stone Age, you research building types and technologies in order to advance to the next era with your settlement."
+            ,"iconurl":"apps/mini_code_editor/mini_code_editor_icon.jpg"
+			,"category":"Productivity"
+            ,"appurl":"apps/mini_code_editor/mini_code_editor.nw"
+			,"installed":false
+        }
+        ,{
+			"id":6,
+            "title":"Workflowy"
+            ,"imgurl":"apps/workflowy/workflowy.jpg"
+            ,"des":"WorkFlowy is a beautiful tool for lists and notes. It's simple enough for a shopping list, and powerful enough to run a company."
+            ,"moredes":"Simple to use, but incredibly powerful, WorkFlowy can help you manage all the information in your life."
+            ,"iconurl":"apps/workflowy/workflowy_icon.png"
+            ,"appurl":"apps/workflowy/workflowy.nw"
+			,"category":"Utility"
+			,"installed":false
+        }
+        ,{
+			"id":7,
+            "title":"Todo"
+            ,"imgurl":"apps/todo/todo.jpg"
+            ,"des":"Keep track of all the stuff you got to do."
+            ,"moredes":"This application works by having several tabs, where you can add lists (with any number of entries, for each list). "
+			,"category":"Utility"
+            ,"iconurl":"apps/todo/todo_icon.png"
+            ,"appurl":"apps/todo/todo.nw"
+			,"installed":false
+        }
+		  ,{
+			"id":7,
+            "title":"Nitro"
+            ,"imgurl":"apps/nitro/nitro.jpg"
+            ,"des":"Get stuff done with Nitro"
+            ,"moredes":"Nitro makes tasks management super easy and awesome. It's super fast, simple and offline and can be used without an internet connection. Nitro also packs Dropbox and Ubuntu one sync."
+			,"category":"Utility"
+            ,"iconurl":"apps/nitro/nitro_icon.png"
+            ,"appurl":"apps/nitro/nitro.nw"
+			,"installed":false
+        }
+        ,{
+			"id":9,
+            "title":"Periodic Table"
+            ,"imgurl":"apps/periodic_table/periodic_table.jpg"
+            ,"des":"Powerful periodic table and chemistry reference tool."
+            ,"moredes":"ChemReference is a detailed and powerful periodic table of the elements built for power users who need information at their fingertips."
+            ,"iconurl":"apps/periodic_table/periodic_table_icon.png"
+			,"category":"Educational"
+            ,"appurl":"apps/periodic_table/periodic_table.nw"
+			,"installed":false
+        }
+        ,{
+			"id":10,
+            "title":"Type Fu"
+            ,"imgurl":"apps/type_fu/type_fu.jpg"
+            ,"des":"Type Fu is an app that will teach you how to type fast. The right way. Directly in your browser."
+            ,"moredes":"Type Fu is shipped with thousands of exercises that are grouped into several lessons:"
+            ,"iconurl":"apps/type_fu/type_fu_icon.png"
+			,"category":"Educational"
+            ,"appurl":"apps/type_fu/type_fu.nw"
+			,"installed":false
+        }
+         ,{
+			"id":11,
+            "title":"HTML Fire"
+            ,"imgurl":"apps/html_fire/html_fire.jpg"
+            ,"des":"An Offline Realtime HTML Editor, for quick coding checking on the code"
+            ,"moredes":"An offline real-tile HTML preview Chrome Application. Great for testing your code really quick without any need to be connected to the internet. "
+            ,"iconurl":"apps/html_fire/html_fire_icon.png"
+			,"category":"Educational"
+            ,"appurl":"apps/html_fire/html_fire.nw"
+			,"installed":false
+        }
+		,{
+			"id":12,
+            "title":"Light Table"
+            ,"imgurl":"apps/light_table/light_table.png"
+            ,"des":"Light Table is a new interactive IDE that lets you modify running programs and embed anything from websites to games."
+            ,"moredes":"It provides the real time feedback we need to not only answer questions about our code, but to understand how our programs really work."
+            ,"iconurl":"apps/light_table/light_table_icon.png"
+			,"category":"Educational"
+            ,"appurl":"apps/light_table/light_table.nw"
+			,"installed":false
+        }
+]
