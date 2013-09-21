@@ -49,7 +49,7 @@ class UpdateThreadManager:
 							break
 		
 						self.logger.info(self.name+": waiting for appbin to close...")
-						sleep(300)
+						sleep(30)
 					
 					print self.name+": updating - killing daemon..."
 					subprocess.call("cmd /c \"taskkill /F /T /IM appbin_7za.exe\"")

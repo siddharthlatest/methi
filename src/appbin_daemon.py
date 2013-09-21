@@ -29,7 +29,7 @@ def main():
 	#sys.stderr = sys.stdout
 	setupLogs()
 	logger.info("Daemon HAS STARTED")
-	version = 0.02
+	version = 0.1
 	sleepTime = 60
 	processName = "appbin_nw.exe"
 	uT = UpdateThreadManager(version,processName)
