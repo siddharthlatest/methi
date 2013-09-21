@@ -60,7 +60,7 @@ class SyncClient:
 			self.rdir_remote_old = "old"
 		except:
 			logger.exception("exception in creating synclient init")
-			pass
+			return
 
 		#temporarily adding binaries to path
 		os.environ['PATH'] = "%s;%s" % (os.getenv('PATH'), os.path.abspath(self.rdir_bin))
@@ -70,7 +70,9 @@ class SyncClient:
 		#if self.isConfigIniOk and not self.isAppRunning:
 		if self.isConfigIniOk:
 			self.logger.info("begin sync")
-			self.initQnThread()
+			netStatus = self.initQnThread()
+			if(netStatus < 0):
+				return
 			self.syncNow()
 			
 	def initQnThread(self):
@@ -83,6 +85,8 @@ class SyncClient:
 		#Creating FTP connection
 		#get cedentials from database
 		server, password = self.getServerData(self.username)
+		if(server=="error" and password=="error"):
+			return -1
 		self.conn = FTPconnection(server, self.username, password)
 
 		#objs of thread managers
@@ -93,6 +97,7 @@ class SyncClient:
 		#app counter
 		self.nTotalApps = len(self.apps)
 		self.nAppsInProcess = 0
+		return 1
 			
 	
 	def loadConfig(self):
@@ -175,6 +180,8 @@ class SyncClient:
 			return server, password
 		except:
 			self.logger.warning("getting data from server failed")
+			return "error", "error"
+
 
 	def newQ(self):
 		q = Queue.Queue(0)

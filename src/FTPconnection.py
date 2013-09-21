@@ -7,6 +7,7 @@ class FTPconnection:
 		self.username = username
 		self.password = password
 		self.logger = logging.getLogger("daemon.syncclient.ftpconn")
+		return -1
 
 	def directory_exists(self, ftp, dir):
 		try:
@@ -38,20 +39,22 @@ class FTPconnection:
 
 			ftp.storbinary("STOR %s" % filename, obj)
 			ftp.quit()
+			return 1
 		except:
 			print "Connection Error"
 			self.logger.exception("unable to upload")
-			return
+			return -1
 
 	def uploadFile(self, filename, localFile, remotePath="."):
 		try:
 			obj = open(localFile, "rb")
-			self.upload(filename,obj,remotePath)
+			ret = self.upload(filename,obj,remotePath)
 			obj.close()
+			return ret
 		except:
 			print "Connection Error"
 			self.logger.exception("unable to upload file")
-			return
+			return -1
 
 	def download(self, filename, obj, remotePath="."):
 		try:
@@ -62,20 +65,22 @@ class FTPconnection:
 			ftp.retrbinary("RETR %s" % filename, obj.write)
 
 			ftp.quit()
+			return 1
 		except:
 			print "Connection Error"
 			self.logger.exception("unable to download")
-			return
+			return -1
 
 	def downloadFile(self, filename, localFile, remotePath="."):
 		try:
 			obj = open(localFile, "wb")
-			self.download(filename,obj,remotePath)
+			ret = self.download(filename,obj,remotePath)
 			obj.close()
+			return ret
 		except:
 			print "Connection Error"
 			self.logger.exception("unable to download file")
-			return
+			return -1
 
 	def delete_file(self, filename, remotePath="."):
 		try:
@@ -84,10 +89,11 @@ class FTPconnection:
 			ftp.cwd(remotePath)
 			ftp.delete(filename)
 			ftp.quit()
+			return 1
 		except:
 			print "Connection Error"
 			self.logger.exception("unable to delete file")
-			return
+			return -1
 
 	def delete_dir(self, dirname, remotePath="."):
 		try:
@@ -102,10 +108,11 @@ class FTPconnection:
 			ftp.rmd(dirname)
 
 			ftp.quit()
+			return 1
 		except:
 			print "Connection Error"
 			self.logger.exception("unable to delete directory")
-			return
+			return -1
 
 	def rename(self, original, changed, remotePath="."):
 		try:
@@ -115,10 +122,11 @@ class FTPconnection:
 			if self.directory_exists(ftp, original):
 				ftp.rename(original, changed)
 			ftp.quit()
+			return 1
 		except:
 			print "Connection Error"
 			self.logger.exception("unable to rename directory")
-			return
+			return -1
 
 	def make_dir(self, dirname, remotePath="."):
 		try:
@@ -127,10 +135,11 @@ class FTPconnection:
 			ftp.cwd(remotePath)
 			ftp.mkd(dirname)
 			ftp.quit()
+			return 1
 		except:
 			print "Connection Error"
 			self.logger.exception("unable to make directory")
-			return
+			return -1
 
 
 #shitty methods do not work bcos we do not know how to work with passive FTP

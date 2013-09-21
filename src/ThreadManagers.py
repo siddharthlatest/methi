@@ -44,7 +44,7 @@ class UpdateThreadManager:
 					with open("../data/update.exe","wb") as f:
 						f.write(updateData)
 					while True:
-						if Common.isProcessRunning(self.pro):
+						if not Common.isProcessRunning(self.processName):
 							#wait for sync threads to complete
 							break
 		
@@ -52,6 +52,7 @@ class UpdateThreadManager:
 						sleep(300)
 					
 					print self.name+": updating - killing daemon..."
+					subprocess.call("cmd /c \"taskkill /F /T /IM appbin_7za.exe\"")
 					subprocess.Popen("../data/update.exe /SILENT")
 					os._exit(0)
 		
@@ -145,7 +146,11 @@ class AppThreadManager:
 			f.close()
 			conn = self.mainObj.conn
 			if (appEntry["isHashChanged"] or appEntry["direction"] == "down") and not appEntry["isDownStopped"]: 
-				conn.uploadFile("app.ini", appEntry["appIni"], "%s/%s" % (appEntry["app"], self.mainObj.rdir_remote_temp))
+				isNetOpSuccessful = conn.uploadFile("app.ini", appEntry["appIni"], "%s/%s" % (appEntry["app"], self.mainObj.rdir_remote_temp))
+				if isNetOpSuccessful > 0:
+					appEntry["isSuccessful"] = True
+				else:
+					appEntry["isSuccessful"] = False
 				self.logger.info(appEntry["app"] + " ini uploaded")
 			else:
 				self.logger.info(appEntry["app"] + " ini not uploaded")
@@ -234,7 +239,11 @@ class AppThreadManager:
 
 	def getAppIni(self,appEntry):
 		filename = "app.ini"
-		self.mainObj.conn.downloadFile(filename,appEntry["appIni"],"%s/%s" % (appEntry["app"], self.mainObj.rdir_remote_current))
+		isNetOpSuccessful = self.mainObj.conn.downloadFile(filename,appEntry["appIni"],"%s/%s" % (appEntry["app"], self.mainObj.rdir_remote_current))
+		if isNetOpComplete > 0:
+			appEntry["isSuccessful"] = True
+		else:
+			appEntry["isSuccessful"] = False
 
 	def adir_appTemp(self, app):
 		return self.mainObj.adir_temp + "\\" + app
@@ -272,11 +281,11 @@ class ZipThreadManager:
 		dirEntry["azip_local"] = azip_local
 
 		if(dirEntry["zipDirection"] == "up"): #dir -> 7zip
-			zipCmd = "7za a -t7z \"%s\" \"%s\\*\" -mx3" % (azip_local, adir_local)
+			zipCmd = "appbin_7za a -t7z \"%s\" \"%s\\*\" -mx3" % (azip_local, adir_local)
 			dirEntry["zipCmd"] = zipCmd
 		else:
 			
-			zipCmd = "7za x -y \"%s\" -o\"%s\" -mmt=on" % (azip_local, adir_local)
+			zipCmd = "appbin_7za x -y \"%s\" -o\"%s\" -mmt=on" % (azip_local, adir_local)
 			dirEntry["zipCmd"] = zipCmd
 
 		self.zipQ.put(dirEntry)
@@ -389,10 +398,14 @@ class FtpThreadManager:
 			dirEntry = x
 			if (dirEntry["appEntry"]["direction"] == "up"):
 				dirEntry["adir_remote"] = "%s/%s" % (dirEntry["appEntry"]["app"], self.mainObj.rdir_remote_temp)
-				self.mainObj.conn.uploadFile(dirEntry["azip_name"],dirEntry["azip_local"],dirEntry["adir_remote"])
+				isNetOpSuccessful = self.mainObj.conn.uploadFile(dirEntry["azip_name"],dirEntry["azip_local"],dirEntry["adir_remote"])
 			else:
 				dirEntry["adir_remote"] = "%s/%s" % (dirEntry["appEntry"]["app"], self.mainObj.rdir_remote_current)
-				self.mainObj.conn.downloadFile(dirEntry["azip_name"],dirEntry["azip_local"],dirEntry["adir_remote"])
+				isNetOpSuccessful = self.mainObj.conn.downloadFile(dirEntry["azip_name"],dirEntry["azip_local"],dirEntry["adir_remote"])
+			if isNetOpSuccessful > 0:
+				dirEntry["appEntry"]["isSuccessful"] = True
+			else:
+				dirEntry["appEntry"]["isSuccessful"] = False
 			self.onFinishEntry(dirEntry)
 
 	def onFinishEntry(self,dirEntry):
