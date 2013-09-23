@@ -6,7 +6,7 @@ import sys
 
 sys.path.append("C:\\Program Files (x86)\\Microsoft Visual Studio 9.0\\VC\\redist\\x86\\Microsoft.VC90.CRT")
 py2exe_options = dict(
-                    ascii= 1,
+                    #ascii= 1,
                     bundle_files=1,
 				    compressed=1,
 					optimize=2,
@@ -19,7 +19,7 @@ py2exe_options = dict(
 setup(
       
     windows = [{
-                "version" : "0.01",
+                "version" : "0.1",
                 "script": "src/appbin_daemon.py",    
                 "icon_resources": [(0, "src/appbin.ico")],
                 "description" : "Appbin sync daemon",
