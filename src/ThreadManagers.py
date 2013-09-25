@@ -68,6 +68,7 @@ class AppThreadManager:
 		self.mainQ = mQ
 		self.mainObj = mainObj
 		self.logger = logging.getLogger("daemon.syncclient.app")
+		self.failNotify = mainObj.failNotify
 
 		#thread msg strings
 		self.name = "App"
@@ -240,7 +241,7 @@ class AppThreadManager:
 	def getAppIni(self,appEntry):
 		filename = "app.ini"
 		isNetOpSuccessful = self.mainObj.conn.downloadFile(filename,appEntry["appIni"],"%s/%s" % (appEntry["app"], self.mainObj.rdir_remote_current))
-		if isNetOpComplete > 0:
+		if isNetOpSuccessful > 0:
 			appEntry["isSuccessful"] = True
 		else:
 			appEntry["isSuccessful"] = False
@@ -260,6 +261,7 @@ class ZipThreadManager:
 		self.mainQ = mQ
 		self.mainObj = mO
 		self.logger = logging.getLogger("daemon.syncclient.zip")
+		self.failNotify = mO.failNotify
 
 		#thread msg strings
 		self.name = "Zipper"
@@ -329,6 +331,7 @@ class HashThreadManager:
 		self.mainQ = mQ
 		self.mainObj = mO
 		self.logger = logging.getLogger("daemon.syncclient.hash")
+		self.failNotify = mO.failNotify
 
 		#Creating hasher
 		self.hasher = murmur3_32()
@@ -378,6 +381,7 @@ class FtpThreadManager:
 		self.mainQ = mQ
 		self.mainObj = mO
 		self.logger = logging.getLogger("daemon.syncclient.ftp")
+		self.failNotify = mO.failNotify
 
 		#thread msg strings
 		self.name = "Ftp"

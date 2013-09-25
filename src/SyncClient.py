@@ -27,10 +27,14 @@ class SyncClient:
 		self.appsDir = {"allapps":["userAppDataRoot,appsdata"]}
 
 
-	def __init__(self,isAR):
+	def __init__(self,isAR, failNotify, changeIcon):
 		self.isAppRunning = isAR
 		self.name = "Main" #thread name
+		self.failNotify = failNotify
+		self.changeIcon = changeIcon
 		self.initBuildParams()
+
+		self.successState = True
 
 		#setup logger
 		self.logger = logging.getLogger("daemon.syncclient")
@@ -59,6 +63,7 @@ class SyncClient:
 			self.rdir_remote_current = "current"
 			self.rdir_remote_old = "old"
 		except:
+			self.failNotify()
 			logger.exception("exception in creating synclient init")
 			return
 
@@ -87,7 +92,7 @@ class SyncClient:
 		server, password = self.getServerData(self.username)
 		if(server=="error" and password=="error"):
 			return -1
-		self.conn = FTPconnection(server, self.username, password)
+		self.conn = FTPconnection(server, self.username, password, self.failNotify)
 
 		#objs of thread managers
 		self.appT = AppThreadManager(self.mainQ,self)
@@ -164,6 +169,7 @@ class SyncClient:
 			return isConfigIniOk
 
 		except:
+			self.failNotify()
 			self.logger.exception("problem in loading config")
 			return False
 		
@@ -179,6 +185,7 @@ class SyncClient:
 
 			return server, password
 		except:
+			self.failNotify()
 			self.logger.warning("getting data from server failed")
 			return "error", "error"
 
@@ -194,6 +201,8 @@ class SyncClient:
 			#self.logger.info(msg)
 
 			if Common.isExitMsg(msg):
+				if self.successState:
+					self.changeIcon("0")
 				break
 			self.newMsg(msg)
 
@@ -215,6 +224,8 @@ class SyncClient:
 
 			if msg == Common.finishMsg:
 				self.nAppsInProcess -= 1
+				if not payLoad["isSuccessful"]:
+					self.successState = False
 
 				if self.nAppsInProcess ==0:
 					self.prepareToExit()

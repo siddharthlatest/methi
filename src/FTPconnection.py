@@ -2,12 +2,12 @@ from ftplib import FTP_TLS
 import logging
 
 class FTPconnection:
-	def __init__(self, server, username, password):
+	def __init__(self, server, username, password, failNotify):
 		self.server = server
 		self.username = username
 		self.password = password
 		self.logger = logging.getLogger("daemon.syncclient.ftpconn")
-		return -1
+		self.failNotify = failNotify
 
 	def directory_exists(self, ftp, dir):
 		try:
@@ -18,6 +18,7 @@ class FTPconnection:
 					return True
 			return False
 		except:
+			self.failNotify()
 			print "Connection Error"
 			self.logger.exception("unable to verify existence of directory")
 			return False
@@ -41,6 +42,7 @@ class FTPconnection:
 			ftp.quit()
 			return 1
 		except:
+			self.failNotify()
 			print "Connection Error"
 			self.logger.exception("unable to upload")
 			return -1
@@ -52,6 +54,7 @@ class FTPconnection:
 			obj.close()
 			return ret
 		except:
+			self.failNotify()
 			print "Connection Error"
 			self.logger.exception("unable to upload file")
 			return -1
@@ -67,6 +70,7 @@ class FTPconnection:
 			ftp.quit()
 			return 1
 		except:
+			self.failNotify()
 			print "Connection Error"
 			self.logger.exception("unable to download")
 			return -1
@@ -78,6 +82,7 @@ class FTPconnection:
 			obj.close()
 			return ret
 		except:
+			self.failNotify()
 			print "Connection Error"
 			self.logger.exception("unable to download file")
 			return -1
@@ -91,6 +96,7 @@ class FTPconnection:
 			ftp.quit()
 			return 1
 		except:
+			self.failNotify()
 			print "Connection Error"
 			self.logger.exception("unable to delete file")
 			return -1
@@ -110,6 +116,7 @@ class FTPconnection:
 			ftp.quit()
 			return 1
 		except:
+			self.failNotify()
 			print "Connection Error"
 			self.logger.exception("unable to delete directory")
 			return -1
@@ -124,6 +131,7 @@ class FTPconnection:
 			ftp.quit()
 			return 1
 		except:
+			self.failNotify()
 			print "Connection Error"
 			self.logger.exception("unable to rename directory")
 			return -1
@@ -137,6 +145,7 @@ class FTPconnection:
 			ftp.quit()
 			return 1
 		except:
+			self.failNotify()
 			print "Connection Error"
 			self.logger.exception("unable to make directory")
 			return -1
@@ -159,10 +168,12 @@ class FTPconnection:
 				ftp.cwd("..")
 				ftp.rmd(dirname)
 			except:
+				self.failNotify()
 				print "Connection Error"
 				self.logger.error("unable to delete directory")
 
 		except:
+			self.failNotify()
 			print "Connection Error"
 			self.logger.error("delete dir failed")
 
@@ -174,6 +185,7 @@ class FTPconnection:
 				ftp.rename(original, changed)
 			ftp.quit()
 		except:
+			self.failNotify()
 			print "Connection Error"
 			self.logger.error("rename failed")
 
@@ -181,6 +193,7 @@ class FTPconnection:
 		try:
 			ftp.quit()
 		except:
+			self.failNotify()
 			print "Connection Error"
 			self.logger.error("Quit errror")
 			pass
