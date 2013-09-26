@@ -15,11 +15,12 @@ import urllib2
 import urllib
 
 class UpdateThreadManager:
-	def __init__(self,version,pN):
+	def __init__(self,version,pN,msgToUthread):
 		self.name = "Updater"
 		self.ver = version
 		self.processName = pN
 		self.logger = logging.getLogger("daemon.update")
+		self.msgThread = msgToUthread
 		
 		self.t = threading.Thread(target=self.updateThread)
 		self.t.start()
@@ -29,6 +30,8 @@ class UpdateThreadManager:
 		
 		while True:
 			try:
+				if not self.msgThread.empty():
+					return
 				self.logger.info(self.name+": Checking for update...")
 				page = urllib2.urlopen("http://getappbin.com/loadapp/version.php",upData)
 				downData = page.read()

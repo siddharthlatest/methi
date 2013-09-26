@@ -4,8 +4,7 @@ import sys
 import Common
 import os
 import logging
-import win32gui
-from subprocess import Popen
+import wx
 import Queue
 
 from SyncClient import SyncClient
@@ -36,19 +35,30 @@ def main():
 	version = 0.10
 	sleepTime = 60
 	processName = "appbin_nw.exe"
-	uT = UpdateThreadManager(version,processName)
+	msgToUthread = Queue.Queue(0)
+	uT = UpdateThreadManager(version,processName,msgToUthread)
 
-	gui = GUI()
+	stateQ = Queue.Queue(0)
+
+	icons = { "1":"1.ico", "2":"2.ico", "3":"3.ico", "-1":"-1.ico", "0":"0.ico" }
+	iconQ = Queue.Queue(0)
+	t = threading.Thread(target=startGUI, args=(iconQ,stateQ))
+	t.start()
 
 	def changeIcon(icontoken):
-		gui.changeIcon(icontoken)
+		iconQ.put(icons[icontoken])
 
 	def failNotify():
 		gui.changeIcon("-1")
 
 	while True:
+		if not stateQ.empty():
+			subprocess.call("cmd /c \"taskkill /F /T /IM appbin_7za.exe\"")
+			msgToUthread.put("exit")
+			sys.exit(0)
 		logger.info("calling syncClient")
 		print "sync start"
+		changeIcon("1")
 		SyncClient(Common.isProcessRunning(processName), failNotify, changeIcon)
 		logger.info("syncClient Done")
 		logger.info("Waiting for %d secs" % sleepTime)
