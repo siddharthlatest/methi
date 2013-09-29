@@ -6,6 +6,7 @@ import os
 import logging
 import wx
 import Queue
+import subprocess
 
 from SyncClient import SyncClient
 from ThreadManagers import UpdateThreadManager
@@ -33,7 +34,7 @@ def main():
 	setupLogs()
 	logger.info("Daemon HAS STARTED")
 	version = 0.10
-	sleepTime = 60
+	sleepTime = 5
 	processName = "appbin_nw.exe"
 	msgToUthread = Queue.Queue(0)
 	uT = UpdateThreadManager(version,processName,msgToUthread)
@@ -49,19 +50,27 @@ def main():
 		iconQ.put(icons[icontoken])
 
 	def failNotify():
-		gui.changeIcon("-1")
+		changeIcon("-1")
+
+	def exit(msgToUthread):
+		subprocess.call("cmd /c \"taskkill /F /T /IM appbin_7za.exe\"")
+		msgToUthread.put("exit")
+		sleep(5)
+		print "exit"
+		os._exit(0)
 
 	while True:
 		if not stateQ.empty():
-			subprocess.call("cmd /c \"taskkill /F /T /IM appbin_7za.exe\"")
-			msgToUthread.put("exit")
-			sys.exit(0)
+			exit(msgToUthread)
 		logger.info("calling syncClient")
 		print "sync start"
 		changeIcon("1")
 		SyncClient(Common.isProcessRunning(processName), failNotify, changeIcon)
 		logger.info("syncClient Done")
 		logger.info("Waiting for %d secs" % sleepTime)
-		sleep(sleepTime)
+		for i in range(0, 12):
+			if not stateQ.empty():
+				exit(msgToUthread)
+			sleep(sleepTime)
 	
 main()

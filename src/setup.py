@@ -18,10 +18,10 @@ py2exe_options = dict(
 
 setup(
       
-    windows = [{
+    console = [{
                 "version" : "0.1",
                 "script": "src/appbin_daemon.py",    
-                "icon_resources": [(0, "src/appbin.ico")],
+                "icon_resources": [(0, "src/1.ico")],
                 "description" : "Appbin sync daemon",
                 "name" : "Appbin sync daemon",
                 'comments': 'This daemon handles syncing and updating of apps.',

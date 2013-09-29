@@ -3,7 +3,6 @@ import os
 import shutil
 import sys
 import Queue
-import threading
 import time
 import ConfigParser
 from time import gmtime, strftime
@@ -41,21 +40,17 @@ class SyncClient:
 
 		try:
 			#system paths
-			self.userProfile = os.getenv("USERPROFILE")
-			self.appbinRoot = os.getenv("APPDATA")+ "\\appbin"
-			self.cDrive = "C:"
-			self.programFiles86 = os.getenv("programfiles(x86)")
-			self.programFiles = os.getenv("ProgramW6432")
+			self.appbinRoot = os.path.abspath("../")
 
 			#Appbin data
 			self.rdir_config = "../data"
-			self.adir_config = self.createPath(os.path.abspath(self.rdir_config))
-			self.afile_configIni = "%s\\config.ini" % self.adir_config
-			self.afile_machineIni = "%s\\machine.ini" % self.adir_config
-			self.afile_dirsIni = "%s\\appDirs.ini" % self.adir_config
+			self.adir_config = Common.createPath(os.path.abspath(self.rdir_config))
+			self.afile_configIni = "%s/config.ini" % self.adir_config
+			self.afile_machineIni = "%s/machine.ini" % self.adir_config
+			self.afile_dirsIni = "%s/appDirs.ini" % self.adir_config
 
 			self.rdir_temp = self.rdir_config + "/temp"
-			self.adir_temp = self.createPath(os.path.abspath(self.rdir_temp))
+			self.adir_temp = Common.createPath(os.path.abspath(self.rdir_temp))
 
 			self.rdir_bin = "./bin"
 
@@ -64,7 +59,7 @@ class SyncClient:
 			self.rdir_remote_old = "old"
 		except:
 			self.failNotify()
-			logger.exception("exception in creating synclient init")
+			self.logger.exception("exception in creating synclient init")
 			return
 
 		#temporarily adding binaries to path
@@ -119,7 +114,7 @@ class SyncClient:
 				if self.cfg.has_option("main", "name") and len(self.cfg.get("main", "name")) > 4  : # assuming email > 4 chars
 					self.username = self.cfg.get("main", "name")
 					self.logger.info("current user is" + self.username)
-					self.userAppDataRoot= self.appbinRoot + "\\data\\" + self.username
+					self.userAppDataRoot= self.appbinRoot + "/data/" + self.username
 				else:
 					self.logger.warning("no username in config")
 					isConfigIniOk = False
@@ -291,7 +286,7 @@ class SyncClient:
 
 	#fileSystem methods
 	def dirToLocalPath(self,x):
-		return (eval("self."+x[0])+"\\"+x[1]).lower()
+		return (eval("self."+x[0])+"/"+x[1]).replace("\\","/")
 
 	def prepareToExit(self):
 		#self.isReadyToExit = True
@@ -299,17 +294,4 @@ class SyncClient:
 		self.logger.info("Sync Over.")
 		for q in self.Qs:
 			q.put(Common.exitMsg)
-
-
-	def createPath(self,x):
-		if x == "":
-			return x
-		y = x
-		while y[-1] == "\\":
-			y = y[:-1]
-		if not os.access(y, os.F_OK):
-			self.createPath(y[:y.rfind("\\")])
-			os.mkdir(y)
-
-		return x
 

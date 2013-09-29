@@ -1,5 +1,6 @@
 import shutil
 import os
+import platform
 import hashlib
 import Common
 import Queue
@@ -60,7 +61,10 @@ class UpdateThreadManager:
 					os._exit(0)
 		
 				self.logger.info(self.name+": None found")
-				sleep(3600)
+				for i in range(0,720):
+					if not self.msgThread.empty():
+						return
+					sleep(5)
 			except:
 				self.logger.exception("error in updater")
 				return
@@ -77,7 +81,7 @@ class AppThreadManager:
 		self.name = "App"
 
 		self.appQ = self.mainObj.newQ()
-		#self.unZipQ = self.mainObj.newQ()\
+		#self.unZipQ = self.mainObj.newQ()
 
 		self.t = threading.Thread(target=self.appThread)
 		self.t.start()
@@ -99,8 +103,8 @@ class AppThreadManager:
 		try:
 			if not isinstance(obj,dict):
 				logging.info(obj + " started")
-				obj = {"app":obj,"temp": self.mainObj.createPath(self.adir_appTemp(obj))}
-				obj["appIni"] = "%s\\app.ini" % obj["temp"]
+				obj = {"app":obj,"temp": Common.createPath(self.adir_appTemp(obj))}
+				obj["appIni"] = "%s/app.ini" % obj["temp"]
 				obj["isSuccessful"] = True
 
 			self.appQ.put([obj,msg])
@@ -112,7 +116,7 @@ class AppThreadManager:
 		while True:
 			x = self.appQ.get()
 			if Common.isExitMsg(x):
-				break
+				return
 
 			appEntry = x[0]
 			msg = x[1]
@@ -250,7 +254,7 @@ class AppThreadManager:
 			appEntry["isSuccessful"] = False
 
 	def adir_appTemp(self, app):
-		return self.mainObj.adir_temp + "\\" + app
+		return self.mainObj.adir_temp + "/" + app
 
 	def onFinishApp(self,appEntry):
 		print appEntry["app"] + " " + str(appEntry["isSuccessful"])
@@ -270,7 +274,7 @@ class ZipThreadManager:
 		self.name = "Zipper"
 
 		self.zipQ = self.mainObj.newQ()
-		#self.unZipQ = self.mainObj.newQ()\
+		#self.unZipQ = self.mainObj.newQ()
 
 		self.t = threading.Thread(target=self.zipperThread)
 		self.t.start()
@@ -279,18 +283,23 @@ class ZipThreadManager:
 	def addEntry(self,dirEntry):
 		adir_local = self.mainObj.dirToLocalPath(dirEntry["dir"])
 		azip_name = "dir%d.7z" % dirEntry["dirIndex"]
-		azip_local = "%s\\%s" % (dirEntry["appEntry"]["temp"] , azip_name)
+		azip_local = "%s/%s" % (dirEntry["appEntry"]["temp"] , azip_name)
 
 		dirEntry["adir_local"] = adir_local
 		dirEntry["azip_name"] = azip_name
 		dirEntry["azip_local"] = azip_local
 
+		if platform.system() == 'Linux':
+			zip_exe = "bin/appbin_7za"
+		else:
+			zip_exe = "appbin_7za"
+
 		if(dirEntry["zipDirection"] == "up"): #dir -> 7zip
-			zipCmd = "appbin_7za a -t7z \"%s\" \"%s\\*\" -mx3" % (azip_local, adir_local)
+			zipCmd = "%s a -t7z %s %s/* -mx3" % (zip_exe, azip_local, adir_local)
 			dirEntry["zipCmd"] = zipCmd
 		else:
 			
-			zipCmd = "appbin_7za x -y \"%s\" -o\"%s\" -mmt=on" % (azip_local, adir_local)
+			zipCmd = "%s x -y %s -o%s -mmt=on" % (zip_exe, azip_local, adir_local)
 			dirEntry["zipCmd"] = zipCmd
 
 		self.zipQ.put(dirEntry)
@@ -300,17 +309,22 @@ class ZipThreadManager:
 			try:
 				x = self.zipQ.get()
 				if Common.isExitMsg(x):
-					break
+					return
 
 				dirEntry = x
 				#enable below lines when sync is done per app
 				"""if dirEntry["zipDirection"] == "down":
 					shutil.rmtree(dirEntry["adir_local"],True) # delete target first"""
 				
-				startupinfo = subprocess.STARTUPINFO()
-				startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-				startupinfo.wShowWindow = subprocess.SW_HIDE
-				subprocess.call(dirEntry["zipCmd"],startupinfo=startupinfo )
+				if platform.system() == 'Linux':
+					exe = dirEntry["zipCmd"].split(" ")
+					print exe
+					subprocess.call(exe)
+				else:
+					startupinfo = subprocess.STARTUPINFO()
+					startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+					startupinfo.wShowWindow = subprocess.SW_HIDE
+					subprocess.call(dirEntry["zipCmd"],startupinfo=startupinfo )
 				self.logger.info(dirEntry["zipCmd"] + " excuted")
 				self.onFinishEntry(dirEntry)
 			except:
@@ -354,9 +368,10 @@ class HashThreadManager:
 			try:
 				x = self.hashQ.get()
 				if Common.isExitMsg(x):
-					break
+					return
 				dirEntry = x
 				#hasher = hashlib.md5()
+				print dirEntry["azip_local"]
 				f = open(dirEntry["azip_local"],"r")
 				#hasher.update(f.read())
 				dirEntry["digest"] = str(self.hasher(f.read()))
@@ -401,7 +416,7 @@ class FtpThreadManager:
 		while True:
 			x = self.ftpQ.get()
 			if Common.isExitMsg(x):
-				break
+				return
 			dirEntry = x
 			if (dirEntry["appEntry"]["direction"] == "up"):
 				dirEntry["adir_remote"] = "%s/%s" % (dirEntry["appEntry"]["app"], self.mainObj.rdir_remote_temp)
