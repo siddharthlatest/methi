@@ -111,8 +111,8 @@ class SyncClient:
 				self.cfg = ConfigParser.SafeConfigParser()
 				self.cfg.read(self.afile_configIni)
 				
-				if self.cfg.has_option("main", "name") and len(self.cfg.get("main", "name")) > 4  : # assuming email > 4 chars
-					self.username = self.cfg.get("main", "name")
+				if self.cfg.has_option("main", "email") and len(self.cfg.get("main", "email")) > 4  : # assuming email > 4 chars
+					self.username = self.cfg.get("main", "email")
 					self.logger.info("current user is" + self.username)
 					self.userAppDataRoot= self.appbinRoot + "/data/" + self.username
 				else:
