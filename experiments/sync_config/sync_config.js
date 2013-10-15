@@ -10,7 +10,7 @@ module.exports = function(cfgF){
 	var syncToFile = function(){
 		fs.exists(cfgFile,function(exists){
 			
-			if(!exists){
+			if(exists){
 				parser.load(cfgFile);
 			}
 			
