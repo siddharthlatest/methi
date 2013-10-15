@@ -1,15 +1,21 @@
 
-cmd = process.env.windir+"/system32/cscript.exe";
-console.log("cmd is "+ cmd);
-arg0 = "shortcut.vbs"
-arg1 = "angrybirds";
-arg2 = "AngryBirds";
-arg3 = "yo";
 
+var createShortcuts = function (app,shortcutName,description){
+	cmd = process.env.windir+"/system32/cscript.exe";// don not change
+	newShortcut = "NewShortcut.vbs" //vbs file for new shortcut (full path needed)
+	pinItem = "PinItem.vbs" //vbs file to pin items(full path needed)
+	var spawn = require('child_process').spawn;
+	
+	temp = process.env.TMP + "\\" + shortcutName + ".lnk"
+	startMenu= process.env.USERPROFILE + "\\Start Menu\\Programs" +"\\" + shortcutName + ".lnk"
+	console.log(startMenu)
+	
+	spawn(cmd, [newShortcut,app,temp,description],{ detached: true} );
+	spawn(cmd, [newShortcut,app,startMenu,description],{ detached: true} );
+	spawn(cmd, [pinItem,"/item:"+temp,"/taskbar"],{ detached: true} );
+	
+	
+	
+}
 
-var spawn = require('child_process').spawn,
-ls = spawn(cmd, [arg0,arg1,arg2,arg3],{ detached: true} );
-
-ls.on('close', function (code) {
-  console.log('Icon Created' + code);
-});									
+createShortcuts("cut_the_rope","Cut the ROpe","it rocks")

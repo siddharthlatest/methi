@@ -17,9 +17,6 @@ from SimpleXMLRPCServer import SimpleXMLRPCServer
 import urllib2
 import urllib
 
-runningApps = []
-appsToSync = []
-
 class AppRunnerThreadManager:
 	def __init__(self,version,pN,msgToUthread):
 		self.name = "AppRunner"
@@ -33,8 +30,6 @@ class AppRunnerThreadManager:
 		
 		
 	def appRunnerThread(self):
-		global runningApps
-		global appsToSync
 		class rpcExposed:
 		    def newApp(self, app,cmd,arg1,arg2):
 				print "Calling app %s, %s, %s, %s" % (app,cmd,arg1,arg2)
@@ -43,12 +38,12 @@ class AppRunnerThreadManager:
 				return  "called :%s" % app 
 		
 		def appFinish(app):
-			runningApps.remove(app)
-			appsToSync.append(app)
+			Common.appsRunning.remove(app)
+			Common.appsToSync.append(app)
 			print "Finished app:%s" % app
 				
 		def newAppThread(app,cmd,arg1,arg2):
-			runningApps.append(app)
+			Common.appsRunning.append(app)
 			subprocess.call([cmd,arg1,arg2])
 			appFinish(app)
 		
@@ -186,13 +181,26 @@ class AppThreadManager:
 
 	def newApp(self,appEntry):
 		app = appEntry["app"]
-		if not self.mainObj.isAppsOverridden:
-			dirs = self.getAppLocalDirs(appEntry)
-		else:
+		if app in Common.appsRunning:
+			return
+		
+		if self.mainObj.isAppsOverridden:
 			dirs = self.mainObj.appsDir[appEntry["app"]]
 			dirs = [dir.split(",") for dir in dirs if dir != ""]
 			
+		elif self.mainObj.isOnlyWebApps :
+			dirs = [["userAppDataRoot",appEntry["app"]]]
+		
+		else:
+			dirs = self.getAppLocalDirs(appEntry)
+			
+			
+			
 		appEntry["direction"], appEntry["appCfg"] = self.decideDirection(appEntry)
+		
+		if appEntry["direction"] == "up" and app not in Common.appsToSync:
+			return
+		
 		appEntry["nRemainDirs"] = len(dirs)
 		appEntry["isHashChanged"] = False
 		appEntry["isDownStopped"] = False

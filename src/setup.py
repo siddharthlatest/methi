@@ -7,7 +7,7 @@ import sys
 sys.path.append("C:\\Program Files (x86)\\Microsoft Visual Studio 9.0\\VC\\redist\\x86\\Microsoft.VC90.CRT")
 py2exe_options = dict(
                     #ascii= 1,
-                    bundle_files=1,
+                    bundle_files=3,
 				    compressed=1,
 					optimize=2,
                     #includes=['_scproxy', '_sysconfigdata'], 

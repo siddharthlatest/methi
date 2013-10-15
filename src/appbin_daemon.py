@@ -39,7 +39,8 @@ def main():
 	msgToUthread = Queue.Queue(0)
 	uT = UpdateThreadManager(version,processName,msgToUthread)
 	aRT = AppRunnerThreadManager(version,processName,msgToUthread)
-
+	
+	
 	stateQ = Queue.Queue(0)
 
 	icons = { "1":"1.ico", "2":"2.ico", "3":"3.ico", "-1":"-1.ico", "0":"0.ico" }

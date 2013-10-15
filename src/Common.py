@@ -18,6 +18,8 @@ lockedMsg = "Locked"
 stopMsg = "Stop"
 exitMsg = "Exit"
 
+appsToSync = []
+appsRunning = []
 
 def createPath(x):
 	print x

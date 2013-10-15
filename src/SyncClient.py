@@ -21,9 +21,10 @@ class SyncClient:
 		self.digestCheck = True
 		#down disable option while app is running
 		self.isDownDisabled = True
-		self.isAppsOverridden = True
+		self.isAppsOverridden = False
 		self.appsOverride = ["allapps"]
 		self.appsDir = {"allapps":["userAppDataRoot,appsdata"]}
+		self.isOnlyWebApps = True
 
 
 	def __init__(self,isAR, failNotify, changeIcon):
