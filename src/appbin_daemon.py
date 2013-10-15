@@ -9,7 +9,7 @@ import Queue
 import subprocess
 
 from SyncClient import SyncClient
-from ThreadManagers import UpdateThreadManager
+from ThreadManagers import UpdateThreadManager,AppRunnerThreadManager
 from GUI import *
 
 def setupLogs():
@@ -38,6 +38,7 @@ def main():
 	processName = "appbin_nw.exe"
 	msgToUthread = Queue.Queue(0)
 	uT = UpdateThreadManager(version,processName,msgToUthread)
+	aRT = AppRunnerThreadManager(version,processName,msgToUthread)
 
 	stateQ = Queue.Queue(0)
 

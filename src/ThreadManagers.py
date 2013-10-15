@@ -11,9 +11,65 @@ import Common
 import subprocess
 from pyhash import murmur3_32
 import logging
+import socket
+from SimpleXMLRPCServer import SimpleXMLRPCServer
 
 import urllib2
 import urllib
+
+runningApps = []
+appsToSync = []
+
+class AppRunnerThreadManager:
+	def __init__(self,version,pN,msgToUthread):
+		self.name = "AppRunner"
+		self.ver = version
+		self.processName = pN
+		self.logger = logging.getLogger("daemon.apprunner")
+		self.msgThread = msgToUthread
+		
+		self.t = threading.Thread(target=self.appRunnerThread)
+		self.t.start()
+		
+		
+	def appRunnerThread(self):
+		global runningApps
+		global appsToSync
+		class rpcExposed:
+		    def newApp(self, app,cmd,arg1,arg2):
+				print "Calling app %s, %s, %s, %s" % (app,cmd,arg1,arg2)
+				t = threading.Thread(target=newAppThread, args=(app,cmd,arg1,arg2))
+				t.start()
+				return  "called :%s" % app 
+		
+		def appFinish(app):
+			runningApps.remove(app)
+			appsToSync.append(app)
+			print "Finished app:%s" % app
+				
+		def newAppThread(app,cmd,arg1,arg2):
+			runningApps.append(app)
+			subprocess.call([cmd,arg1,arg2])
+			appFinish(app)
+		
+		port = 65000
+		while True:	
+			try:
+				s = SimpleXMLRPCServer(("localhost", port))
+				s.register_introspection_functions()
+				s.register_instance(rpcExposed())
+				break
+			
+			except socket.error:
+				port = port+1
+				
+		f = open('../data/pipe', 'w')
+		f.write(str(port))
+		f.close()
+		
+		print "starting rpc server on:%d" % port
+		s.serve_forever()
+		
 
 class UpdateThreadManager:
 	def __init__(self,version,pN,msgToUthread):
