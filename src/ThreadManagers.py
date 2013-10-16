@@ -202,7 +202,7 @@ class AppThreadManager:
 			return
 		
 		appEntry["nRemainDirs"] = len(dirs)
-		appEntry["isHashChanged"] = False
+		appEntry["isHashChanged"] = True
 		appEntry["isDownStopped"] = False
 
 		n = len(dirs)

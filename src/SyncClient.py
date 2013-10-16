@@ -18,9 +18,8 @@ import Common
 class SyncClient:
 	
 	def initBuildParams(self):
-		self.digestCheck = True
-		#down disable option while app is running
-		self.isDownDisabled = True
+		self.digestCheck = False
+		self.isDownDisabled = False #disable down while appbin_nw is running
 		self.isAppsOverridden = False
 		self.appsOverride = ["allapps"]
 		self.appsDir = {"allapps":["userAppDataRoot,appsdata"]}
@@ -241,7 +240,11 @@ class SyncClient:
 		if thread == self.zipT.name:
 			if msg == Common.finishMsg:
 				if payLoad["zipDirection"] == "up":
-					self.hashT.addEntry(payLoad)
+					if(self.digestCheck):
+						self.hashT.addEntry(payLoad)
+					else:
+						self.ftpT.addEntry(payLoad)
+						
 				elif payLoad["zipDirection"] == "down":
 					self.appT.notifyDirFinish(payLoad)
 
@@ -258,7 +261,7 @@ class SyncClient:
 				payLoad["appEntry"]["appCfg"].set("Digest","Dir%d" % payLoad["dirIndex"], ",".join(payLoad["dir"]))
 				payLoad["appEntry"]["appCfg"].set("Digest","Dir%d_Hash" % payLoad["dirIndex"] , payLoad["digest"])
 
-				if orgDigest != payLoad["digest"] or (not self.digestCheck):
+				if orgDigest != payLoad["digest"]:
 					payLoad["appEntry"]["isHashChanged"] = True
 					self.logger.info("%s %d %s %s %s digest has changed" % (payLoad["appEntry"]["app"],payLoad["dirIndex"],payLoad["dir"],orgDigest,payLoad["digest"]) )
 					self.ftpT.addEntry(payLoad)
