@@ -13,6 +13,8 @@ from pyhash import murmur3_32
 import logging
 import socket
 from SimpleXMLRPCServer import SimpleXMLRPCServer
+import datetime
+import analytics
 
 import urllib2
 import urllib
@@ -40,10 +42,18 @@ class AppRunnerThreadManager:
 		def appFinish(app):
 			Common.appsRunning.remove(app)
 			Common.appsToSync.append(app)
+			#Tracking Code
+			currentTime = datetime.datetime.now()
+			analytics.track(user_id=email_id, event="app closed", timestamp=currentTime, properties={"name":app})
+			###
 			print "Finished app:%s" % app
 				
 		def newAppThread(app,cmd,arg1,arg2):
 			Common.appsRunning.append(app)
+			#Tracking Code
+			currentTime = datetime.datetime.now()
+			analytics.track(user_id=email_id, event="app opened", timestamp=currentTime, properties={"name":app})
+			###
 			subprocess.call([cmd,arg1,arg2])
 			appFinish(app)
 		
