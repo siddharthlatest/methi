@@ -14,7 +14,8 @@ import logging
 import socket
 from SimpleXMLRPCServer import SimpleXMLRPCServer
 import datetime
-import analytics
+#import analytics
+import json
 
 import urllib2
 import urllib
@@ -33,29 +34,34 @@ class AppRunnerThreadManager:
 		
 	def appRunnerThread(self):
 		class rpcExposed:
-		    def newApp(self, app,cmd,arg1,arg2):
-				print "Calling app %s, %s, %s, %s" % (app,cmd,arg1,arg2)
-				t = threading.Thread(target=newAppThread, args=(app,cmd,arg1,arg2))
+		    def newApp(self, appArgsJson):
+				appArgs = json.loads(json.dumps(appArgsJson))
+				#print "Calling: ", appArgs
+				t = threading.Thread(target=newAppThread, args=(appArgs,))
 				t.start()
-				return  "called :%s" % app 
+				return  "called :%s" % appArgs["app"] 
 		
 		def appFinish(app):
 			Common.appsRunning.remove(app)
 			Common.appsToSync.append(app)
 			#Tracking Code
 			currentTime = datetime.datetime.now()
-			analytics.track(user_id=email_id, event="app closed", timestamp=currentTime, properties={"name":app})
+			#analytics.track(user_id=email_id, event="app closed", timestamp=currentTime, properties={"name":app})
 			###
 			print "Finished app:%s" % app
 				
-		def newAppThread(app,cmd,arg1,arg2):
-			Common.appsRunning.append(app)
+		def newAppThread(appArgs):
+			print appArgs
+			Common.appsRunning.append(appArgs["app"])
 			#Tracking Code
 			currentTime = datetime.datetime.now()
-			analytics.track(user_id=email_id, event="app opened", timestamp=currentTime, properties={"name":app})
+			#analytics.track(user_id=email_id, event="app opened", timestamp=currentTime, properties={"name":app})
 			###
-			subprocess.call([cmd,arg1,arg2])
-			appFinish(app)
+			if (appArgs["isOnline"]):
+				subprocess.call([appArgs["cmd"],appArgs["appPath"],appArgs["url"],appArgs["title"],appArgs["dataPath"],"--no-toolbar"])
+			else:
+				subprocess.call([appArgs["cmd"],appArgs["appPath"],appArgs["dataPath"],"--no-toolbar"])
+			appFinish(appArgs["app"])
 		
 		port = 65000
 		while True:	

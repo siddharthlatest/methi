@@ -9,7 +9,7 @@ from time import gmtime, strftime
 import urllib2
 import urllib
 import logging
-import analytics
+#import analytics
 
 from ThreadManagers import *
 from FTPconnection import FTPconnection
@@ -77,7 +77,7 @@ class SyncClient:
 			self.syncNow()
 
 		#Identifying User
-		analytics.identify(user_id='019mr8mf4r', traits={ "email" : self.username, "numberOfApps" : len(self.apps) } )
+		#analytics.identify(user_id='019mr8mf4r', traits={ "email" : self.username, "numberOfApps" : len(self.apps) } )
 		###
 			
 	def initQnThread(self):

@@ -7,7 +7,7 @@ import logging
 import wx
 import Queue
 import subprocess
-import analytics
+#import analytics
 
 from SyncClient import SyncClient
 from ThreadManagers import UpdateThreadManager,AppRunnerThreadManager
@@ -42,7 +42,7 @@ def main():
 	aRT = AppRunnerThreadManager(version,processName,msgToUthread)
 
 	#Initializing Analytics
-	analytics.init('7t3rlzfnqpu3zzfl4yz3')
+	#analytics.init('7t3rlzfnqpu3zzfl4yz3')
 	###	
 	
 	stateQ = Queue.Queue(0)
