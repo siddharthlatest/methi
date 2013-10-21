@@ -9,7 +9,6 @@ from time import gmtime, strftime
 import urllib2
 import urllib
 import logging
-import analytics
 
 from ThreadManagers import *
 from FTPconnection import FTPconnection
@@ -19,15 +18,16 @@ import Common
 class SyncClient:
 	
 	def initBuildParams(self):
-		self.digestCheck = False
-		self.isDownDisabled = False #disable down while appbin_nw is running
+		self.digestCheck = True
+		#down disable option while app is running
+		self.isDownDisabled = True
 		self.isAppsOverridden = False
 		self.appsOverride = ["allapps"]
 		self.appsDir = {"allapps":["userAppDataRoot,appsdata"]}
 		self.isOnlyWebApps = True
 
 
-	def __init__(self,isAR, failNotify, changeIcon):
+	def __init__(self,isAR, failNotify, changeIcon, analytics):
 		self.isAppRunning = isAR
 		self.name = "Main" #thread name
 		self.failNotify = failNotify
@@ -77,7 +77,9 @@ class SyncClient:
 			self.syncNow()
 
 		#Identifying User
-		analytics.identify(user_id='019mr8mf4r', traits={ "email" : self.username, "numberOfApps" : len(self.apps) } )
+		##Change this unknown to username read from config file IMPORTANT
+		props = { "numOfApps":len(self.apps) }
+		analytics.identify(self.username, "unknown", properties=props)
 		###
 			
 	def initQnThread(self):
@@ -245,11 +247,7 @@ class SyncClient:
 		if thread == self.zipT.name:
 			if msg == Common.finishMsg:
 				if payLoad["zipDirection"] == "up":
-					if(self.digestCheck):
-						self.hashT.addEntry(payLoad)
-					else:
-						self.ftpT.addEntry(payLoad)
-						
+					self.hashT.addEntry(payLoad)
 				elif payLoad["zipDirection"] == "down":
 					self.appT.notifyDirFinish(payLoad)
 
@@ -266,7 +264,7 @@ class SyncClient:
 				payLoad["appEntry"]["appCfg"].set("Digest","Dir%d" % payLoad["dirIndex"], ",".join(payLoad["dir"]))
 				payLoad["appEntry"]["appCfg"].set("Digest","Dir%d_Hash" % payLoad["dirIndex"] , payLoad["digest"])
 
-				if orgDigest != payLoad["digest"]:
+				if orgDigest != payLoad["digest"] or (not self.digestCheck):
 					payLoad["appEntry"]["isHashChanged"] = True
 					self.logger.info("%s %d %s %s %s digest has changed" % (payLoad["appEntry"]["app"],payLoad["dirIndex"],payLoad["dir"],orgDigest,payLoad["digest"]) )
 					self.ftpT.addEntry(payLoad)

@@ -7,7 +7,7 @@ import logging
 import wx
 import Queue
 import subprocess
-import analytics
+from analytics import Analytics
 
 from SyncClient import SyncClient
 from ThreadManagers import UpdateThreadManager,AppRunnerThreadManager
@@ -32,6 +32,10 @@ def main():
 	if Common.numOfProcessRunning("appbin_daemon.exe") > 1:
 		sys.exit() #exit if another daemon already running"""
 
+	#Initializing Analytics
+	analytics = Analytics()
+	###
+
 	setupLogs()
 	logger.info("Daemon HAS STARTED")
 	version = 0.10
@@ -39,11 +43,7 @@ def main():
 	processName = "appbin_nw.exe"
 	msgToUthread = Queue.Queue(0)
 	uT = UpdateThreadManager(version,processName,msgToUthread)
-	aRT = AppRunnerThreadManager(version,processName,msgToUthread)
-
-	#Initializing Analytics
-	analytics.init('7t3rlzfnqpu3zzfl4yz3')
-	###	
+	aRT = AppRunnerThreadManager(version,processName,msgToUthread,analytics)	
 	
 	stateQ = Queue.Queue(0)
 
@@ -59,6 +59,7 @@ def main():
 		changeIcon("-1")
 
 	def exit(msgToUthread):
+		analytics.finish()
 		subprocess.call("cmd /c \"taskkill /F /T /IM appbin_7za.exe\"")
 		msgToUthread.put("exit")
 		sleep(5)
@@ -71,7 +72,7 @@ def main():
 		logger.info("calling syncClient")
 		print "sync start"
 		changeIcon("1")
-		SyncClient(Common.isProcessRunning(processName), failNotify, changeIcon)
+		SyncClient(Common.isProcessRunning(processName), failNotify, changeIcon, analytics)
 		logger.info("syncClient Done")
 		logger.info("Waiting for %d secs" % sleepTime)
 		for i in range(0, 12):
