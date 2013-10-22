@@ -18,9 +18,9 @@ import Common
 class SyncClient:
 	
 	def initBuildParams(self):
-		self.digestCheck = True
+		self.digestCheck = False
 		#down disable option while app is running
-		self.isDownDisabled = True
+		self.isDownDisabled = False
 		self.isAppsOverridden = False
 		self.appsOverride = ["allapps"]
 		self.appsDir = {"allapps":["userAppDataRoot,appsdata"]}
