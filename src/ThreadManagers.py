@@ -8,13 +8,16 @@ import threading
 import ConfigParser
 from time import gmtime, strftime,sleep
 import Common
-import subprocess
+from subprocess import Popen
 from pyhash import murmur3_32
 import logging
 import socket
 from SimpleXMLRPCServer import SimpleXMLRPCServer
 import datetime
 import json
+if not platform.system() == "Linux":
+	import win32gui
+	import win32process
 
 import urllib2
 import urllib
@@ -44,34 +47,45 @@ class AppRunnerThreadManager:
 			Common.appsRunning.remove(app)
 			Common.appsToSync.append(app)
 			#Tracking Code
-			analytics.track(user_id=email_id, event="app closed", properties={"name":app})
+			analytics.track(event="app closed", properties={"name":app})
 			###
 			print "Finished app:%s" % app
+			
+		def handleWindow(appprocess):
+			sleep(4)
+			foreground = win32process.GetWindowThreadProcessId(win32gui.GetForegroundWindow())[0]
+
+			for hwnd in Common.get_hwnds_for_pid (appprocess.pid):
+				wanted = win32process.GetWindowThreadProcessId(hwnd)[0]
+				print foreground,wanted
+				if not foreground == wanted:
+					win32process.AttachThreadInput(foreground, wanted, True);
+					win32gui.BringWindowToTop(hwnd)
+					win32gui.ShowWindow(hwnd, 5)
+					win32gui.SetActiveWindow(hwnd)
+					win32process.AttachThreadInput(foreground, wanted, False);
+				else:
+					win32gui.BringWindowToTop(hwnd)
+					win32gui.ShowWindow(hwnd, 5)
+					win32gui.SetActiveWindow(hwnd)
+			
 				
 		def newAppThread(appArgs):
 			print appArgs
 			Common.appsRunning.append(appArgs["app"])
 			#Tracking Code
-			analytics.track(user_id=email_id, event="app opened", properties={"name":app})
+			analytics.track(event="app opened", properties={"name":appArgs["app"]})
 			###
 			if (appArgs["isOnline"]):
-				try:
-					appprocess = Popen([appArgs["cmd"],appArgs["appPath"],appArgs["url"],appArgs["title"],appArgs["dataPath"],"--no-toolbar"])
-					sleep(1)
-
-					for hwnd in Common.get_hwnds_for_pid (appprocess.pid):
-						win32gui.SendMessage (hwnd, win32con.SW_SHOW, 0, 0)
-				except:
-					pass
+				appprocess = Popen([appArgs["cmd"],appArgs["appPath"],appArgs["url"],appArgs["title"],appArgs["dataPath"],"--no-toolbar"])
+				handleWindow(appprocess)
+				appprocess.wait()
+				
 			else:
-				try:
-					appprocess = Popen([appArgs["cmd"],appArgs["appPath"],appArgs["dataPath"],"--no-toolbar"])
-					sleep(1)
-
-					for hwnd in Common.get_hwnds_for_pid (appprocess.pid):
-						win32gui.SendMessage (hwnd, win32con.SW_SHOW, 0, 0)
-				except:
-					pass
+				appprocess = Popen([appArgs["cmd"],appArgs["appPath"],appArgs["dataPath"],"--no-toolbar"])
+				handleWindow(appprocess)
+				appprocess.wait()
+			
 			appFinish(appArgs["app"])
 		
 		port = 65000

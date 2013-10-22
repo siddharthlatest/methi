@@ -71,16 +71,20 @@ class SyncClient:
 		#if self.isConfigIniOk and not self.isAppRunning:
 		if self.isConfigIniOk:
 			self.logger.info("begin sync")
+			
+			#Identifying User
+			##Change this unknown to username read from config file IMPORTANT
+			props = { "numOfApps":len(self.apps) }
+			analytics.identify(self.username, self.full_name, properties=props)
+			###
+			
 			netStatus = self.initQnThread()
 			if(netStatus < 0):
 				return
 			self.syncNow()
+			
 
-		#Identifying User
-		##Change this unknown to username read from config file IMPORTANT
-		props = { "numOfApps":len(self.apps) }
-		analytics.identify(self.username, "unknown", properties=props)
-		###
+		
 			
 	def initQnThread(self):
 		#Queues
@@ -118,9 +122,10 @@ class SyncClient:
 				self.cfg = ConfigParser.SafeConfigParser()
 				self.cfg.read(self.afile_configIni)
 				
-				if self.cfg.has_option("main", "email") and len(self.cfg.get("main", "email")) > 4  : # assuming email > 4 chars
+				if self.cfg.has_option("main", "email") and self.cfg.has_option("main", "name") and  len(self.cfg.get("main", "email")) > 4  : # assuming email > 4 chars
 					self.username = self.cfg.get("main", "email")
-					self.logger.info("current user is" + self.username)
+					self.full_name  = self.cfg.get("main", "name")
+					self.logger.info("current user is %s, %s" %(self.full_name,self.username))
 					self.userAppDataRoot= self.appbinRoot + "/data/" + self.username
 				else:
 					self.logger.warning("no username in config")

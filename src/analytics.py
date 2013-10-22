@@ -17,6 +17,7 @@ class Analytics:
 		mp = Mixpanel(mp_project_token)
 		cio = CustomerIO(cio_siteid, cio_apikey)
 		self.storage = deque()
+		self.email_id = None
 		if os.path.isfile(dump_file):
 			analytic_dump = open(dump_file, "rb")
 			self.storage = cPickle.load(analytic_dump)
@@ -62,12 +63,16 @@ class Analytics:
 			else:
 				continue
 
-	def track(self, user_id, event, properties):
-		data = {"job":"track", "user_id":user_id, "event":event, "properties":properties}
+	def track(self, event, properties):
+		if not self.email_id:
+			return
+		data = {"job":"track", "user_id":self.email_id, "event":event, "properties":properties}
 		self.storage.appendleft(data)
 
 	def identify(self, user_id, user_name):
 		data = {"job":"identify", "user_id":user_id, "user_name":user_name}
+		self.email_id = user_id
+		self.fullname = user_name
 		self.storage.appendleft(data)
 
 	def finish(self):
