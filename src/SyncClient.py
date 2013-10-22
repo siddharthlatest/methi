@@ -9,7 +9,6 @@ from time import gmtime, strftime
 import urllib2
 import urllib
 import logging
-#import analytics
 
 from ThreadManagers import *
 from FTPconnection import FTPconnection
@@ -19,15 +18,16 @@ import Common
 class SyncClient:
 	
 	def initBuildParams(self):
-		self.digestCheck = False
-		self.isDownDisabled = False #disable down while appbin_nw is running
+		self.digestCheck = True
+		#down disable option while app is running
+		self.isDownDisabled = True
 		self.isAppsOverridden = False
 		self.appsOverride = ["allapps"]
 		self.appsDir = {"allapps":["userAppDataRoot,appsdata"]}
 		self.isOnlyWebApps = True
 
 
-	def __init__(self,isAR, failNotify, changeIcon):
+	def __init__(self,isAR, failNotify, changeIcon, analytics):
 		self.isAppRunning = isAR
 		self.name = "Main" #thread name
 		self.failNotify = failNotify
@@ -77,7 +77,9 @@ class SyncClient:
 			self.syncNow()
 
 		#Identifying User
-		#analytics.identify(user_id='019mr8mf4r', traits={ "email" : self.username, "numberOfApps" : len(self.apps) } )
+		##Change this unknown to username read from config file IMPORTANT
+		props = { "numOfApps":len(self.apps) }
+		analytics.identify(self.username, "unknown", properties=props)
 		###
 			
 	def initQnThread(self):

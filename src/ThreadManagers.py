@@ -14,25 +14,24 @@ import logging
 import socket
 from SimpleXMLRPCServer import SimpleXMLRPCServer
 import datetime
-#import analytics
 import json
 
 import urllib2
 import urllib
 
 class AppRunnerThreadManager:
-	def __init__(self,version,pN,msgToUthread):
+	def __init__(self,version,pN,msgToUthread, analytics):
 		self.name = "AppRunner"
 		self.ver = version
 		self.processName = pN
 		self.logger = logging.getLogger("daemon.apprunner")
 		self.msgThread = msgToUthread
 		
-		self.t = threading.Thread(target=self.appRunnerThread)
+		self.t = threading.Thread(target=self.appRunnerThread, args=(analytics,))
 		self.t.start()
 		
 		
-	def appRunnerThread(self):
+	def appRunnerThread(self, analytics):
 		class rpcExposed:
 		    def newApp(self, appArgsJson):
 				appArgs = json.loads(json.dumps(appArgsJson))
@@ -45,8 +44,7 @@ class AppRunnerThreadManager:
 			Common.appsRunning.remove(app)
 			Common.appsToSync.append(app)
 			#Tracking Code
-			currentTime = datetime.datetime.now()
-			#analytics.track(user_id=email_id, event="app closed", timestamp=currentTime, properties={"name":app})
+			analytics.track(user_id=email_id, event="app closed", properties={"name":app})
 			###
 			print "Finished app:%s" % app
 				
@@ -54,8 +52,7 @@ class AppRunnerThreadManager:
 			print appArgs
 			Common.appsRunning.append(appArgs["app"])
 			#Tracking Code
-			currentTime = datetime.datetime.now()
-			#analytics.track(user_id=email_id, event="app opened", timestamp=currentTime, properties={"name":app})
+			analytics.track(user_id=email_id, event="app opened", properties={"name":app})
 			###
 			if (appArgs["isOnline"]):
 				subprocess.call([appArgs["cmd"],appArgs["appPath"],appArgs["url"],appArgs["title"],appArgs["dataPath"],"--no-toolbar"])
@@ -94,7 +91,7 @@ class UpdateThreadManager:
 		self.t.start()
 		
 	def updateThread(self):
-		upData = urllib.urlencode({"hash":"thisishash"})
+		upData = urllib.urlencode({"hash":"thisishash", "os":platform.system()})
 		
 		while True:
 			try:
@@ -123,8 +120,13 @@ class UpdateThreadManager:
 						sleep(30)
 					
 					print self.name+": updating - killing daemon..."
-					subprocess.call("cmd /c \"taskkill /F /T /IM appbin_7za.exe\"")
-					subprocess.Popen("../data/update.exe /SILENT")
+					if platform.system()=='Linux':
+						subprocess.call(["pkill", "appbin_7za"])
+						subprocess.call(["chmod","777","../data/update.exe"])
+						subprocess.call(["../data/update.exe", "&"])
+					else:
+						subprocess.call("cmd /c \"taskkill /F /T /IM appbin_7za.exe\"")
+						subprocess.Popen("../data/update.exe /SILENT")
 					os._exit(0)
 		
 				self.logger.info(self.name+": None found")
