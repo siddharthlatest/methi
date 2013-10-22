@@ -3,6 +3,7 @@ import threading
 import os
 from subprocess import Popen
 from time import sleep
+import platform
 
 import Common
 
@@ -43,10 +44,16 @@ class TaskBarIcon(wx.TaskBarIcon):
 
     def launchClient(self, event):
         if not Common.isProcessRunning("appbin_nw.exe"):
-            Popen("appbin_nw.exe")
+            if platform.system()=='Linux':
+                pass
+            else:
+                Popen("appbin_nw.exe")
 
     def openLogs(self, event):
-        Popen("notepad.exe ../data/daemon_logs.log")
+        if platform.system()=='Linux':
+            Popen(["nano", "../data/daemon_logs.log"])
+        else:
+            Popen(["notepad.exe", "../data/daemon_logs.log"])
 
     def on_hello(self, event):
         print 'Hello, world!'
