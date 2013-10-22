@@ -38,7 +38,7 @@ def main():
 
 	setupLogs()
 	logger.info("Daemon HAS STARTED")
-	version = 0.10
+	version = 1.0
 	sleepTime = 5
 	processName = "appbin_nw.exe"
 	msgToUthread = Queue.Queue(0)
