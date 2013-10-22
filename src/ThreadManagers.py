@@ -55,9 +55,23 @@ class AppRunnerThreadManager:
 			analytics.track(user_id=email_id, event="app opened", properties={"name":app})
 			###
 			if (appArgs["isOnline"]):
-				subprocess.call([appArgs["cmd"],appArgs["appPath"],appArgs["url"],appArgs["title"],appArgs["dataPath"],"--no-toolbar"])
+				try:
+					appprocess = Popen([appArgs["cmd"],appArgs["appPath"],appArgs["url"],appArgs["title"],appArgs["dataPath"],"--no-toolbar"])
+					sleep(1)
+
+					for hwnd in Common.get_hwnds_for_pid (appprocess.pid):
+						win32gui.SendMessage (hwnd, win32con.SW_SHOW, 0, 0)
+				except:
+					pass
 			else:
-				subprocess.call([appArgs["cmd"],appArgs["appPath"],appArgs["dataPath"],"--no-toolbar"])
+				try:
+					appprocess = Popen([appArgs["cmd"],appArgs["appPath"],appArgs["dataPath"],"--no-toolbar"])
+					sleep(1)
+
+					for hwnd in Common.get_hwnds_for_pid (appprocess.pid):
+						win32gui.SendMessage (hwnd, win32con.SW_SHOW, 0, 0)
+				except:
+					pass
 			appFinish(appArgs["app"])
 		
 		port = 65000
