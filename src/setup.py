@@ -18,7 +18,7 @@ py2exe_options = dict(
 
 setup(
       
-    window = [{
+    console = [{
                 "version" : "0.1",
                 "script": "src/appbin_daemon.py",    
                 "icon_resources": [(0, "src/1.ico")],
