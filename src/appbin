@@ -1,0 +1,2 @@
+#!/bin/sh
+./appbin_nw appbinnw --data-path=/home/$USER/.appbin/data/default

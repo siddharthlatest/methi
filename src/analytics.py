@@ -57,7 +57,7 @@ class Analytics:
 			elif data["job"] == "identify":
 				try:
 					#mp.people_set()
-					cio.identify(id=data["user_id"], email=data["user_id"], name=data["user_name"])
+					cio.identify(id=data["user_id"], email=data["user_id"], name=data["user_name"], **data["properties"])
 				except Exception:
 					storage.append(data)
 			else:
@@ -69,8 +69,8 @@ class Analytics:
 		data = {"job":"track", "user_id":self.email_id, "event":event, "properties":properties}
 		self.storage.appendleft(data)
 
-	def identify(self, user_id, user_name):
-		data = {"job":"identify", "user_id":user_id, "user_name":user_name}
+	def identify(self, user_id, user_name, properties={}):
+		data = {"job":"identify", "user_id":user_id, "user_name":user_name, "properties":properties}
 		self.email_id = user_id
 		self.fullname = user_name
 		self.storage.appendleft(data)

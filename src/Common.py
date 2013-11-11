@@ -2,6 +2,19 @@ import os
 import errno
 import platform
 if platform.system()=='Linux':
+	isLinux = True
+	isWindows = False
+	isMac = False
+elif platform.system()=='Windows':
+	isLinux = False
+	isWindows = True
+	isMac = False
+else:	
+	isLinux = False
+	isWindows = False
+	isMac = True
+
+if platform.system()=='Linux':
 	import subprocess
 else:
 	import win32con

@@ -39,6 +39,7 @@ class AppRunnerThreadManager:
 		    def newApp(self, appArgsJson):
 				appArgs = json.loads(json.dumps(appArgsJson))
 				#print "Calling: ", appArgs
+				appArgs["cmd"] = "./" + appArgs["cmd"]
 				t = threading.Thread(target=newAppThread, args=(appArgs,))
 				t.start()
 				return  "called :%s" % appArgs["app"] 
@@ -78,12 +79,18 @@ class AppRunnerThreadManager:
 			###
 			if (appArgs["isOnline"]):
 				appprocess = Popen([appArgs["cmd"],appArgs["appPath"],appArgs["url"],appArgs["title"],appArgs["dataPath"],"--no-toolbar"])
-				handleWindow(appprocess)
+				if platform.system()=="Linux":
+					pass
+				else:
+					handleWindow(appprocess)
 				appprocess.wait()
 				
 			else:
 				appprocess = Popen([appArgs["cmd"],appArgs["appPath"],appArgs["dataPath"],"--no-toolbar"])
-				handleWindow(appprocess)
+				if platform.system()=="Linux":
+					pass
+				else:
+					handleWindow(appprocess)
 				appprocess.wait()
 			
 			appFinish(appArgs["app"])

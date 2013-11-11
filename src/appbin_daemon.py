@@ -1,3 +1,4 @@
+
 from time import sleep
 import threading
 import sys
@@ -15,10 +16,10 @@ from GUI import *
 
 def setupLogs():
 	Common.createPath(os.path.abspath('../data'))
-	f_print = file('../data/comm_path.txt', 'w',0)
-	f_err = file('../data/error_log.txt', 'a',0)
-	#sys.stderr = f_err
-	#sys.stdout = f_print
+	f_print = file('../data/stdout.txt', 'a',0)
+	f_err = file('../data/stderr.txt', 'a',0)
+	sys.stderr = f_err
+	sys.stdout = f_print
 
 def main():
 	#creating log file and assigning stdout to logfile
@@ -60,7 +61,10 @@ def main():
 
 	def exit(msgToUthread):
 		analytics.finish()
-		subprocess.call("cmd /c \"taskkill /F /T /IM appbin_7za.exe\"")
+		if platform.system()=="Linux":
+			subprocess.call(["pkill", "appbin_7za"])
+		else:
+			subprocess.call("cmd /c \"taskkill /F /T /IM appbin_7za.exe\"")
 		msgToUthread.put("exit")
 		sleep(5)
 		print "exit"
