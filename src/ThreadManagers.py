@@ -253,7 +253,7 @@ class AppThreadManager:
 		appEntry["direction"], appEntry["appCfg"] = self.decideDirection(appEntry)
 
 		if appEntry["direction"] == "up" and app not in Common.appsToSync:
-			onFinishApp(self,appEntry)
+			self.onFinishApp(appEntry)
 			return
 
 		appEntry["nRemainDirs"] = len(dirs)
