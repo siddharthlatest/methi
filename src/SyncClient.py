@@ -126,7 +126,7 @@ class SyncClient:
 					self.username = self.cfg.get("main", "email")
 					self.full_name  = self.cfg.get("main", "name")
 					self.logger.info("current user is %s, %s" %(self.full_name,self.username))
-					self.userAppDataRoot= self.appbinRoot + "/data/" + self.username
+					self.userAppDataRoot= self.appbinRoot + "/data/" + self.username + "/appsdata"
 				else:
 					self.logger.warning("no username in config")
 					isConfigIniOk = False
@@ -231,6 +231,7 @@ class SyncClient:
 
 			if msg == Common.finishMsg:
 				self.nAppsInProcess -= 1
+				print "apps remaining", self.nAppsInProcess
 				if not payLoad["isSuccessful"]:
 					self.successState = False
 

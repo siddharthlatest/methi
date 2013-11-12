@@ -8,6 +8,7 @@ import threading
 import ConfigParser
 from time import gmtime, strftime,sleep
 import Common
+import subprocess
 from subprocess import Popen
 from pyhash import murmur3_32
 import logging
@@ -206,13 +207,15 @@ class AppThreadManager:
 			return
 
 	def addEntry(self,obj,msg):
+		print obj, msg
 		try:
 			if not isinstance(obj,dict):
-				logging.info(obj + " started")
+				self.logger.info(obj + " started")
 				obj = {"app":obj,"temp": Common.createPath(self.adir_appTemp(obj))}
 				obj["appIni"] = "%s/app.ini" % obj["temp"]
 				obj["isSuccessful"] = True
-
+			
+			self.logger.info("putting")
 			self.appQ.put([obj,msg])
 		except:
 			self.logger.exception("error in addEntry")
@@ -221,6 +224,7 @@ class AppThreadManager:
 	def appThread(self):
 		while True:
 			x = self.appQ.get()
+			self.logger.info("getting blah blah")
 			if Common.isExitMsg(x):
 				return
 
@@ -228,6 +232,7 @@ class AppThreadManager:
 			msg = x[1]
 			if(msg == Common.newMsg):
 				self.newApp(appEntry)
+				print appEntry["app"]+"added"
 			elif msg == Common.finalizeMsg:
 				self.finalizeApp(appEntry)
 			else:
@@ -236,6 +241,7 @@ class AppThreadManager:
 
 	def newApp(self,appEntry):
 		app = appEntry["app"]
+		print app
 		if app in Common.appsRunning:
 			return
 		
@@ -243,7 +249,7 @@ class AppThreadManager:
 			dirs = self.mainObj.appsDir[appEntry["app"]]
 			dirs = [dir.split(",") for dir in dirs if dir != ""]
 			
-		elif self.mainObj.isOnlyWebApps :
+		elif self.mainObj.isOnlyWebApps:
 			dirs = [["userAppDataRoot",appEntry["app"]]]
 		
 		else:
@@ -252,10 +258,16 @@ class AppThreadManager:
 			
 		appEntry["direction"], appEntry["appCfg"] = self.decideDirection(appEntry)
 
-		if appEntry["direction"] == "up" and app not in Common.appsToSync:
-			self.onFinishApp(appEntry)
-			return
-
+		print appEntry["direction"]
+		
+		if appEntry["direction"] == "up":
+			if (app not in Common.appsToSync):
+				self.onFinishApp(appEntry)
+				return
+			else:
+				del Common.appsToSync[Common.appsToSync.index(app)]
+		
+		
 		appEntry["nRemainDirs"] = len(dirs)
 		appEntry["isHashChanged"] = True
 		appEntry["isDownStopped"] = False
@@ -343,7 +355,8 @@ class AppThreadManager:
 					direction = cfg.get(self.mainObj.machineId, "nextSyncDirection")
 					if direction == "up":
 						sections = cfg.sections()
-						sections.remove("Digest")
+						if(self.mainObj.digestCheck):
+							sections.remove("Digest")
 						for s in sections:
 							cfg.set(s, "nextSyncDirection", "down")
 
@@ -403,7 +416,9 @@ class ZipThreadManager:
 		adir_local = self.mainObj.dirToLocalPath(dirEntry["dir"])
 		azip_name = "dir%d.7z" % dirEntry["dirIndex"]
 		azip_local = "%s/%s" % (dirEntry["appEntry"]["temp"] , azip_name)
-
+		
+		
+		
 		dirEntry["adir_local"] = adir_local
 		dirEntry["azip_name"] = azip_name
 		dirEntry["azip_local"] = azip_local
@@ -414,11 +429,17 @@ class ZipThreadManager:
 			zip_exe = "appbin_7za"
 
 		if(dirEntry["zipDirection"] == "up"): #dir -> 7zip
-			zipCmd = "%s a -t7z %s %s/* -mx3" % (zip_exe, azip_local, adir_local)
+			if platform.system() == 'Linux':
+				zipCmd = "%s a -t7z %s %s/* -mx3" % (zip_exe, azip_local, adir_local)
+			else:
+				zipCmd = "%s a -t7z \"%s\" \"%s\\*\" -mx3" % (zip_exe, azip_local.replace("/","\\"), adir_local.replace("/","\\"))
 			dirEntry["zipCmd"] = zipCmd
 		else:
 			
-			zipCmd = "%s x -y %s -o%s -mmt=on" % (zip_exe, azip_local, adir_local)
+			if platform.system() == 'Linux':
+				zipCmd = "%s x -y %s -o%s -mmt=on" % (zip_exe, azip_local, adir_local)
+			else:
+				zipCmd = "%s x -y \"%s\" -o\"%s\" -mmt=on" % (zip_exe, azip_local.replace("/","\\"), adir_local.replace("/","\\"))
 			dirEntry["zipCmd"] = zipCmd
 
 		self.zipQ.put(dirEntry)
@@ -431,20 +452,24 @@ class ZipThreadManager:
 					return
 
 				dirEntry = x
-				#enable below lines when sync is done per app
-				"""if dirEntry["zipDirection"] == "down":
-					shutil.rmtree(dirEntry["adir_local"],True) # delete target first"""
 				
-				if platform.system() == 'Linux':
-					exe = dirEntry["zipCmd"].split(" ")
-					print exe
-					subprocess.call(exe)
-				else:
-					startupinfo = subprocess.STARTUPINFO()
-					startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-					startupinfo.wShowWindow = subprocess.SW_HIDE
-					subprocess.call(dirEntry["zipCmd"],startupinfo=startupinfo )
-				self.logger.info(dirEntry["zipCmd"] + " excuted")
+				if(not( (not self.mainObj.digestCheck) and dirEntry["zipDirection"] == "up" and dirEntry["appEntry"]["direction"] == "down") ):
+					#enable below lines when sync is done per app
+					if dirEntry["zipDirection"] == "down":
+						shutil.rmtree(dirEntry["adir_local"],True) # delete target first
+					
+					if platform.system() == 'Linux':
+						exe = dirEntry["zipCmd"].split(" ")
+						print exe
+						subprocess.call(exe)
+					else:
+						startupinfo = subprocess.STARTUPINFO()
+						startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+						startupinfo.wShowWindow = subprocess.SW_HIDE
+						subprocess.call(dirEntry["zipCmd"],startupinfo=startupinfo )
+					self.logger.info(dirEntry["zipCmd"] + " excuted")
+					
+				
 				self.onFinishEntry(dirEntry)
 			except:
 				self.logger.exception("compression or decompression error")
