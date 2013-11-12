@@ -36,14 +36,16 @@ class AppRunnerThreadManager:
 		
 	def appRunnerThread(self, analytics):
 		class rpcExposed:
-		    def newApp(self, appArgsJson):
+			def newApp(self, appArgsJson):
 				appArgs = json.loads(json.dumps(appArgsJson))
 				#print "Calling: ", appArgs
 				appArgs["cmd"] = "./" + appArgs["cmd"]
 				t = threading.Thread(target=newAppThread, args=(appArgs,))
 				t.start()
-				return  "called :%s" % appArgs["app"] 
-		
+				return  "called :%s" % appArgs["app"]
+			def hello(self):
+				return  "hello"
+
 		def appFinish(app):
 			Common.appsRunning.remove(app)
 			Common.appsToSync.append(app)

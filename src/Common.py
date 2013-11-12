@@ -1,6 +1,7 @@
 import os
 import errno
 import platform
+import xmlrpclib
 if platform.system()=='Linux':
 	isLinux = True
 	isWindows = False
@@ -36,6 +37,27 @@ exitMsg = "Exit"
 
 appsToSync = []
 appsRunning = []
+
+def isDaemonAlreadyRunning():
+	try:
+		f = open('../data/pipe', 'r')
+	except:
+		return False
+	
+	port = f.read()
+	f.close()
+	print "trying" + port
+	
+	if (isinstance(port,int)):
+		return False
+	
+	rpc = xmlrpclib.ServerProxy("http://localhost:"+port)
+	try:
+		print rpc.hello()
+		return True
+	except:
+		return False
+	
 
 def createPath(x):
 	print x

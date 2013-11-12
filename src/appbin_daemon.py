@@ -1,8 +1,12 @@
+import Common
+import sys
+
+if(Common.isDaemonAlreadyRunning()):
+	sys.exit()
 
 from time import sleep
 import threading
-import sys
-import Common
+
 import os
 import logging
 import wx
@@ -22,6 +26,8 @@ def setupLogs():
 	sys.stdout = f_print
 
 def main():
+	
+	
 	#creating log file and assigning stdout to logfile
 	logger = logging.getLogger("daemon")
 	logger.setLevel(logging.DEBUG)
@@ -30,9 +36,6 @@ def main():
 	fh.setFormatter(formatter)
 	logger.addHandler(fh)
 	
-	if Common.numOfProcessRunning("appbin_daemon.exe") > 1:
-		sys.exit() #exit if another daemon already running"""
-
 	#Initializing Analytics
 	analytics = Analytics()
 	###
