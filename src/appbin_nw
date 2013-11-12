@@ -1,0 +1,2 @@
+#!/bin/sh
+LD_LIBRARY_PATH=/home/$USER/.appbin/program_files:$LD_LIBRARY_PATH /home/$USER/.appbin/program_files/nw $*

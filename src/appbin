@@ -1,3 +1,2 @@
-#!/bin/sh
-LD_LIBRARY_PATH=/home/$USER/.appbin/program_files:$LD_LIBRARY_PATH ./appbin_nw appbinnw --data-path=/home/$USER/.appbin/data/default
- $*
+#!/bin/bash
+./appbin_nw appbinnw --data-path=/home/$USER/.appbin/data/default

@@ -1,2 +1,2 @@
 #!/bin/sh
-python appbin_daemon.py
+python2 appbin_daemon.py
