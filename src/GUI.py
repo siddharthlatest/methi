@@ -45,7 +45,7 @@ class TaskBarIcon(wx.TaskBarIcon):
     def launchClient(self, event):
         if not Common.isProcessRunning("appbin_nw.exe"):
             if platform.system()=='Linux':
-                pass
+                Popen("./appbin")
             else:
                 Popen("appbin_nw.exe")
 
