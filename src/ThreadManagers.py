@@ -250,12 +250,12 @@ class AppThreadManager:
 			dirs = self.getAppLocalDirs(appEntry)
 			
 			
-			
 		appEntry["direction"], appEntry["appCfg"] = self.decideDirection(appEntry)
-		
+
 		if appEntry["direction"] == "up" and app not in Common.appsToSync:
+			onFinishApp(self,appEntry)
 			return
-		
+
 		appEntry["nRemainDirs"] = len(dirs)
 		appEntry["isHashChanged"] = True
 		appEntry["isDownStopped"] = False
