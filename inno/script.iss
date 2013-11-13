@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Appbin"
-#define MyAppVersion "0.1"
+#define MyAppVersion "0.90"
 #define MyAppPublisher "Appbin Labs Pvt. Lt."
 #define MyAppURL "http://www.getappbin.com/"
 #define MyAppExeName "appbin_nw.exe"
@@ -26,7 +26,7 @@ OutputBaseFilename=setup
 Compression=lzma
 SolidCompression=yes
 ;SourceDir="D:\DOCs\PersonalProjects\AppBin\Inno\0.02\files\appbin"
-SetupIconFile="D:\DOCs\PersonalProjects\AppBin\Inno\0.02\files\appbin\program_files\appbin.ico"
+SetupIconFile="D:\DOCs\PersonalProjects\AppBin\SyncingExp\gitRepo\inno\files\appbin\program_files\appbin.ico"
 
 ;To do
 
@@ -56,6 +56,18 @@ Name: "{userstartmenu}\{#MyAppName}"; Filename: "{#prog}\{#MyAppExeName}";IconFi
 Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar\{#MyAppName}"; Filename: "{#prog}\{#MyAppExeName}";IconFilename: "{#prog}\appbin.ico";IconIndex: 0 ;WorkingDir: "{#dest}\program_files"; Parameters: "appbinnw --data-path=""{#dest}\data\default"""
 Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\{#MyAppName}"; Filename: "{#prog}\{#MyAppExeName}";IconFilename: "{#prog}\appbin.ico";IconIndex: 0 ;WorkingDir: "{#dest}\program_files"; Parameters: "appbinnw --data-path=""{#dest}\data\default"""
 Name: "{userstartup}\Appbin Sync Daemon"; Filename:"{#prog}\appbin_daemon.exe";WorkingDir: "{#prog}"
+ 
+[Code]
+function PrepareToInstall(var NeedsRestart: Boolean): String;
+var
+  Params: string;
+  ResultCode: Integer;
+begin
+  ExtractTemporaryFile('preinstall.bat');
+  Params := '/c ' + AddQuotes(ExpandConstant('{tmp}\preinstall.bat'));
+  if not Exec(AddQuotes(ExpandConstant('{cmd}')), Params, '', SW_SHOW, ewWaitUntilTerminated, ResultCode) then
+    MsgBox('Preinstall steps failed.' + IntToStr(ResultCode), mbInformation, MB_OK);
+end;
 
 [Run]
 Filename: "{#prog}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall; Parameters: "appbinnw --data-path=""{#dest}\data\default"""

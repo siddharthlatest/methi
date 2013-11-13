@@ -1,12 +1,10 @@
 #folders
-machines
-shortcuts
-config/temp
-config/apps
 *.pyc
 build
 .*project
 .settings/
-/bin/
-/dist/data
-/data/
+bin
+dist
+data
+inno/files/appbin/program_files
+inno/output
