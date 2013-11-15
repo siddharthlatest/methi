@@ -9,7 +9,6 @@ import threading
 
 import os
 import logging
-import wx
 import Queue
 import subprocess
 from analytics import Analytics

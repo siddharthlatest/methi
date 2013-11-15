@@ -1,7 +1,6 @@
 import shutil
 import os
 import platform
-import hashlib
 import Common
 import Queue
 import threading
@@ -10,7 +9,6 @@ from time import gmtime, strftime,sleep
 import Common
 import subprocess
 from subprocess import Popen
-from pyhash import murmur3_32
 import logging
 import socket
 from SimpleXMLRPCServer import SimpleXMLRPCServer
@@ -495,7 +493,7 @@ class HashThreadManager:
 		self.failNotify = mO.failNotify
 
 		#Creating hasher
-		self.hasher = murmur3_32()
+		#self.hasher = murmur3_32()
 
         #thread msg strings
 		self.name = "Hasher"
@@ -518,7 +516,8 @@ class HashThreadManager:
 				print dirEntry["azip_local"]
 				f = open(dirEntry["azip_local"],"r")
 				#hasher.update(f.read())
-				dirEntry["digest"] = str(self.hasher(f.read()))
+				#dirEntry["digest"] = str(self.hasher(f.read()))
+				dirEntry["digest"] = ''
 				f.close()
 				self.onFinishEntry(dirEntry)
 			except:
