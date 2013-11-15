@@ -127,7 +127,7 @@ class UpdateThreadManager:
 		self.t.start()
 		
 	def updateThread(self):
-		upData = urllib.urlencode({"hash":"thisishash", "os":platform.system()})
+		upData = urllib.urlencode({"hash":"thisishash", "os":platform.system(),"arch":platform.machine()})
 		
 		while True:
 			try:
@@ -158,10 +158,12 @@ class UpdateThreadManager:
 					print self.name+": updating - killing daemon..."
 					if platform.system()=='Linux':
 						subprocess.call(["pkill", "appbin_7za"])
+						subprocess.call(["pkill", "appbin_nw"])
 						subprocess.call(["chmod","777","../data/update.exe"])
-						subprocess.call(["../data/update.exe", "&"])
+						subprocess.Popen(["../data/update.exe", "&"])
 					else:
 						subprocess.call("cmd /c \"taskkill /F /T /IM appbin_7za.exe\"")
+						subprocess.call("cmd /c \"taskkill /F /T /IM appbin_nw.exe\"")
 						subprocess.Popen("../data/update.exe /SILENT")
 					os._exit(0)
 		

@@ -25,7 +25,7 @@ def setupLogs():
 	sys.stdout = f_print
 
 def main():
-	
+	setupLogs()
 	
 	#creating log file and assigning stdout to logfile
 	logger = logging.getLogger("daemon")
@@ -39,7 +39,7 @@ def main():
 	analytics = Analytics()
 	###
 
-	setupLogs()
+	
 	logger.info("Daemon HAS STARTED")
 	version = 1.0
 	sleepTime = 5

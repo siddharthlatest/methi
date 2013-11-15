@@ -1,2 +1,0 @@
-#!/bin/sh
-python2 appbin_daemon.py
