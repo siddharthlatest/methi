@@ -29,8 +29,9 @@ class AppRunnerThreadManager:
 		self.logger = logging.getLogger("daemon.apprunner")
 		self.msgThread = msgToUthread
 		
-		self.t = threading.Thread(target=self.appRunnerThread, args=(analytics,))
-		self.t.start()
+		for i in xrange(6):
+			self.t = threading.Thread(target=self.appRunnerThread, args=(analytics,))
+			self.t.start()
 		
 		
 	def appRunnerThread(self, analytics):
@@ -224,8 +225,8 @@ class AppThreadManager:
 	def appThread(self):
 		while True:
 			x = self.appQ.get()
-			self.logger.info("getting blah blah")
 			if Common.isExitMsg(x):
+				self.appQ.put(x) #for other running threads
 				return
 
 			appEntry = x[0]
@@ -243,6 +244,7 @@ class AppThreadManager:
 		app = appEntry["app"]
 		print app
 		if app in Common.appsRunning:
+			self.onFinishApp(appEntry)
 			return
 		
 		if self.mainObj.isAppsOverridden:
@@ -379,7 +381,7 @@ class AppThreadManager:
 
 	def getAppIni(self,appEntry):
 		filename = "app.ini"
-		isNetOpSuccessful = self.mainObj.conn.downloadFile(filename,appEntry["appIni"],"%s/%s" % (appEntry["app"], self.mainObj.rdir_remote_current))
+		isNetOpSuccessful = self.mainObj.conn.downloadFile(filename,appEntry["appIni"],"%s/%s" % (appEntry["app"], self.mainObj.rdir_remote_current),False)
 		if isNetOpSuccessful > 0:
 			appEntry["isSuccessful"] = True
 		else:

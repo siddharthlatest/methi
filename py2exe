@@ -1,0 +1,5 @@
+arch=`uname -m`
+out=appbin_daemon_$arch
+rm -f $out
+rm -rf build
+pyinstaller -F --noconsole --clean -n $out src/appbin_daemon.py

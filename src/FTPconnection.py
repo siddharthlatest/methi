@@ -9,7 +9,7 @@ class FTPconnection:
 		self.logger = logging.getLogger("daemon.syncclient.ftpconn")
 		self.failNotify = failNotify
 
-	def directory_exists(self, ftp, dir):
+	def directory_exists(self, ftp, dir,notify=True):
 		try:
 			filelist = []
 			ftp.retrlines('LIST',filelist.append)
@@ -18,9 +18,10 @@ class FTPconnection:
 					return True
 			return False
 		except:
-			self.failNotify()
-			print "Connection Error"
-			self.logger.exception("unable to verify existence of directory")
+			if (notify):
+				self.failNotify()
+				print "Connection Error"
+				self.logger.exception("unable to verify existence of directory")
 			return False
 
 	def upload(self, filename, obj, remotePath="."):
@@ -59,7 +60,7 @@ class FTPconnection:
 			self.logger.exception("unable to upload file")
 			return -1
 
-	def download(self, filename, obj, remotePath="."):
+	def download(self, filename, obj, remotePath=".",notify=True):
 		try:
 			ftp = FTP_TLS(self.server, self.username, self.password)
 			ftp.prot_p()
@@ -70,21 +71,23 @@ class FTPconnection:
 			ftp.quit()
 			return 1
 		except:
-			self.failNotify()
-			print "Connection Error"
-			self.logger.exception("unable to download")
+			if(notify):
+				self.failNotify()
+				print "Connection Error"
+				self.logger.exception("unable to download")
 			return -1
 
-	def downloadFile(self, filename, localFile, remotePath="."):
+	def downloadFile(self, filename, localFile, remotePath=".",notify=True):
 		try:
 			obj = open(localFile, "wb")
-			ret = self.download(filename,obj,remotePath)
+			ret = self.download(filename,obj,remotePath,notify)
 			obj.close()
 			return ret
 		except:
-			self.failNotify()
-			print "Connection Error"
-			self.logger.exception("unable to download file")
+			if(notify):
+				self.failNotify()
+				print "Connection Error"
+				self.logger.exception("unable to download file")
 			return -1
 
 	def delete_file(self, filename, remotePath="."):
