@@ -29,9 +29,8 @@ class AppRunnerThreadManager:
 		self.logger = logging.getLogger("daemon.apprunner")
 		self.msgThread = msgToUthread
 		
-		for i in xrange(6):
-			self.t = threading.Thread(target=self.appRunnerThread, args=(analytics,))
-			self.t.start()
+		self.t = threading.Thread(target=self.appRunnerThread, args=(analytics,))
+		self.t.start()
 		
 		
 	def appRunnerThread(self, analytics):
@@ -190,9 +189,10 @@ class AppThreadManager:
 
 		self.appQ = self.mainObj.newQ()
 		#self.unZipQ = self.mainObj.newQ()
-
-		self.t = threading.Thread(target=self.appThread)
-		self.t.start()
+		
+		for i in xrange(6):
+			self.t = threading.Thread(target=self.appThread)
+			self.t.start()
 
 	def notifyDirFinish(self,dirEntry):
 		try:
