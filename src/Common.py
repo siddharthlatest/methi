@@ -39,6 +39,12 @@ appsToSync = []
 appsRunning = []
 
 def isDaemonAlreadyRunning():
+	#check by process
+	if(isWindows and numOfProcessRunning("appbin_daemon.exe") > 2): # daemon itself has two processes
+		return True
+	#todo: linux-find no of processes
+
+	#check by rpc
 	try:
 		f = open('../data/pipe', 'r')
 	except:

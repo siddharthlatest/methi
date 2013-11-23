@@ -42,7 +42,7 @@ def main():
 	
 	logger.info("Daemon HAS STARTED")
 	version = 1.0
-	sleepTime = 5
+	sleepTime = 20
 	processName = "appbin_nw.exe"
 	msgToUthread = Queue.Queue(0)
 	uT = UpdateThreadManager(version,processName,msgToUthread)
@@ -81,9 +81,10 @@ def main():
 		SyncClient(Common.isProcessRunning(processName), failNotify, changeIcon, analytics)
 		logger.info("syncClient Done")
 		logger.info("Waiting for %d secs" % sleepTime)
-		for i in range(0, 12):
+		divide = 4
+		for i in range(0, divide):
 			if not stateQ.empty():
 				exit(msgToUthread)
-			sleep(sleepTime)
+			sleep(sleepTime/divide)
 	
 main()
