@@ -5,11 +5,12 @@ import threading
 import cPickle
 import os
 from time import sleep
-import traceback
+import logging
 
 class Analytics:
 
 	def __init__(self):
+		self.className = "Analytics"
 		dump_file = "../data/analytic_dump.dmp"
 		mp_project_token = "50a705866eaa634de5a27b30bc2af519"
 		cio_siteid = "b17a48b1443e4c155066"
@@ -18,6 +19,10 @@ class Analytics:
 		cio = CustomerIO(cio_siteid, cio_apikey)
 		self.storage = deque()
 		self.email_id = None
+		
+		self.logger = logging.getLogger("daemon.analytics")
+		self.logger.info(self.__class__.__name__+": Init")
+		
 		if os.path.isfile(dump_file):
 			analytic_dump = open(dump_file, "rb")
 			self.storage = cPickle.load(analytic_dump)
@@ -42,6 +47,7 @@ class Analytics:
 
 			if data["job"] == "finish":
 				try:
+					
 					analytic_dump = open("../data/analytic_dump.dmp", "wb")
 					cPickle.dump(storage, analytic_dump)
 					analytic_dump.close()
@@ -52,8 +58,11 @@ class Analytics:
 				try:
 					mp.track(data["user_id"], data["event"], data["properties"])
 					cio.track(customer_id=data["user_id"], name=data["event"], **data["properties"])
-				except Exception:
+				except Exception as e:
+					self.logger.info(self.__class__.__name__+".start_upload[track].Exc: Exception:"+str(e))
+					self.logger.info(self.__class__.__name__+".start_upload[track].Exc: data appended:", data)
 					storage.append(data)
+					
 			elif data["job"] == "identify":
 				try:
 					#mp.people_set()
@@ -64,11 +73,16 @@ class Analytics:
 				continue
 
 	def track(self, event, properties):
+		self.logger.info(self.__class__.__name__+".track: called")
 		if not self.email_id:
+			self.logger.info(self.__class__.__name__+".track: no email")
 			return
+		
 		data = {"job":"track", "user_id":self.email_id, "event":event, "properties":properties}
 		self.storage.appendleft(data)
+		self.logger.info(self.__class__.__name__+".track: data appended:"+ str(data))
 
+		
 	def identify(self, user_id, user_name, properties={}):
 		data = {"job":"identify", "user_id":user_id, "user_name":user_name, "properties":properties}
 		self.email_id = user_id

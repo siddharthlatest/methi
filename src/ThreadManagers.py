@@ -49,7 +49,7 @@ class AppRunnerThreadManager:
 			Common.appsRunning.remove(app)
 			Common.appsToSync.append(app)
 			#Tracking Code
-			analytics.track(event="app closed", properties={"name":app})
+			analytics.track(event="app closed", properties={"appName":app})
 			###
 			print "Finished app:%s" % app
 			
@@ -76,7 +76,7 @@ class AppRunnerThreadManager:
 			print appArgs
 			Common.appsRunning.append(appArgs["app"])
 			#Tracking Code
-			analytics.track(event="app opened", properties={"name":appArgs["app"]})
+			analytics.track(event="app opened", properties={"appName":appArgs["app"]})
 			###
 			if (appArgs["isOnline"]):
 				appprocess = Popen([appArgs["cmd"],appArgs["appPath"],appArgs["url"],appArgs["title"],appArgs["dataPath"],"--no-toolbar"])
