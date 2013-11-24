@@ -78,7 +78,7 @@ def main():
 		logger.info("calling syncClient")
 		print "sync start"
 		changeIcon("1")
-		SyncClient(Common.isProcessRunning(processName), failNotify, changeIcon, analytics)
+		SyncClient(failNotify, changeIcon, analytics)
 		logger.info("syncClient Done")
 		logger.info("Waiting for %d secs" % sleepTime)
 		divide = 4
@@ -86,5 +86,5 @@ def main():
 			if not stateQ.empty():
 				exit(msgToUthread)
 			sleep(sleepTime/divide)
-	
+			
 main()

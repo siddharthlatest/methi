@@ -183,7 +183,7 @@ class AppThreadManager:
 		self.mainObj = mainObj
 		self.logger = logging.getLogger("daemon.syncclient.app")
 		self.failNotify = mainObj.failNotify
-		self.noOfThreads = 15
+		self.noOfThreads = 20
 
 		#thread msg strings
 		self.name = "App"
@@ -192,7 +192,7 @@ class AppThreadManager:
 		#self.unZipQ = self.mainObj.newQ()
 		
 		for i in xrange(self.noOfThreads):
-			self.t = threading.Thread(target=self.appThread)
+			self.t = threading.Thread(target=self.appThread,args=(i,))
 			self.t.start()
 
 	def notifyDirFinish(self,dirEntry):
@@ -205,7 +205,10 @@ class AppThreadManager:
 			
 			dirEntry["appEntry"]["nRemainDirs"] -= 1
 			if dirEntry["appEntry"]["nRemainDirs"] == 0:
+				self.logger.info(dirEntry["appEntry"]["app"]+": Dirs Finished:")
 				self.addEntry(dirEntry["appEntry"],Common.finalizeMsg)
+			
+			
 		except:
 			dirEntry["appEntry"]["isSuccessful"] = False
 			self.logger.exception("problem in notifyDirFinish")
@@ -214,7 +217,6 @@ class AppThreadManager:
 	def addEntry(self,obj,msg):
 		try:
 			if not isinstance(obj,dict):
-				self.logger.info(obj + " started")
 				obj = {"app":obj,"temp": Common.createPath(self.adir_appTemp(obj))}
 				obj["appIni"] = "%s/app.ini" % obj["temp"]
 				obj["isSuccessful"] = True
@@ -223,18 +225,17 @@ class AppThreadManager:
 			self.logger.exception("error in addEntry:"+str((obj, msg)))
 			return
 
-	def appThread(self):
+	def appThread(self,tN):
 		while True:
 			x = self.appQ.get()
 			if Common.isExitMsg(x):
 				self.appQ.put(x) #for other running threads
 				return
-
 			appEntry = x[0]
 			msg = x[1]
+			self.logger.info("tN:"+str(tN)+" Q popped:"+appEntry["app"]+" "+msg+"; lenQ:"+str(self.appQ.qsize()))
 			if(msg == Common.newMsg):
 				self.newApp(appEntry)
-				print appEntry["app"]+"added"
 			elif msg == Common.finalizeMsg:
 				self.finalizeApp(appEntry)
 			else:
@@ -243,7 +244,6 @@ class AppThreadManager:
 
 	def newApp(self,appEntry):
 		app = appEntry["app"]
-		print app
 		if app in Common.appsRunning:
 			self.onFinishApp(appEntry)
 			return
@@ -262,8 +262,7 @@ class AppThreadManager:
 		appEntry["direction"], appEntry["appCfg"] = self.decideDirection(appEntry)
 		#TODO: if sync direction == null
 		
-		
-		print appEntry["direction"]
+		self.logger.info(appEntry["app"]+" direction:"+appEntry["direction"])
 		
 		if appEntry["direction"] == "up":
 			if (app not in Common.appsToSync):
@@ -284,12 +283,14 @@ class AppThreadManager:
 			self.newDir(dirEntry)
 
 	def finalizeApp(self,appEntry):
+		self.logger.info(appEntry["app"]+": Finalizing..")
 		try:
 			f = open(appEntry["appIni"], "wb")
 			appEntry["appCfg"].write(f)
 			f.close()
 			conn = self.mainObj.conn
-			if (appEntry["isHashChanged"] or appEntry["direction"] == "down") and not appEntry["isDownStopped"]: 
+			if (appEntry["isHashChanged"] or appEntry["direction"] == "down") and not appEntry["isDownStopped"]:
+				self.logger.info(appEntry["app"]+": Uploading Ini..")
 				isNetOpSuccessful = conn.uploadFile("app.ini", appEntry["appIni"], "%s/%s" % (appEntry["app"], self.mainObj.rdir_remote_temp))
 				if isNetOpSuccessful > 0:
 					appEntry["isSuccessful"] = True
@@ -486,8 +487,9 @@ class ZipThreadManager:
 			except:
 				self.logger.exception("compression or decompression error")
 				continue
-		
-		self.onFinishEntry(dirEntry)
+			
+			self.onFinishEntry(dirEntry)
+			
 
 	def onFinishEntry(self,dirEntry):
 		self.logger.info("%s %d %s zip finish" % (dirEntry["appEntry"]["app"], dirEntry["dirIndex"], dirEntry["dir"]) )

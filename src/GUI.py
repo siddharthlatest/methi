@@ -43,11 +43,10 @@ class TaskBarIcon(wx.TaskBarIcon):
         #print 'Tray icon was left-clicked.'
 
     def launchClient(self, event):
-        if not Common.isProcessRunning("appbin_nw.exe"):
-            if platform.system()=='Linux':
-                Popen("./appbin")
-            else:
-                Popen("appbin_nw.exe")
+		if platform.system()=='Linux':
+			Popen("./appbin")
+		else:
+			Popen("appbin.bat")
 
     def openLogs(self, event):
         if platform.system()=='Linux':

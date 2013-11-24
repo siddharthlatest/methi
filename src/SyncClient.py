@@ -27,8 +27,7 @@ class SyncClient:
 		self.isOnlyWebApps = True
 
 
-	def __init__(self,isAR, failNotify, changeIcon, analytics):
-		self.isAppRunning = isAR
+	def __init__(self, failNotify, changeIcon, analytics):
 		self.name = "Main" #thread name
 		self.failNotify = failNotify
 		self.changeIcon = changeIcon
@@ -68,7 +67,7 @@ class SyncClient:
 
 		#loading config file
 		self.isConfigIniOk = self.loadConfig()
-		#if self.isConfigIniOk and not self.isAppRunning:
+		
 		if self.isConfigIniOk:
 			self.logger.info("begin sync")
 			
@@ -242,7 +241,7 @@ class SyncClient:
 					pass
 
 			elif msg == Common.newMsg:
-				if self.isAppRunning and self.isDownDisabled and payLoad["appEntry"]["direction"] == "down":
+				if self.isDownDisabled and payLoad["appEntry"]["direction"] == "down":
 					self.logger.info("Down disabled when nw active")
 					payLoad["appEntry"]["isDownStopped"] = True
 					self.appT.notifyDirFinish(payLoad)

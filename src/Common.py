@@ -6,10 +6,13 @@ if platform.system()=='Linux':
 	isLinux = True
 	isWindows = False
 	isMac = False
+	self_proc_name = "appbin_daemon"
+	
 elif platform.system()=='Windows':
 	isLinux = False
 	isWindows = True
 	isMac = False
+	self_proc_name = "appbin_daemon.exe"
 else:	
 	isLinux = False
 	isWindows = False
@@ -40,10 +43,9 @@ appsRunning = []
 
 def isDaemonAlreadyRunning():
 	#check by process
-	if(isWindows and numOfProcessRunning("appbin_daemon.exe") > 2): # daemon itself has two processes
+	if( numOfProcessRunning(self_proc_name) > 2): # daemon itself has two processes
 		return True
-	#todo: linux-find no of processes
-
+	
 	#check by rpc
 	try:
 		f = open('../data/pipe', 'r')
@@ -98,8 +100,7 @@ def numOfProcessRunning(proc):
 	if platform.system()=='Linux':
 		try:
 			output = subprocess.check_output(["ps", "-C", proc])
-			procs = output.split("\n")
-			return len(procs)-1
+			return output.count(proc)
 		except subprocess.CalledProcessError:
 			return 0
 	else:
