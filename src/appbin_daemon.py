@@ -63,7 +63,7 @@ def main():
 
 	def exit(msgToUthread):
 		analytics.finish()
-		if platform.system()=="Linux":
+		if platform.system() in ["Linux", "Darwin"]:
 			subprocess.call(["pkill", "appbin_7za"])
 		else:
 			subprocess.call("cmd /c \"taskkill /F /T /IM appbin_7za.exe\"")

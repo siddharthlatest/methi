@@ -18,7 +18,7 @@ else:
 	isWindows = False
 	isMac = True
 
-if platform.system()=='Linux':
+if platform.system()=='Linux' or platform.system() == 'Darwin':
 	import subprocess
 else:
 	import win32con
@@ -82,12 +82,9 @@ def isExitMsg(x):
     return (isinstance(x,str) and x == exitMsg)
    
 def isProcessRunning(proc):
-	if platform.system()=='Linux':
-		try:
-			output = subprocess.check_output(["ps", "-C", proc])
-			return True
-		except subprocess.CalledProcessError:
-			return False
+	if platform.system() in ["Linux", "Darwin"]:
+                number = int(subprocess.check_output("ps aux | grep "+proc+" | grep -v grep | wc -l", shell=True).strip())
+		return True if number else False
 	else:
 		pythoncom.CoInitialize()
 		bool = False;
@@ -97,12 +94,8 @@ def isProcessRunning(proc):
 		return bool
 
 def numOfProcessRunning(proc):
-	if platform.system()=='Linux':
-		try:
-			output = subprocess.check_output(["ps", "-C", proc])
-			return output.count(proc)
-		except subprocess.CalledProcessError:
-			return 0
+	if platform.system() in ["Linux", "Darwin"]:
+		return int(subprocess.check_output("ps aux | grep "+proc+" | grep -v grep | wc -l", shell=True).strip())
 	else:
 		pythoncom.CoInitialize()
 		c = wmi.WMI (find_classes=False)
