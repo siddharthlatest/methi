@@ -14,7 +14,7 @@ import socket
 from SimpleXMLRPCServer import SimpleXMLRPCServer
 import datetime
 import json
-if not platform.system() == "Linux":
+if platform.system() not in ["Linux", "Darwin"]:
 	import win32gui
 	import win32process
 
@@ -80,7 +80,7 @@ class AppRunnerThreadManager:
 			###
 			if (appArgs["isOnline"]):
 				appprocess = Popen([appArgs["cmd"],appArgs["appPath"],appArgs["url"],appArgs["title"],appArgs["dataPath"],"--no-toolbar"])
-				if platform.system()=="Linux":
+				if platform.system() in ["Linux", "Darwin"]:
 					pass
 				else:
 					handleWindow(appprocess)
@@ -88,7 +88,7 @@ class AppRunnerThreadManager:
 				
 			else:
 				appprocess = Popen([appArgs["cmd"],appArgs["appPath"],appArgs["dataPath"],"--no-toolbar"])
-				if platform.system()=="Linux":
+				if platform.system() in ["Linux", "Darwin"]:
 					pass
 				else:
 					handleWindow(appprocess)
@@ -156,7 +156,7 @@ class UpdateThreadManager:
 						sleep(30)
 					
 					print self.name+": updating - killing daemon..."
-					if platform.system()=='Linux':
+					if platform.system() in ["Linux", "Darwin"]:
 						subprocess.call(["pkill", "appbin_7za"])
 						subprocess.call(["pkill", "appbin_nw"])
 						subprocess.call(["chmod","777","../data/update.exe"])
@@ -435,20 +435,20 @@ class ZipThreadManager:
 		dirEntry["azip_name"] = azip_name
 		dirEntry["azip_local"] = azip_local
 
-		if platform.system() == 'Linux':
+		if platform.system() in ["Linux", "Darwin"]:
 			zip_exe = "bin/appbin_7za"
 		else:
 			zip_exe = "appbin_7za"
 
 		if(dirEntry["zipDirection"] == "up"): #dir -> 7zip
-			if platform.system() == 'Linux':
+			if platform.system() in ["Linux", "Darwin"]:
 				zipCmd = "%s a -t7z %s %s/* -mx3" % (zip_exe, azip_local, adir_local)
 			else:
 				zipCmd = "%s a -t7z \"%s\" \"%s\\*\" -mx3" % (zip_exe, azip_local.replace("/","\\"), adir_local.replace("/","\\"))
 			dirEntry["zipCmd"] = zipCmd
 		else:
 			
-			if platform.system() == 'Linux':
+			if platform.system() in ["Linux", "Darwin"]:
 				zipCmd = "%s x -y %s -o%s -mmt=on" % (zip_exe, azip_local, adir_local)
 			else:
 				zipCmd = "%s x -y \"%s\" -o\"%s\" -mmt=on" % (zip_exe, azip_local.replace("/","\\"), adir_local.replace("/","\\"))
@@ -471,7 +471,7 @@ class ZipThreadManager:
 					if dirEntry["zipDirection"] == "down":
 						shutil.rmtree(dirEntry["adir_local"],True) # delete target first
 					
-					if platform.system() == 'Linux':
+					if platform.system() in ["Linux", "Darwin"]:
 						exe = dirEntry["zipCmd"].split(" ")
 						print exe
 						subprocess.call(exe)
