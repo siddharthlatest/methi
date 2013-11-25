@@ -13,10 +13,12 @@ elif platform.system()=='Windows':
 	isWindows = True
 	isMac = False
 	self_proc_name = "appbin_daemon.exe"
-else:	
+
+elif platform.system() == 'Darwin':
 	isLinux = False
 	isWindows = False
 	isMac = True
+	self_proc_name = "appbin_daemon"
 
 if platform.system()=='Linux' or platform.system() == 'Darwin':
 	import subprocess
