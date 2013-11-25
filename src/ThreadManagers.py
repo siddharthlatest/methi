@@ -291,7 +291,7 @@ class AppThreadManager:
 			conn = self.mainObj.conn
 			if (appEntry["isHashChanged"] or appEntry["direction"] == "down") and not appEntry["isDownStopped"]:
 				self.logger.info(appEntry["app"]+": Uploading Ini..")
-				isNetOpSuccessful = conn.uploadFile("app.ini", appEntry["appIni"], "%s/%s" % (appEntry["app"], self.mainObj.rdir_remote_temp))
+				isNetOpSuccessful = conn.uploadFile("app.ini", appEntry["appIni"], "%s/%s" % (appEntry["app"], self.mainObj.rdir_remote_temp),checkDir=False)
 				if isNetOpSuccessful > 0:
 					appEntry["isSuccessful"] = True
 				else:

@@ -24,20 +24,24 @@ class FTPconnection:
 				self.logger.exception("unable to verify existence of directory")
 			return False
 
-	def upload(self, filename, obj, remotePath="."):
+	def upload(self, filename, obj, remotePath=".",checkDir=True):
 		try:
 			ftp = FTP_TLS(self.server, self.username, self.password)
 			ftp.prot_p()
-			remoteDirs = remotePath.split("/")
-			i = 0
-			while i<len(remoteDirs):
-				if not self.directory_exists(ftp, remoteDirs[i]):
-					ftp.mkd(remoteDirs[i])
-					ftp.cwd(remoteDirs[i])
-					i = i+1
-				else:
-					ftp.cwd(remoteDirs[i])
-					i = i+1
+			if checkDir:
+				self.logger.info("checking if Dir exists: "+remotePath)
+				remoteDirs = remotePath.split("/")
+				i = 0
+				while i<len(remoteDirs):
+					if not self.directory_exists(ftp, remoteDirs[i]):
+						ftp.mkd(remoteDirs[i])
+						ftp.cwd(remoteDirs[i])
+						i = i+1
+					else:
+						ftp.cwd(remoteDirs[i])
+						i = i+1
+			else:
+				ftp.cwd(remotePath)
 
 			ftp.storbinary("STOR %s" % filename, obj)
 			ftp.quit()
@@ -48,10 +52,10 @@ class FTPconnection:
 			self.logger.exception("unable to upload")
 			return -1
 
-	def uploadFile(self, filename, localFile, remotePath="."):
+	def uploadFile(self, filename, localFile, remotePath=".",checkDir=True):
 		try:
 			obj = open(localFile, "rb")
-			ret = self.upload(filename,obj,remotePath)
+			ret = self.upload(filename,obj,remotePath,checkDir)
 			obj.close()
 			return ret
 		except:
