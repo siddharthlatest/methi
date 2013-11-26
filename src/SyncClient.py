@@ -230,15 +230,12 @@ class SyncClient:
 
 			if msg == Common.finishMsg:
 				self.nAppsInProcess -= 1
-				print "apps remaining", self.nAppsInProcess
+				self.logger.info("Apps Remaining:"+ self.nAppsInProcess)
 				if not payLoad["isSuccessful"]:
 					self.successState = False
 
 				if self.nAppsInProcess ==0:
 					self.prepareToExit()
-				else:
-					#notify app sync finish. show remaining apps
-					pass
 
 			elif msg == Common.newMsg:
 				if self.isDownDisabled and payLoad["appEntry"]["direction"] == "down":

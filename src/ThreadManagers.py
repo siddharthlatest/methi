@@ -22,10 +22,8 @@ import urllib2
 import urllib
 
 class AppRunnerThreadManager:
-	def __init__(self,version,pN, analytics):
+	def __init__(self, analytics):
 		self.name = "AppRunner"
-		self.ver = version
-		self.processName = pN
 		self.logger = logging.getLogger("daemon.apprunner")
 		
 		self.t = threading.Thread(target=self.appRunnerThread, args=(analytics,))
@@ -37,6 +35,8 @@ class AppRunnerThreadManager:
 			def newApp(self, appArgsJson):
 				appArgs = json.loads(json.dumps(appArgsJson))
 				#print "Calling: ", appArgs
+				
+				self.logger.info("App opened:" + appEntry["app"])
 				appArgs["cmd"] = "./" + appArgs["cmd"]
 				t = threading.Thread(target=newAppThread, args=(appArgs,))
 				t.start()
@@ -50,7 +50,7 @@ class AppRunnerThreadManager:
 			#Tracking Code
 			analytics.track(event="App closed", properties={"appName":app})
 			###
-			print "Finished app:%s" % app
+			self.logger.info("App closed:" + app)
 			
 		def handleWindow(appprocess):
 			sleep(4)
@@ -58,7 +58,6 @@ class AppRunnerThreadManager:
 
 			for hwnd in Common.get_hwnds_for_pid (appprocess.pid):
 				wanted = win32process.GetWindowThreadProcessId(hwnd)[0]
-				print foreground,wanted
 				if not foreground == wanted:
 					win32process.AttachThreadInput(foreground, wanted, True);
 					win32gui.BringWindowToTop(hwnd)
@@ -72,7 +71,9 @@ class AppRunnerThreadManager:
 			
 				
 		def newAppThread(appArgs):
-			print appArgs
+			
+			self.logger.info("App args:"+appArgs)
+			
 			Common.appsRunning.append(appArgs["app"])
 			#Tracking Code
 			analytics.track(event="App opened", properties={"appName":appArgs["app"]})
@@ -86,8 +87,7 @@ class AppRunnerThreadManager:
 			
 			if Common.isWindows:
 				handleWindow(appprocess)
-
-			
+				
 			appprocess.wait()
 			appFinish(appArgs["app"])
 		
@@ -106,7 +106,9 @@ class AppRunnerThreadManager:
 		f.write(str(port))
 		f.close()
 		
-		print "starting rpc server on:%d" % port
+		
+		self.logger.info("starting rpc server on:" +port)
+		
 		s.serve_forever()
 		
 
@@ -125,15 +127,14 @@ class UpdateThreadManager:
 		sleepTime = 5*60
 		while True:
 			try:
-				self.logger.info(self.name+": Checking for update...")
+				self.logger.info("Checking for update...")
 				page = urllib2.urlopen("http://getappbin.com/loadapp/version.php",upData)
 				downData = page.read()
-				self.logger.info(self.name+": data returned - "+str(downData))
+				self.logger.info("data returned - "+str(downData))
 				data = downData.split(",")
 				onlineVersion = float(data[0])
 				downloadLink = data[1]
 				if onlineVersion > self.ver:
-					print "update found"
 					self.logger.info(self.name+": update found.")
 					page = urllib2.urlopen(downloadLink)
 					updateData = page.read()
@@ -144,10 +145,10 @@ class UpdateThreadManager:
 							#wait appbin_nw to exit
 							break
 		
-						self.logger.info(self.name+": waiting for appbin to close...")
+						self.logger.info("waiting for appbin to close...")
 						sleep(30)
 					
-					print self.name+": updating - killing daemon..."
+					self.logger.info("updating - killing daemon...")
 					if Common.isLinux or Common.isMac :
 						subprocess.call(["pkill", "appbin_7za"])
 						subprocess.call(["pkill", "appbin_nw"])
@@ -258,7 +259,7 @@ class AppThreadManager:
 				self.onFinishApp(appEntry)
 				return
 			else:
-				del Common.appsToSync[Common.appsToSync.index(app)]
+				Common.appsToSync = list(filter((app).__ne__, Common.appsToSync))
 		
 		
 		appEntry["nRemainDirs"] = len(dirs)
@@ -305,17 +306,16 @@ class AppThreadManager:
 			conn.rename(self.mainObj.rdir_remote_temp, self.mainObj.rdir_remote_current, appEntry["app"])
 			conn.delete_dir(self.mainObj.rdir_remote_old, appEntry["app"])
 			"""
-
-
-			try:
-				os.remove(appEntry["appIni"])
-			except:
-				pass
 			
 		except:
 			appEntry["isSuccessful"] = False
 			self.logger.exception("error in finalizeApp")
 			return
+			
+		try:
+			os.remove(appEntry["appIni"])
+		except:
+			pass
 		
 		self.onFinishApp(appEntry)
 
@@ -389,7 +389,10 @@ class AppThreadManager:
 		return self.mainObj.adir_temp + "/" + app
 
 	def onFinishApp(self,appEntry):
-		self.logger.info(appEntry["app"] + " end")
+		self.logger.info(appEntry["app"] + " end. Success:"+str(appEntry["isSuccessful"]))
+		if not appEntry["isSuccessful"]:
+			Common.appsToSync.append(appEntry["app"])
+
 		self.mainQ.put([self.name,Common.finishMsg,appEntry])
 
 
@@ -462,7 +465,6 @@ class ZipThreadManager:
 					
 					if Common.isLinux or Common.isMac:
 						exe = dirEntry["zipCmd"].split(" ")
-						print exe
 						subprocess.call(exe)
 					elif Common.isWindows:
 						startupinfo = subprocess.STARTUPINFO()
@@ -523,7 +525,6 @@ class HashThreadManager:
 					return
 				dirEntry = x
 				#hasher = hashlib.md5()
-				print dirEntry["azip_local"]
 				f = open(dirEntry["azip_local"],"r")
 				#hasher.update(f.read())
 				#dirEntry["digest"] = str(self.hasher(f.read()))

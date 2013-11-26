@@ -7,4 +7,6 @@ bin
 dist
 data
 *.spec
-._*
+*._*
+*.xcworkspace
+*.DS_Store

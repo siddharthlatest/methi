@@ -56,21 +56,19 @@ def isDaemonAlreadyRunning():
 	
 	port = f.read()
 	f.close()
-	print "trying" + port
-	
+		
 	if (isinstance(port,int)):
 		return False
 	
 	rpc = xmlrpclib.ServerProxy("http://localhost:"+port)
 	try:
-		print rpc.hello()
+		rpc.hello()
 		return True
 	except:
 		return False
 	
 
 def createPath(x):
-	print x
 	try:
 		os.makedirs(x)
 	except OSError as exc: # Python >2.5

@@ -1,5 +1,6 @@
 import Common
 import sys
+import signal
 
 if(Common.isDaemonAlreadyRunning()):
 	sys.exit()
@@ -15,16 +16,17 @@ from analytics import Analytics
 
 from SyncClient import SyncClient
 from ThreadManagers import UpdateThreadManager,AppRunnerThreadManager
+import atexit
 
 if not Common.isMac:
 	import GUI #disable wx in mac
 
 def setupLogs():
 	Common.createPath(os.path.abspath('../data'))
-	f_print = file('../data/stdout.txt', 'a',0)
+	f_out = file('../data/stdout.txt', 'a',0)
 	f_err = file('../data/stderr.txt', 'a',0)
 	sys.stderr = f_err
-	sys.stdout = f_print
+	sys.stdout = f_out
 
 def main():
 	setupLogs()
@@ -42,7 +44,7 @@ def main():
 	###
 	
 	
-	logger.info("Daemon HAS STARTED")
+	logger.info("Daemon Init")
 	version = 1.0
 	sleepTime = 20
 	if Common.isWindows:
@@ -51,10 +53,9 @@ def main():
 		processName = "appbin_nw_lin"
 	elif Common.isMac:
 		processName = "appbin_nw_mac"
-		
-	msgToUthread = Queue.Queue(0)
-	uT = UpdateThreadManager(version,processNamemsg)
-	aRT = AppRunnerThreadManager(version,processName,analytics)	
+	
+	uT = UpdateThreadManager(version,processName)
+	aRT = AppRunnerThreadManager(analytics)	
 	
 	stateQ = Queue.Queue(0)
 
@@ -70,23 +71,37 @@ def main():
 
 	def failNotify():
 		changeIcon("-1")
-
-	def exit(msgToUthread):
+	
+	
+	def exit():
 		analytics.finish()
 		if Common.isLinux or Common.isMac :
 			subprocess.call(["pkill", "appbin_7za"])
 		else:
 			subprocess.call("cmd /c \"taskkill /F /T /IM appbin_7za.exe\"")
-		msgToUthread.put("exit")
-		sleep(5)
 		print "exit"
 		os._exit(0)
+		
+	atexit.register(exit)
+	
+	def sigHandler(sig,frm):
+		print "sig:" + sig
+		exit()
 
+	signal.signal(signal.SIGTERM,sigHandler)
+	
+	if Common.isWindows:
+		signal.signal(signal.CTRL_C_EVENT,sigHandler)
+		signal.signal(signal.CTRL_BREAK_EVENT,sigHandler)
+	else:
+		signal.signal(signal.SIGINT,sigHandler)
+		signal.signal(signal.SIGKILL,sigHandler)
+		signal.signal(signal.SIGQUIT,sigHandler)
+		
 	while True:
 		if not stateQ.empty():
-			exit(msgToUthread)
+			exit()
 		logger.info("calling syncClient")
-		print "sync start"
 		changeIcon("1")
 		SyncClient(failNotify, changeIcon, analytics)
 		logger.info("syncClient Done")
@@ -94,7 +109,7 @@ def main():
 		divide = 4
 		for i in range(0, divide):
 			if not stateQ.empty():
-				exit(msgToUthread)
+				exit()
 			sleep(sleepTime/divide)
 			
 main()
