@@ -22,21 +22,25 @@ import urllib2
 import urllib
 
 class AppRunnerThreadManager:
+	
 	def __init__(self, analytics):
 		self.name = "AppRunner"
 		self.logger = logging.getLogger("daemon.apprunner")
-		
 		self.t = threading.Thread(target=self.appRunnerThread, args=(analytics,))
 		self.t.start()
 		
 		
 	def appRunnerThread(self, analytics):
+		self.logger = logging.getLogger("daemon.apprunner")
+		
 		class rpcExposed:
 			def newApp(self, appArgsJson):
+				self.logger = logging.getLogger("daemon.apprunner")
+				
 				appArgs = json.loads(json.dumps(appArgsJson))
 				#print "Calling: ", appArgs
 				
-				self.logger.info("App opened:" + appEntry["app"])
+				self.logger.info("App opened:" + appArgs["app"])
 				appArgs["cmd"] = "./" + appArgs["cmd"]
 				t = threading.Thread(target=newAppThread, args=(appArgs,))
 				t.start()
@@ -72,7 +76,7 @@ class AppRunnerThreadManager:
 				
 		def newAppThread(appArgs):
 			
-			self.logger.info("App args:"+appArgs)
+			self.logger.info("App args:"+str(appArgs))
 			
 			Common.appsRunning.append(appArgs["app"])
 			#Tracking Code
@@ -149,9 +153,14 @@ class UpdateThreadManager:
 						sleep(30)
 					
 					self.logger.info("updating - killing daemon...")
-					if Common.isLinux or Common.isMac :
+					if Common.isLinux :
 						subprocess.call(["pkill", "appbin_7za"])
 						subprocess.call(["pkill", "appbin_nw"])
+						subprocess.call(["chmod","777","../data/update.exe"])
+						subprocess.Popen(["../data/update.exe", "&"])
+					elif Common.isMac:
+						subprocess.call(["killall","-9", "appbin_7za"])
+						subprocess.call(["killall","-9", "appbin_nw"])
 						subprocess.call(["chmod","777","../data/update.exe"])
 						subprocess.Popen(["../data/update.exe", "&"])
 					elif Common.isWindows:

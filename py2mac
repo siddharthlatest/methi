@@ -8,6 +8,8 @@ SCRIPT_PATH=`pwd`;
 
 arch=`uname -m`
 out=appbin_daemon_mac
+app=.app
 rm -rf dist/$out
+rm -rf dist/$out$app
 rm -rf build
-VERSIONER_PYTHON_PREFER_32_BIT=yes arch -i386 python `which pyinstaller` --noconsole --clean -n $out src/appbin_daemon.py
+VERSIONER_PYTHON_PREFER_32_BIT=yes arch -i386 python `which pyinstaller` --clean -n $out src/appbin_daemon.py

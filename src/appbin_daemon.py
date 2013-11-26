@@ -75,9 +75,11 @@ def main():
 	
 	def exit():
 		analytics.finish()
-		if Common.isLinux or Common.isMac :
+		if Common.isLinux :
 			subprocess.call(["pkill", "appbin_7za"])
-		else:
+		elif Common.isMac :
+			subprocess.call(["killall","-9" ,"appbin_7za"])
+		elif Common.isWindows:
 			subprocess.call("cmd /c \"taskkill /F /T /IM appbin_7za.exe\"")
 		print "exit"
 		os._exit(0)
