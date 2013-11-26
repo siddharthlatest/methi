@@ -18,9 +18,9 @@ elif platform.system() == 'Darwin':
 	isLinux = False
 	isWindows = False
 	isMac = True
-	self_proc_name = "appbin_daemon"
+	self_proc_name = "appbin_daemon_mac"
 
-if platform.system()=='Linux' or platform.system() == 'Darwin':
+if isLinux or isMac:
 	import subprocess
 else:
 	import win32con
@@ -81,11 +81,11 @@ def createPath(x):
 	return x
 
 def isExitMsg(x):
-    return (isinstance(x,str) and x == exitMsg)
+	return (isinstance(x,str) and x == exitMsg)
    
 def isProcessRunning(proc):
-	if platform.system() in ["Linux", "Darwin"]:
-                number = int(subprocess.check_output("ps aux | grep "+proc+" | grep -v grep | wc -l", shell=True).strip())
+	if isMac or isLinux:
+		number = int(subprocess.check_output("ps aux | grep "+proc+" | grep -v grep | wc -l", shell=True).strip())
 		return True if number else False
 	else:
 		pythoncom.CoInitialize()
@@ -96,7 +96,7 @@ def isProcessRunning(proc):
 		return bool
 
 def numOfProcessRunning(proc):
-	if platform.system() in ["Linux", "Darwin"]:
+	if isLinux or isMac:
 		return int(subprocess.check_output("ps aux | grep "+proc+" | grep -v grep | wc -l", shell=True).strip())
 	else:
 		pythoncom.CoInitialize()

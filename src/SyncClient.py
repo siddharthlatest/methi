@@ -285,7 +285,7 @@ class SyncClient:
 
 			if msg == Common.finishMsg:
 				if payLoad["appEntry"]["direction"] == "up":
-				    self.appT.notifyDirFinish(payLoad)
+					self.appT.notifyDirFinish(payLoad)
 				else:
 					payLoad["zipDirection"] = "down"
 					self.zipT.addEntry(payLoad)

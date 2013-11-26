@@ -14,7 +14,7 @@ import socket
 from SimpleXMLRPCServer import SimpleXMLRPCServer
 import datetime
 import json
-if platform.system() not in ["Linux", "Darwin"]:
+if Common.isWindows :
 	import win32gui
 	import win32process
 
@@ -22,12 +22,11 @@ import urllib2
 import urllib
 
 class AppRunnerThreadManager:
-	def __init__(self,version,pN,msgToUthread, analytics):
+	def __init__(self,version,pN, analytics):
 		self.name = "AppRunner"
 		self.ver = version
 		self.processName = pN
 		self.logger = logging.getLogger("daemon.apprunner")
-		self.msgThread = msgToUthread
 		
 		self.t = threading.Thread(target=self.appRunnerThread, args=(analytics,))
 		self.t.start()
@@ -80,20 +79,16 @@ class AppRunnerThreadManager:
 			###
 			if (appArgs["isOnline"]):
 				appprocess = Popen([appArgs["cmd"],appArgs["appPath"],appArgs["url"],appArgs["title"],appArgs["dataPath"],"--no-toolbar"])
-				if platform.system() in ["Linux", "Darwin"]:
-					pass
-				else:
-					handleWindow(appprocess)
-				appprocess.wait()
 				
 			else:
 				appprocess = Popen([appArgs["cmd"],appArgs["appPath"],appArgs["dataPath"],"--no-toolbar"])
-				if platform.system() in ["Linux", "Darwin"]:
-					pass
-				else:
-					handleWindow(appprocess)
-				appprocess.wait()
+				
 			
+			if Common.isWindows:
+				handleWindow(appprocess)
+
+			
+			appprocess.wait()
 			appFinish(appArgs["app"])
 		
 		port = 65000
@@ -116,23 +111,20 @@ class AppRunnerThreadManager:
 		
 
 class UpdateThreadManager:
-	def __init__(self,version,pN,msgToUthread):
+	def __init__(self,version,pN):
 		self.name = "Updater"
 		self.ver = version
 		self.processName = pN
 		self.logger = logging.getLogger("daemon.update")
-		self.msgThread = msgToUthread
 		
 		self.t = threading.Thread(target=self.updateThread)
 		self.t.start()
 		
 	def updateThread(self):
 		upData = urllib.urlencode({"hash":"thisishash", "os":platform.system(),"arch":platform.machine()})
-		
+		sleepTime = 5*60
 		while True:
 			try:
-				if not self.msgThread.empty():
-					return
 				self.logger.info(self.name+": Checking for update...")
 				page = urllib2.urlopen("http://getappbin.com/loadapp/version.php",upData)
 				downData = page.read()
@@ -149,29 +141,26 @@ class UpdateThreadManager:
 						f.write(updateData)
 					while True:
 						if not Common.isProcessRunning(self.processName):
-							#wait for sync threads to complete
+							#wait appbin_nw to exit
 							break
 		
 						self.logger.info(self.name+": waiting for appbin to close...")
 						sleep(30)
 					
 					print self.name+": updating - killing daemon..."
-					if platform.system() in ["Linux", "Darwin"]:
+					if Common.isLinux or Common.isMac :
 						subprocess.call(["pkill", "appbin_7za"])
 						subprocess.call(["pkill", "appbin_nw"])
 						subprocess.call(["chmod","777","../data/update.exe"])
 						subprocess.Popen(["../data/update.exe", "&"])
-					else:
+					elif Common.isWindows:
 						subprocess.call("cmd /c \"taskkill /F /T /IM appbin_7za.exe\"")
 						subprocess.call("cmd /c \"taskkill /F /T /IM appbin_nw.exe\"")
 						subprocess.Popen("../data/update.exe /SILENT")
 					os._exit(0)
 		
 				self.logger.info(self.name+": None found")
-				for i in range(0,720):
-					if not self.msgThread.empty():
-						return
-					sleep(5)
+				sleep(sleepTime)
 			except:
 				self.logger.exception("error in updater")
 				return
@@ -435,22 +424,22 @@ class ZipThreadManager:
 		dirEntry["azip_name"] = azip_name
 		dirEntry["azip_local"] = azip_local
 
-		if platform.system() in ["Linux", "Darwin"]:
+		if Common.isMac or Common.isLinux:
 			zip_exe = "bin/appbin_7za"
-		else:
+		elif Common.isWindows:
 			zip_exe = "appbin_7za"
 
 		if(dirEntry["zipDirection"] == "up"): #dir -> 7zip
-			if platform.system() in ["Linux", "Darwin"]:
+			if Common.isLinux or Common.isMac:
 				zipCmd = "%s a -t7z %s %s/* -mx3" % (zip_exe, azip_local, adir_local)
-			else:
+			elif Common.isWindows:
 				zipCmd = "%s a -t7z \"%s\" \"%s\\*\" -mx3" % (zip_exe, azip_local.replace("/","\\"), adir_local.replace("/","\\"))
 			dirEntry["zipCmd"] = zipCmd
 		else:
 			
-			if platform.system() in ["Linux", "Darwin"]:
+			if Common.isLinux or Common.isMac:
 				zipCmd = "%s x -y %s -o%s -mmt=on" % (zip_exe, azip_local, adir_local)
-			else:
+			elif Common.isWindows:
 				zipCmd = "%s x -y \"%s\" -o\"%s\" -mmt=on" % (zip_exe, azip_local.replace("/","\\"), adir_local.replace("/","\\"))
 			dirEntry["zipCmd"] = zipCmd
 
@@ -471,11 +460,11 @@ class ZipThreadManager:
 					if dirEntry["zipDirection"] == "down":
 						shutil.rmtree(dirEntry["adir_local"],True) # delete target first
 					
-					if platform.system() in ["Linux", "Darwin"]:
+					if Common.isLinux or Common.isMac:
 						exe = dirEntry["zipCmd"].split(" ")
 						print exe
 						subprocess.call(exe)
-					else:
+					elif Common.isWindows:
 						startupinfo = subprocess.STARTUPINFO()
 						startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 						startupinfo.wShowWindow = subprocess.SW_HIDE
@@ -514,7 +503,7 @@ class HashThreadManager:
 		#Creating hasher
 		#self.hasher = murmur3_32()
 
-        #thread msg strings
+		#thread msg strings
 		self.name = "Hasher"
 		self.hashQ = self.mainObj.newQ()
 		
