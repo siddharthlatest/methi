@@ -60,7 +60,7 @@ def isDaemonAlreadyRunning():
 	if (isinstance(port,int)):
 		return False
 	
-	rpc = xmlrpclib.ServerProxy("http://localhost:"+port)
+	rpc = xmlrpclib.ServerProxy("http://localhost:"+str(port))
 	try:
 		rpc.hello()
 		return True

@@ -85,7 +85,7 @@ def main():
 	atexit.register(exit)
 	
 	def sigHandler(sig,frm):
-		print "sig:" + sig
+		print "sig:" + str(sig)
 		exit()
 
 	signal.signal(signal.SIGTERM,sigHandler)
@@ -95,7 +95,6 @@ def main():
 		signal.signal(signal.CTRL_BREAK_EVENT,sigHandler)
 	else:
 		signal.signal(signal.SIGINT,sigHandler)
-		signal.signal(signal.SIGKILL,sigHandler)
 		signal.signal(signal.SIGQUIT,sigHandler)
 		
 	while True:

@@ -230,7 +230,7 @@ class SyncClient:
 
 			if msg == Common.finishMsg:
 				self.nAppsInProcess -= 1
-				self.logger.info("Apps Remaining:"+ self.nAppsInProcess)
+				self.logger.info("Apps Remaining:"+ str(self.nAppsInProcess))
 				if not payLoad["isSuccessful"]:
 					self.successState = False
 

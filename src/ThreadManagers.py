@@ -107,7 +107,7 @@ class AppRunnerThreadManager:
 		f.close()
 		
 		
-		self.logger.info("starting rpc server on:" +port)
+		self.logger.info("starting rpc server on:" +str(port))
 		
 		s.serve_forever()
 		
@@ -256,6 +256,7 @@ class AppThreadManager:
 		
 		if appEntry["direction"] == "up":
 			if (app not in Common.appsToSync):
+				appEntry["isSuccessful"] = True
 				self.onFinishApp(appEntry)
 				return
 			else:
