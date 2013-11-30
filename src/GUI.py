@@ -17,11 +17,12 @@ def create_menu_item(menu, label, func):
 
 
 class TaskBarIcon(wx.TaskBarIcon):
-	def __init__(self, stateQ, iconQ):
+	def __init__(self, ex, iconQ):
+		
+		self.exitF = ex
 		super(TaskBarIcon, self).__init__()
 		self.set_icon(TRAY_ICON)
 		self.Bind(wx.EVT_TASKBAR_LEFT_DCLICK, self.launchClient)
-		self.stateQ = stateQ
 		self.iconQ = iconQ
 
 	def CreatePopupMenu(self):
@@ -56,11 +57,8 @@ class TaskBarIcon(wx.TaskBarIcon):
 		print 'Hello, world!'
 
 	def on_exit(self, event):
-		self.stateQ.put("-1")
-		self.iconQ.put("exit")
-		sleep(10)
-		os._exit(0)
-		wx.CallAfter(self.Destroy)
+		self.exitF()
+		
 
 
 def iconPoller(tb, iconQ):
@@ -70,9 +68,9 @@ def iconPoller(tb, iconQ):
 			return
 		tb.set_icon(icon)
 
-def startGUI(iconQ, stateQ):
+def startGUI(iconQ, exitF):
 	app = wx.PySimpleApp()
-	tb = TaskBarIcon(stateQ, iconQ)
+	tb = TaskBarIcon(exitF, iconQ)
 	t = threading.Thread(target=iconPoller, args=(tb, iconQ))
 	t.start()
 	app.MainLoop()

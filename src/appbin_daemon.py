@@ -57,13 +57,6 @@ def main():
 	uT = UpdateThreadManager(version,processName)
 	aRT = AppRunnerThreadManager(analytics)	
 	
-	stateQ = Queue.Queue(0)
-
-	icons = { "1":"1.ico", "2":"2.ico", "3":"3.ico", "-1":"-1.ico", "0":"0.ico" }
-	iconQ = Queue.Queue(0)
-	if not Common.isMac:  #disable wx in mac
-		t = threading.Thread(target=GUI.startGUI, args=(iconQ,stateQ))
-		t.start()
 
 	def changeIcon(icontoken):
 		if not Common.isMac:  #disable wx in mac
@@ -83,6 +76,12 @@ def main():
 			subprocess.call("cmd /c \"taskkill /F /T /IM appbin_7za.exe\"")
 		print "exit"
 		os._exit(0)
+	
+	icons = { "1":"1.ico", "2":"2.ico", "3":"3.ico", "-1":"-1.ico", "0":"0.ico" }
+	iconQ = Queue.Queue(0)
+	if not Common.isMac:  #disable wx in mac
+		t = threading.Thread(target=GUI.startGUI, args=(iconQ,exit))
+		t.start()
 		
 	atexit.register(exit)
 	
@@ -92,25 +91,16 @@ def main():
 
 	signal.signal(signal.SIGTERM,sigHandler)
 	
-	if Common.isWindows:
-		signal.signal(signal.CTRL_C_EVENT,sigHandler)
-		signal.signal(signal.CTRL_BREAK_EVENT,sigHandler)
-	else:
+	if not Common.isWindows:
 		signal.signal(signal.SIGINT,sigHandler)
 		signal.signal(signal.SIGQUIT,sigHandler)
 		
 	while True:
-		if not stateQ.empty():
-			exit()
 		logger.info("calling syncClient")
 		changeIcon("1")
 		SyncClient(failNotify, changeIcon, analytics)
 		logger.info("syncClient Done")
 		logger.info("Waiting for %d secs" % sleepTime)
-		divide = 4
-		for i in range(0, divide):
-			if not stateQ.empty():
-				exit()
-			sleep(sleepTime/divide)
+		sleep(sleepTime)
 			
 main()
