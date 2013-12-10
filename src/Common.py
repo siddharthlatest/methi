@@ -68,7 +68,6 @@ class nwRpc():
 			cls.isServerUp = False
 		except Exception as e:
 			logging.getLogger("daemon.nwRpcClient").exception(type(e))
-			print type(e), e.args
 	
 	@classmethod	
 	def showInSync(cls,app):

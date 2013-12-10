@@ -47,6 +47,10 @@ class AppRunnerThreadManager:
 				return  "called :%s" % appArgs["app"]
 			def hello(self):
 				return  "hello"
+				
+			def nwRpcPortRegister(self,port):
+				Common.nwRpc.setPort(port)
+				return "nw rpc port registered:" ,port
 
 		def appFinish(app):
 			Common.appsRunning.remove(app)
@@ -243,6 +247,7 @@ class AppThreadManager:
 
 	def newApp(self,appEntry):
 		app = appEntry["app"]
+		Common.nwRpc.showSyncing(app)
 		if app in Common.appsRunning:
 			self.onFinishApp(appEntry)
 			return
@@ -402,7 +407,8 @@ class AppThreadManager:
 		self.logger.info(appEntry["app"] + " end. Success:"+str(appEntry["isSuccessful"]))
 		if not appEntry["isSuccessful"]:
 			Common.appsToSync.append(appEntry["app"])
-
+		else:
+			Common.nwRpc.showInSync(appEntry["app"])
 		self.mainQ.put([self.name,Common.finishMsg,appEntry])
 
 
