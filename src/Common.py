@@ -2,6 +2,9 @@ import os
 import errno
 import platform
 import xmlrpclib
+import socket
+import logging
+
 if platform.system()=='Linux':
 	isLinux = True
 	isWindows = False
@@ -43,6 +46,38 @@ exitMsg = "Exit"
 appsToSync = []
 appsRunning = []
 
+class nwRpc():
+
+	rpcSrv = ''
+	isServerUp = False
+	
+	@classmethod
+	def setPort(cls,port):
+		cls.rpcSrv = xmlrpclib.ServerProxy("http://localhost:"+str(port))
+		cls.isServerUp = True
+	
+	@classmethod
+	def methodWrapper(cls,str):
+		if not cls.isServerUp:
+			return
+		try:
+			logging.getLogger("daemon.nwRpcClient").info("calling "+ str)
+			exec(str) in locals()
+			
+		except socket.error:
+			cls.isServerUp = False
+		except Exception as e:
+			logging.getLogger("daemon.nwRpcClient").exception(type(e))
+			print type(e), e.args
+	
+	@classmethod	
+	def showInSync(cls,app):
+		cls.methodWrapper("cls.rpcSrv.showInSync(\'%s\')" % (app))
+	
+	@classmethod
+	def showSyncing(cls,app):
+		cls.methodWrapper("cls.rpcSrv.showSyncing(\'%s\')" % (app))
+	
 def isDaemonAlreadyRunning():
 	#check by process
 	if( numOfProcessRunning(self_proc_name) > 2): # daemon itself has two processes
