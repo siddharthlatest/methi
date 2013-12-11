@@ -247,7 +247,7 @@ class AppThreadManager:
 
 	def newApp(self,appEntry):
 		app = appEntry["app"]
-		Common.nwRpc.showSyncing(app)
+		
 		if app in Common.appsRunning:
 			self.onFinishApp(appEntry)
 			return
@@ -276,6 +276,7 @@ class AppThreadManager:
 			else:
 				Common.appsToSync = list(filter((app).__ne__, Common.appsToSync))
 		
+		Common.nwRpc.showSyncing(app)
 		
 		appEntry["nRemainDirs"] = len(dirs)
 		appEntry["isHashChanged"] = True
