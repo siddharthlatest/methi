@@ -55,6 +55,7 @@ class AppRunnerThreadManager:
 		def appFinish(app):
 			Common.appsRunning.remove(app)
 			Common.appsToSync.append(app)
+			self.logger.info("App closed. Appending to syncList: "+app)
 			#Tracking Code
 			analytics.track(event="App closed", properties={"appName":app})
 			###
@@ -275,7 +276,9 @@ class AppThreadManager:
 				self.onFinishApp(appEntry)
 				return
 			else:
-				Common.appsToSync = list(filter((app).__ne__, Common.appsToSync))
+				Common.appsToSync = [i for i in Common.appsToSync if i != app]
+				self.logger.info("Filtered: "+ appEntry["app"] +". syncList: "+str(Common.appsToSync))
+				
 		
 		Common.nwRpc.showSyncing(app)
 		
@@ -410,8 +413,10 @@ class AppThreadManager:
 	def onFinishApp(self,appEntry):
 		self.logger.info(appEntry["app"] + " end. Success:"+str(appEntry["isSuccessful"]))
 		
-		if (not appEntry["isSuccessful"]) and appEntry["direction"] == "up" :
-			Common.appsToSync.append(appEntry["app"])
+		if (not appEntry["isSuccessful"]) :
+			if appEntry["direction"] == "up":
+				Common.appsToSync.append(appEntry["app"])
+				self.logger.info("Appending to syncList: "+appEntry["app"])
 		elif  appEntry["app"] not in Common.appsRunning :
 			Common.nwRpc.showInSync(appEntry["app"])
 		
