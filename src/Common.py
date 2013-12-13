@@ -47,22 +47,22 @@ appsToSync = []
 appsRunning = []
 
 class nwRpc():
-
-	rpcSrv = ''
 	isServerUp = False
+	
 	
 	@classmethod
 	def setPort(cls,port):
-		cls.rpcSrv = xmlrpclib.ServerProxy("http://localhost:"+str(port))
+		cls.rpcSrvPort = port
 		cls.isServerUp = True
 	
 	@classmethod
-	def methodWrapper(cls,str):
+	def methodWrapper(cls,exeStr):
 		if not cls.isServerUp:
 			return
 		try:
-			logging.getLogger("daemon.nwRpcClient").info("calling "+ str)
-			exec(str) in locals()
+			logging.getLogger("daemon.nwRpcClient").info("calling "+ exeStr)
+			cls.rpcSrv = xmlrpclib.ServerProxy("http://localhost:"+str(cls.rpcSrvPort))
+			exec(exeStr) in locals()
 			
 		except socket.error:
 			cls.isServerUp = False

@@ -223,6 +223,7 @@ class AppThreadManager:
 				obj = {"app":obj,"temp": Common.createPath(self.adir_appTemp(obj))}
 				obj["appIni"] = "%s/app.ini" % obj["temp"]
 				obj["isSuccessful"] = True
+				obj["isActuallySynced"] = True
 			self.appQ.put([obj,msg])
 		except:
 			self.logger.exception("error in addEntry:"+str((obj, msg)))
@@ -270,7 +271,7 @@ class AppThreadManager:
 		
 		if appEntry["direction"] == "up":
 			if (app not in Common.appsToSync):
-				appEntry["isSuccessful"] = True
+				appEntry["isActuallySynced"] = False
 				self.onFinishApp(appEntry)
 				return
 			else:
@@ -295,15 +296,17 @@ class AppThreadManager:
 			appEntry["appCfg"].write(f)
 			f.close()
 			conn = self.mainObj.conn
-			if (appEntry["isHashChanged"] or appEntry["direction"] == "down") and not appEntry["isDownStopped"]:
+			if (appEntry["isHashChanged"] or appEntry["direction"] == "down") and (not appEntry["isDownStopped"]) and appEntry["isSuccessful"]:
 				self.logger.info(appEntry["app"]+": Uploading Ini..")
 				isNetOpSuccessful = conn.uploadFile("app.ini", appEntry["appIni"], "%s/%s" % (appEntry["app"], self.mainObj.rdir_remote_temp),checkDir=False)
 				if isNetOpSuccessful > 0:
-					appEntry["isSuccessful"] = True
+					pass
 				else:
+					appEntry["isActuallySynced"] = False
 					appEntry["isSuccessful"] = False
 				self.logger.info(appEntry["app"] + " ini uploaded")
 			else:
+				appEntry["isActuallySynced"] = False
 				self.logger.info(appEntry["app"] + " ini not uploaded")
 
 
@@ -397,19 +400,21 @@ class AppThreadManager:
 		filename = "app.ini"
 		isNetOpSuccessful = self.mainObj.conn.downloadFile(filename,appEntry["appIni"],"%s/%s" % (appEntry["app"], self.mainObj.rdir_remote_current),False)
 		if isNetOpSuccessful > 0:
-			appEntry["isSuccessful"] = True
+			pass
 		else:
-			appEntry["isSuccessful"] = False
+			pass
 
 	def adir_appTemp(self, app):
 		return self.mainObj.adir_temp + "/" + app
 
 	def onFinishApp(self,appEntry):
 		self.logger.info(appEntry["app"] + " end. Success:"+str(appEntry["isSuccessful"]))
-		if not appEntry["isSuccessful"]:
+		
+		if (not appEntry["isSuccessful"]) and appEntry["direction"] == "up" :
 			Common.appsToSync.append(appEntry["app"])
-		else:
+		elif  appEntry["app"] not in Common.appsRunning :
 			Common.nwRpc.showInSync(appEntry["app"])
+		
 		self.mainQ.put([self.name,Common.finishMsg,appEntry])
 
 
@@ -599,7 +604,7 @@ class FtpThreadManager:
 				dirEntry["adir_remote"] = "%s/%s" % (dirEntry["appEntry"]["app"], self.mainObj.rdir_remote_current)
 				isNetOpSuccessful = self.mainObj.conn.downloadFile(dirEntry["azip_name"],dirEntry["azip_local"],dirEntry["adir_remote"])
 			if isNetOpSuccessful > 0:
-				dirEntry["appEntry"]["isSuccessful"] = True
+				pass
 			else:
 				dirEntry["appEntry"]["isSuccessful"] = False
 			self.onFinishEntry(dirEntry)
