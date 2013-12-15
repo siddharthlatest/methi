@@ -4,6 +4,7 @@ import platform
 import xmlrpclib
 import socket
 import logging
+import subprocess
 
 if platform.system()=='Linux':
 	isLinux = True
@@ -89,15 +90,24 @@ def syncNow(reSync = False):
 	global isResyncEnabled
 	global isSyncInProg
 	
+	if(reSync):
+		logging.getLogger("daemon.Common").info("Immediate Sync requested")
+	else:
+		logging.getLogger("daemon.Common").info("Scheduled Sync requested")
+	
 	if isSyncInProg:
+		logging.getLogger("daemon.Common").info("Sync already running")
 		isResyncEnabled = isResyncEnabled or reSync
 		return
+	
+	isSyncInProg = True
 	
 	while True:
 		isResyncEnabled = False
 		syncingMethod()
 		
 		if (isResyncEnabled):
+			logging.getLogger("daemon.Common").info("Resyncing...")
 			pass
 		else:
 			break
@@ -173,3 +183,14 @@ def get_hwnds_for_pid (pid):
 	hwnds = []
 	win32gui.EnumWindows (callback, hwnds)
 	return hwnds
+
+def killProc(proc):
+	if isLinux :
+		subprocess.call(["pkill", proc])
+	elif isMac :
+		subprocess.call(["killall","-9" ,proc])
+	elif isWindows:
+		startupinfo = subprocess.STARTUPINFO()
+		startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+		startupinfo.wShowWindow = subprocess.SW_HIDE
+		subprocess.call("cmd /c \"taskkill /F /IM %s\""%(proc),startupinfo=startupinfo )

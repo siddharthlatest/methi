@@ -47,11 +47,19 @@ def main():
 	version = 1.0
 	sleepTime = 10
 	if Common.isWindows:
+		selfProcName = "appbin_daemon.exe"
 		processName = "appbin_nw.exe"
+		zipProcName = "appbin_7za.exe"
+		
 	elif Common.isLinux:
+		selfProcName = "appbin_daemon_lin"
 		processName = "appbin_nw_lin"
+		zipProcName = "appbin_7za"
+		
 	elif Common.isMac:
+		selfProcName = "appbin_daemon_mac"
 		processName = "appbin_nw_mac"
+		zipProcName = "appbin_7za"
 	
 	uT = UpdateThreadManager(version,processName)
 	aRT = AppRunnerThreadManager(analytics)	
@@ -67,13 +75,8 @@ def main():
 	
 	def exit():
 		analytics.finish()
-		if Common.isLinux :
-			subprocess.call(["pkill", "appbin_7za"])
-		elif Common.isMac :
-			subprocess.call(["killall","-9" ,"appbin_7za"])
-		elif Common.isWindows:
-			subprocess.call("cmd /c \"taskkill /F /T /IM appbin_7za.exe\"")
-		print "exit"
+		Common.killProc(zipProcName)
+		Common.killProc(selfProcName)
 		os._exit(0)
 	
 	icons = { "1":"1.ico", "2":"2.ico", "3":"3.ico", "-1":"-1.ico", "0":"0.ico" }
@@ -105,8 +108,11 @@ def main():
 	while True:
 		if Common.isProcessRunning(processName):
 			Common.syncNow(False)
-		else:
-			logger.info("no appbin apps running. not calling sync.")
+		
+		if not Common.isProcessRunning(processName):
+			logger.info("no appbin apps running. exiting.")
+			exit()
+		
 		logger.info("Waiting for %d secs" % sleepTime)
 		sleep(sleepTime)
 			

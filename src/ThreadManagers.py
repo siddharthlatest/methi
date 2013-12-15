@@ -115,6 +115,7 @@ class AppRunnerThreadManager:
 				break
 			
 			except socket.error:
+				self.logger.info("RPC server:tryin port:" + str(port))
 				port = port+1
 				
 		f = open('../data/pipe', 'w')
