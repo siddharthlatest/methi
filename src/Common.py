@@ -49,7 +49,6 @@ appsRunning = []
 class nwRpc():
 	isServerUp = False
 	
-	
 	@classmethod
 	def setPort(cls,port):
 		cls.rpcSrvPort = port
@@ -76,7 +75,35 @@ class nwRpc():
 	@classmethod
 	def showSyncing(cls,app):
 		cls.methodWrapper("cls.rpcSrv.showSyncing(\'%s\')" % (app))
+
+
+isSyncInProg = False
+isResyncEnabled = False
+
+
+def setSyncingMethod(met):
+	global syncingMethod
+	syncingMethod = met
+
+def syncNow(reSync = False):
+	global isResyncEnabled
+	global isSyncInProg
 	
+	if isSyncInProg:
+		isResyncEnabled = isResyncEnabled or reSync
+		return
+	
+	while True:
+		isResyncEnabled = False
+		syncingMethod()
+		
+		if (isResyncEnabled):
+			pass
+		else:
+			break
+
+	isSyncInProg = False
+
 def isDaemonAlreadyRunning():
 	#check by process
 	if( numOfProcessRunning(self_proc_name) > 2): # daemon itself has two processes

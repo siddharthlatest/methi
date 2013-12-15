@@ -51,6 +51,10 @@ class AppRunnerThreadManager:
 			def nwRpcPortRegister(self,port):
 				Common.nwRpc.setPort(port)
 				return "nw rpc port registered:" ,port
+			
+			def syncNow(self):
+				Common.syncNow(True)
+				return "synced or registered for sync"
 
 		def appFinish(app):
 			Common.appsRunning.remove(app)
@@ -60,6 +64,8 @@ class AppRunnerThreadManager:
 			analytics.track(event="App closed", properties={"appName":app})
 			###
 			self.logger.info("App closed:" + app)
+			self.logger.info("calling sync")
+			Common.syncNow(True)
 			
 		def handleWindow(appprocess):
 			sleep(4)

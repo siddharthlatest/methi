@@ -13,7 +13,6 @@ import logging
 import Queue
 import subprocess
 from analytics import Analytics
-
 from SyncClient import SyncClient
 from ThreadManagers import UpdateThreadManager,AppRunnerThreadManager
 import atexit
@@ -46,7 +45,7 @@ def main():
 	
 	logger.info("Daemon Init")
 	version = 1.0
-	sleepTime = 20
+	sleepTime = 10
 	if Common.isWindows:
 		processName = "appbin_nw.exe"
 	elif Common.isLinux:
@@ -94,12 +93,20 @@ def main():
 	if not Common.isWindows:
 		signal.signal(signal.SIGINT,sigHandler)
 		signal.signal(signal.SIGQUIT,sigHandler)
-		
-	while True:
+	
+	def initSync():
 		logger.info("calling syncClient")
 		changeIcon("1")
 		SyncClient(failNotify, changeIcon, analytics)
 		logger.info("syncClient Done")
+	
+	Common.setSyncingMethod(initSync)
+	
+	while True:
+		if Common.isProcessRunning(processName):
+			Common.syncNow(False)
+		else:
+			logger.info("no appbin apps running. not calling sync.")
 		logger.info("Waiting for %d secs" % sleepTime)
 		sleep(sleepTime)
 			
