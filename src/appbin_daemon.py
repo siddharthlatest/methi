@@ -107,11 +107,12 @@ def main():
 	
 	while True:
 		if Common.isProcessRunning(processName):
+			sleepTime = 10
 			Common.syncNow(False)
 		
 		if not Common.isProcessRunning(processName):
-			logger.info("no appbin apps running. exiting.")
-			exit()
+			logger.info("no appbin apps running. yey! more sleep :D")
+			sleepTime = 60
 		
 		logger.info("Waiting for %d secs" % sleepTime)
 		sleep(sleepTime)
