@@ -106,13 +106,14 @@ def main():
 	Common.setSyncingMethod(initSync)
 	
 	while True:
-		if Common.isProcessRunning(processName):
-			sleepTime = 10
-			Common.syncNow(False)
+		Common.syncNow(False)
 		
 		if not Common.isProcessRunning(processName):
-			logger.info("no appbin apps running. yey! more sleep :D")
+			logger.info("no appbin apps running. more sleep :)")
 			sleepTime = 60
+		else:
+			logger.info("no appbin_nw running. less sleep :(")
+			sleepTime = 10
 		
 		logger.info("Waiting for %d secs" % sleepTime)
 		sleep(sleepTime)
