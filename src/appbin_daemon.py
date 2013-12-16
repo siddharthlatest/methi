@@ -112,7 +112,7 @@ def main():
 			logger.info("no appbin apps running. more sleep :)")
 			sleepTime = 60
 		else:
-			logger.info("no appbin_nw running. less sleep :(")
+			logger.info("appbin_nw running. less sleep :(")
 			sleepTime = 10
 		
 		logger.info("Waiting for %d secs" % sleepTime)
