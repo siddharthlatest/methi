@@ -7,7 +7,6 @@ if(Common.isDaemonAlreadyRunning()):
 
 from time import sleep
 import threading
-
 import os
 import logging
 import Queue
@@ -20,20 +19,29 @@ import atexit
 if not Common.isMac:
 	import GUI #disable wx in mac
 
+
 def setupLogs():
 	Common.createPath(os.path.abspath('../data'))
+	global logFile
+	logFile = "../data/daemon_logs.log"
+	
 	f_out = file('../data/stdout.txt', 'a',0)
 	f_err = file('../data/stderr.txt', 'a',0)
 	sys.stderr = f_err
 	sys.stdout = f_out
-
+	try:
+		if(os.path.getsize(logFile) > 1024*1024*4): # 4MB
+			os.remove(logFile)
+	except:
+		pass
+	
 def main():
 	setupLogs()
 	
 	#creating log file and assigning stdout to logfile
 	logger = logging.getLogger("daemon")
 	logger.setLevel(logging.DEBUG)
-	fh = logging.FileHandler("../data/daemon_logs.log", delay=True)
+	fh = logging.FileHandler(logFile, delay=True)
 	formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 	fh.setFormatter(formatter)
 	logger.addHandler(fh)
