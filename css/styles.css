@@ -12,12 +12,6 @@ body{
 .search-box{
   position: relative;
 }
-.tt-dropdown-menu .more{
-    display:none;
-}
-.tt-dropdown-menu div:last-child .more {
-    display:block;
-}
 .appbase{
   position:absolute;
   width:15%;
