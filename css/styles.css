@@ -23,6 +23,9 @@ a {
   bottom: 0px;
   right: 10px;
 }
+.tt-menu {
+  display: block !important;
+}
 @media  (max-width : 600px) {
   .appbase{
     width:20%;
