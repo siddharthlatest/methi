@@ -1,0 +1,20 @@
+body{
+  padding-top: 50px;
+}
+
+.typeahead {
+  font-size: 24px;
+  line-height: 30px;
+}
+
+.twitter-typeahead {
+  width: 100%;
+}
+h{
+  -webkit-transition: width 2s, height 4s; /* For Safari 3.1 to 6.0 */
+transition: width 2s, height 4s;
+}
+p{
+  -webkit-transition: width 2s, height 4s; /* For Safari 3.1 to 6.0 */
+transition: width 2s, height 4s;
+}
