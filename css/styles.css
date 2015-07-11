@@ -2,6 +2,9 @@ body{
   padding-top: 50px;
   font-family: 'Open Sans', sans-serif !important;
 }
+a {
+	text-decoration: none !important;
+}
 .typeahead {
   font-size: 24px;
   line-height: 30px;
