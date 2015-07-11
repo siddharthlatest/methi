@@ -19,3 +19,17 @@ p{
   -webkit-transition: width 2s, height 4s; /* For Safari 3.1 to 6.0 */
 transition: width 2s, height 4s;
 }
+.appbase{
+  position:absolute;
+  width:15%;
+  margin: auto;
+  top:0px;
+  bottom: 0px;
+  right: 10px;
+}
+@media  (max-width : 600px) {
+  .appbase{
+    width:20%;
+    right:5px;
+  }
+}
