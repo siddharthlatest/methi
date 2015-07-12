@@ -5,6 +5,10 @@ body{
 a {
 	text-decoration: none !important;
 }
+em{
+  font-weight: 600;
+  font-style: normal;
+}
 .typeahead {
   font-size: 24px;
   line-height: 30px;
