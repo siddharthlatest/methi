@@ -15,14 +15,25 @@ var engine = new Bloodhound({
                settings.type = "POST";
                settings.contentType = "application/json; charset=UTF-8";
                search_payload = {
-                   "query": {
-                       "match": {
-                           "title": query
-                       }
-                   }
-               };
+                 "fields": ["title","link"],
+                  "query": {
+                    "multi_match": {
+                      "query": query,
+                      "fields": [
+                        "title^3", "body"
+                      ]
+                    }
+                  },
+                  "highlight": {
+                    "fields": {
+                      "body": {
+                        "fragment_size": 100,
+                        "number_of_fragments": 3
+                      }
+                    }
+                  }
+               }
                settings.data = JSON.stringify(search_payload);
-               console.log(settings)
                return settings;
            },
            transform: function(response) {
@@ -31,7 +42,7 @@ var engine = new Bloodhound({
                  console.log(response.hits.total)
                  $("#search-title").text(response.hits.total+ " Results found")
                    return $.map(response.hits.hits, function (hit) {
-                       return hit._source;
+                       return hit;
                    });
                }
                else{
@@ -51,7 +62,7 @@ $('.typeahead').typeahead({
   source: engine.ttAdapter(),
   templates: {
       suggestion: function(data){
-        return '<div><h4><a href="#">' + data.title + '</a></h4><p> ' + "Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui." + '</p></div>';
+        return '<div><h4><a href="#">' + data.fields.title + '</a></h4><p> ' + data.highlight.body.join('...') + '</p></div>';
       }
   }
 });
