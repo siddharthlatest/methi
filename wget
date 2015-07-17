@@ -1,0 +1,1 @@
+wget --timestamping --recursive --domains digitalocean.com --no-parent ‐‐refer=http://www.google.com --user-agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:21.0) Gecko/20100101 Firefox/21.0" --output-file=logfile_name --limit-rate=200k -w 3 --random-wait --progress=bar https://www.digitalocean.com/community/tutorials/
