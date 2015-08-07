@@ -1,8 +1,0 @@
-arch=`uname -m`
-outDir=./dist/lin_$arch/
-out=appbin_daemon_lin
-
-rm -rf $outDir/$out
-rm -rf build
-mkdir -p $outDir
-pyinstaller --distpath=$outDir --noconsole --clean -n $out src/appbin_daemon.py
