@@ -1,0 +1,12 @@
+#folders
+*.pyc
+build
+.*project
+.settings/
+bin
+dist
+data
+*.spec
+*._*
+*.xcworkspace
+*.DS_Store
