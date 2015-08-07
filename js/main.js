@@ -14,25 +14,44 @@ var engine = new Bloodhound({
            prepare: function (query, settings) {
                settings.type = "POST";
                settings.contentType = "application/json; charset=UTF-8";
-               search_payload = {
-                 "fields": ["title","link"],
-                  "query": {
-                    "multi_match": {
-                      "query": query,
-                      "fields": [
-                        "title^3", "body"
-                      ]
-                    }
-                  },
-                  "highlight": {
-                    "fields": {
-                      "body": {
-                        "fragment_size": 100,
-                        "number_of_fragments": 3
-                      }
-                    }
-                  }
-               }
+              //  search_payload = {
+              //    "fields": ["title","link"],
+              //     "query": {
+              //       "multi_match": {
+              //         "query": query,
+              //         "fields": [
+              //           "title_simple^3", "body", "title_snow"
+              //         ]
+              //       }
+              //     },
+              //     "highlight": {
+              //       "fields": {
+              //         "body": {
+              //           "fragment_size": 100,
+              //           "number_of_fragments": 3
+              //         }
+              //       }
+              //     }
+              //  }
+                search_payload = {
+                  "size": "120",
+                  "fields": ["title","link"],
+                   "query": {
+                     "match": {
+                        "_all": {
+                           "query": query
+                        }
+                     }
+                   },
+                   "highlight": {
+                     "fields": {
+                       "title": {
+                         "fragment_size": 100,
+                         "number_of_fragments": 3
+                       }
+                     }
+                   }
+                };
                settings.data = JSON.stringify(search_payload);
                return settings;
            },
