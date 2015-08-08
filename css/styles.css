@@ -58,9 +58,9 @@ em{
 .search-box-container-grow .search-box{
   margin: 10px 0;
 }
-#search-title{
+/*#search-title{
   display: none;
-}
+}*/
 .code_snippet{
   padding: 12px 16px 0;
   resize: none;
