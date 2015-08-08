@@ -21,7 +21,7 @@ var engine = new Bloodhound({
                settings.contentType = "application/json; charset=UTF-8";
                search_payload = {
                  "size": "20",
-                 "fields": ["title","link"],
+                 "fields": ["link"],
                   "query": {
                     "multi_match": {
                       "query": query,
