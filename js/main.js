@@ -90,3 +90,25 @@ $('.typeahead').typeahead({
       }
   }
 });
+
+$('.typeahead').on('keyup',function(){
+  search_grow('show');
+});
+
+
+$('.overlay').click(function(){
+  search_grow('hide');
+});
+
+function search_grow(method){
+  if(method == 'show'){
+    $('.overlay').show('fast');
+    $('.search-box-container').addClass('search-box-container-grow');
+    $('#search-title').fadeIn('slow');  
+  }
+  else if(method == 'hide'){
+    $('#search-title').fadeOut(1);  
+    $('.search-box-container').removeClass('search-box-container-grow');
+    $('.overlay').fadeOut('slow');
+  }
+}
