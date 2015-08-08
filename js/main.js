@@ -34,9 +34,12 @@ var engine = new Bloodhound({
                     "fields": {
                       "body": {
                         "fragment_size": 100,
-                        "number_of_fragments": 3
+                        "number_of_fragments": 2,
+                        "no_match_size": 180
                       },
                       "title": {
+                        "fragment_size": 500,
+                        "no_match_size": 500
                       }
                     }
                   }
@@ -89,17 +92,8 @@ $('.typeahead').typeahead({
   source: engine.ttAdapter(),
   templates: {
       suggestion: function(data){
-        if (data.highlight.title)
-          title = data.highlight.title;
-        else
-          title = data.fields.title;
-        if (data.highlight.body)
-          body = data.highlight.body.join('...');
-        else
-          body = "";
-
         // return '<div><h4><a href="https://www.digitalocean.com/community/tutorials/'+ data.fields.link + '">' + data.fields.title + '</a></h4><p> ' + "Abhi ke liye yeh hi body se kaam chala  lo baad mein kuch aur daal denge beta - Yo - I am loving this typing" + '</p></div>';
-        return '<div><h4><a href="'+ data.fields.link +'">' + title + '</a></h4><p> ' + body + '</p></div>';
+        return '<div><h4><a href="'+ data.fields.link +'">' + data.highlight.title + '</a></h4><p> ' + data.highlight.body.join('...') + '...</p></div>';
       }
   }
 });
