@@ -4,10 +4,11 @@ var engine = new Bloodhound({
        datumTokenizer: function (datum) { return Bloodhound.tokenizers.whitespace(datum); },
        queryTokenizer: Bloodhound.tokenizers.whitespace,
        remote: {
+
+          //  url: 'http://qHKbcf4M6:78a6cf0e-90dd-4e86-8243-33b459b5c7c5@scalr.api.appbase.io/1/article/_search',
            url: 'http://localhost:9200/digitalocean/article/_search',
            // he time interval in milliseconds that will be used by rateLimitBy. Defaults to 300
            rateLimitWait: 300,
-
             // Function that provides a hook to allow you to prepare the settings object passed to transport when a request is about to be made.
             // The function signature should be prepare(query, settings), where query is the query #search was called with
             // and settings is the default settings object created internally by the Bloodhound instance. The prepare function should return a settings object.
