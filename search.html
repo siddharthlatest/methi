@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <meta charset="utf-8">
     <title>Documentation Search - Powered by Appbase.io</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
@@ -11,24 +11,101 @@
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:700,400,600' rel='stylesheet' type='text/css'>    <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     </script>
-  </head>
-  <body>
-    <div class="container">
-    	<div class="row">
-    		<div class="col-md-8 col-md-offset-2">
-          <div class="alert alert-info text-center" role="alert">
-            This is preview of search on Digital Ocean. To install it on your website, <a href="#" class="alert-link">Click here!</a>
-          </div>
-    			<h1 id ="search-title" class="text-center">
-    				Blazing fast search on your Documentation
-    			</h1><br>
-          <div class="search-box">
-            <input type="text" class="form-control input-lg typeahead" placeholder="Lets see how fast you can type...">
-            <img src="images/Appbase.png" class = "appbase">
-          </div>
-    		</div>
-    	</div>
-    </div>
+</head>
+<body>
+    <section class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="alert alert-info text-center" role="alert">
+                    This is preview of search on Digital Ocean. To install it on your website, <a href="#" class="alert-link">Click here!</a>
+                </div>
+            </div>
+        </div>
+        <!-- Panel Start -->
+        <div class="panel panel-default">
+            <!-- Panel-heading start -->
+            <div class="panel-heading">
+                <div class="row">
+                    <!-- Installation btn start -->
+                    <div class="col-xs-6 panel-title">
+                        Installation
+                    </div>
+                    <!-- Installation btn End -->
+                    <!-- Search input start -->
+                    <div class="col-xs-6 search-box-container">
+                        <h1 id="search-title" class="text-center col-xs-12">
+                        Blazing fast search on your Documentation
+                        </h1>
+                        <div class="col-xs-12">
+                            <div class="search-box row">
+                                <input type="text" class="form-control input-lg typeahead" placeholder="Lets see how fast you can type..." />
+                                <img src="images/Appbase.png" class="appbase" />
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Search input End -->
+                </div>
+            </div>
+            <!-- Panel-heading end -->
+            <!-- panel-body start -->
+            <div class="panel-body">
+                <div class="row">
+                    <!-- Tabs -->
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active"><a href="#installCode" aria-controls="home" role="tab" data-toggle="tab">Install Code</a></li>
+                        <li role="presentation"><a href="#searchButton" aria-controls="profile" role="tab" data-toggle="tab">Search Butoon</a></li>
+                    </ul>
+
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        <!-- installCode start -->
+                        <div role="tabpanel" class="tab-pane active" id="installCode">
+                            <h4 class="col-xs-12">
+                                Install Code
+                            </h4>
+                            <p class="col-xs-12">
+                                Now that you have configured the appearance and content of your Swiftype installation, you need to enable it on your site. To do this, add this JavaScript code to every page on your site that has, or should have, a search box.
+                            </p>
+                            <div class="col-xs-12">
+                                <textarea class="code_snippet col-xs-12" spellcheck="false">
+                                    &lt;script type="text/javascript"&gt;
+                                    (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+                                    (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+                                    e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+                                    })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+                                    _st('install','HmpohkFJXBfKsxWbzh9-','2.0.0');
+                                    &lt;/script&gt;
+                                </textarea>
+                            </div>
+                        </div>
+                        <!-- installCode end -->
+                        <!-- searchButton start -->
+                        <div role="tabpanel" class="tab-pane" id="searchButton">
+                            <h4 class="col-xs-12">
+                                Search Button
+                            </h4>
+                            <p class="col-xs-12">
+                                If you have already a search button just write your class name in input, and we will take care of other things.
+                            </p>
+                            <div class="col-xs-12">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="search-btn-class" placeholder="search class">
+                                    <span class="input-group-addon">Submit</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- searchButton end -->
+                    </div>
+                </div>
+            </div>
+            <!-- panel-body end -->
+        </div>
+        <!-- Panel End -->
+    </section>
+    <!-- overlay start -->
+    <div class="overlay"></div>
+    <!-- overlay End -->
     <script src="js/main.js"></script>
-  </body>
+</body>
 </html>
