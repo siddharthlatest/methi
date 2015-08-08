@@ -73,10 +73,10 @@ var engine = new Bloodhound({
              console.log(response);
                if(response.hits.hits.length > 0) {
                  console.log(response.hits.total);
-                 $("#search-title").text(response.hits.total+ " Results found");
-                   return $.map(response.hits.hits, function (hit) {
-                       return hit;
-                   });
+                 $("#search-title").html(response.hits.total+ " Results found" + " <sub>(in " + parseInt(response.took)/1000 + "s)</sub>");
+                 return $.map(response.hits.hits, function (hit) {
+                     return hit;
+                 });
                }
                else{
                  $("#search-title").text("No Results found");

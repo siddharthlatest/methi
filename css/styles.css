@@ -2,6 +2,10 @@ body{
   padding-top: 50px;
   font-family: 'Open Sans', sans-serif !important;
 }
+h1 sub{
+  bottom: 0.10em !important;
+  font-size: 0.4em;
+}
 a {
 	text-decoration: none !important;
 }
