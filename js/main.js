@@ -18,6 +18,9 @@ var engine = new Bloodhound({
                settings.xhrFields= {
                  withCredentials: true
                };
+               settings.headers = {
+                 "Authorization": "Basic " + btoa("qHKbcf4M6:78a6cf0e-90dd-4e86-8243-33b459b5c7c5")
+               };
                settings.contentType = "application/json; charset=UTF-8";
                search_payload = {
                  "size": "20",
