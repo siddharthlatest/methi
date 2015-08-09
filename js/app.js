@@ -117,18 +117,7 @@ var appbase_app = function(){
 				var	modal = $('<div>').addClass(abbr+'modal').append(modal_content).append(overlay);
 				$('body').append(modal);
 
-				
-				var css = '.appbase_modal{display:none;position:fixed;margin:0 auto;z-index:998;width:100%;height:100%;top:0;left:0;background:0 0}.appbase_input,.appbase_modal_content{display:block;width:100%;background-color:#fff;box-sizing:border-box}.appbase_modal_content{position:relative;max-width:960px;margin:50px auto 0;padding:20px;border-radius:5px;z-index:1000}.appbase_search_box{position:relative}.appbase_input{color:#555;background-image:none;border:1px solid #ccc;-webkit-box-shadow:inset 0 1px 1px rgba(0,0,0,.075);box-shadow:inset 0 1px 1px rgba(0,0,0,.075);-webkit-transition:border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;-o-transition:border-color ease-in-out .15s,box-shadow ease-in-out .15s;transition:border-color ease-in-out .15s,box-shadow ease-in-out .15s;height:46px;padding:10px 16px;font-size:18px;line-height:1.3333333;border-radius:6px}.appbase_logo{position:absolute;width:15%;margin:auto;top:5px;right:10px}.appbase_overlay{display:none;position:fixed;width:100%;height:100%;top:0;left:0;z-index:999;background:rgba(0,0,0,.5)}.twitter-typeahead{width:100%}.twitter-typeahead .tt-menu{position:relative!important;overflow:auto;height:200px}';
 
-			    head = document.head || document.getElementsByTagName('head')[0],
-			    style = document.createElement('style');
-				style.type = 'text/css';
-				if (style.styleSheet){
-				  style.styleSheet.cssText = css;
-				} else {
-				  style.appendChild(document.createTextNode(css));
-				}
-				head.appendChild(style);
 				html_events(obj, modal, overlay);	
 			};
 
@@ -227,79 +216,63 @@ var appbase_app = function(){
 	}
 }
 
+var Loader = function () { }
+Loader.prototype = {
+    require: function (scripts, callback) {
+        this.loadCount      = 0;
+        this.totalRequired  = scripts.length;
+        this.callback       = callback;
 
+        for (var i = 0; i < scripts.length; i++) {
+        	var split_name = scripts[i].split('.');
+        	if(split_name[split_name.length-1] == 'js')
+            	this.writeScript(scripts[i]);
+            if(split_name[split_name.length-1] == 'css')
+            	this.writeStylesheet(scripts[i]);
+        }
+    },
+    loaded: function (evt) {
+        this.loadCount++;
 
-//Working css
+        if (this.loadCount == this.totalRequired && typeof this.callback == 'function') this.callback.call();
+    },
+    writeScript: function (src) {
+        var self = this;
+        var s = document.createElement('script');
+        s.type = "text/javascript";
+        s.async = true;
+        s.src = src;
+        s.addEventListener('load', function (e) { self.loaded(e); }, false);
+        var head = document.getElementsByTagName('head')[0];
+        head.appendChild(s);
+    },
+    writeStylesheet: function (src) {
+        var self = this;
+        var s = document.createElement('link');
+        s.type = "text/css";
+        s.rel = "stylesheet";
+        s.href = src;
+        s.addEventListener('load', function (e) { self.loaded(e); }, false);
+        var head = document.getElementsByTagName('head')[0];
+        head.appendChild(s);
+    }
+}
 
-// .appbase_modal{
-//         display: none;
-//         position: fixed;
-//         margin: 0 auto;
-//         z-index: 998;
-//         width: 100%;
-//         height: 100%;
-//         top: 0;
-//         left: 0;
-//         background: transparent;
-//       }
-//       .appbase_modal_content{
-//         position: relative;
-//         margin: 0 auto;
-//         display: block;
-//         background-color: #fff;
-//         width: 100%;
-//         max-width: 960px;
-//         margin: 50px auto 0 auto;
-//         padding: 20px;
-//         border-radius: 5px;
-//         z-index: 1000;
-//          box-sizing: border-box;
-//       }
-//       .appbase_search_box{
-//         position: relative;
-//       }
-//       .appbase_input{
-//         display: block;
-//         width: 100%;
-//         color: #555;
-//         background-color: #fff;
-//         background-image: none;
-//         border: 1px solid #ccc;
-//         border-radius: 4px;
-//         -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
-//         box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
-//         -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
-//         -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
-//         transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
-//         height: 46px;
-//         padding: 10px 16px;
-//         font-size: 18px;
-//         line-height: 1.3333333;
-//         border-radius: 6px;
-//         box-sizing: border-box;
-//       }
-//       .appbase_logo{
-//           position: absolute;
-//           width: 15%;
-//           margin: auto;
-//           top: 5px;
-//           right: 10px;
-//       }
-//       .appbase_overlay{
-//         display: none;
-//         position: fixed;
-//         width: 100%;
-//         height: 100%;
-//         top: 0;
-//         left: 0;
-//         z-index: 999;
-//         background: rgba(0,0,0,0.50);
-//       }
-//       .twitter-typeahead{
-//         width: 100%
-//       }
-//       .twitter-typeahead .tt-menu{
-//         position: relative !important;
-//         overflow: auto;
-//         height: 200px
-//       }
+var jquery_js = new Loader();
+jquery_js.require([
+    "css/client.css",
+    "https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"], 
+    function() {
+		var typeahead_js = new Loader();
+		typeahead_js.require([
+		    "http://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js"], 
+		    function() {
+		    	 var appbase = new appbase_app();
+			      appbase.initialize({
+			        title:'Blazing fast search1 on your Documentation',
+			        input_placeholder:'search here',
+			        logo:'images/Appbase.png',
+			        selector:'.appbase_external_search'
+			      });
+		    });    	
+    });
