@@ -14,37 +14,13 @@ var appbase_app = function(){
 			abbr:'appbase_',
 			selector:'.appbase_external_search'
 		};
-		$this.url = 'http://qHKbcf4M6:78a6cf0e-90dd-4e86-8243-33b459b5c7c5@scalr.api.appbase.io/1/article/_search';
+		$this.variables = variables();
+		$this.url = $this.variables.URL;
 		$this.appbase_total = 0;
 		$this.appbase_increment = 20;
 		$this.size = $this.appbase_increment;
 		$this.appbase_xhr_flag = true;
-		$this.search_payload = {
-						"from":0,	
-		                 "size": $this.size,
-		                 "fields": ["link"],
-		                  "query": {
-		                    "multi_match": {
-		                      "query": 'ap',
-		                      "fields": [
-		                        "title^3", "body"
-		                      ]
-		                    }
-		                  },
-		                  "highlight": {
-		                    "fields": {
-		                      "body": {
-		                        "fragment_size": 100,
-		                        "number_of_fragments": 2,
-		                        "no_match_size": 180
-		                      },
-		                      "title": {
-		                        "fragment_size": 500,
-		                        "no_match_size": 500
-		                      }
-		                    }
-		                  }
-		               };
+		$this.search_payload = $this.variables.SEARCH_PAYLOAD;
 		    $.ajaxSetup({
 			    crossDomain: true,
 			    xhrFields: {
@@ -54,50 +30,7 @@ var appbase_app = function(){
 		    //Initialize Variables End
 		    
 		    //Bloodhound Start
-		    var engine = new Bloodhound({
-		       name: 'history',
-		       limit: 100,
-		       datumTokenizer: function (datum) { return Bloodhound.tokenizers.whitespace(datum); },
-		       queryTokenizer: Bloodhound.tokenizers.whitespace,
-		       remote: {
-
-		           url: $this.url,
-		          //  url: 'http://localhost:9200/digitalocean/article/_search',
-		           // he time interval in milliseconds that will be used by rateLimitBy. Defaults to 300
-		           rateLimitWait: 300,
-		            // Function that provides a hook to allow you to prepare the settings object passed to transport when a request is about to be made.
-		            // The function signature should be prepare(query, settings), where query is the query #search was called with
-		            // and settings is the default settings object created internally by the Bloodhound instance. The prepare function should return a settings object.
-		           prepare: function (query, settings) {
-
-		               settings.type = "POST";
-		               settings.xhrFields= {
-		                 withCredentials: true
-		               };
-		               settings.headers = {
-		                 "Authorization": "Basic " + btoa("qHKbcf4M6:78a6cf0e-90dd-4e86-8243-33b459b5c7c5")
-		               };
-		               settings.contentType = "application/json; charset=UTF-8";
-		            	$this.search_payload.query.multi_match.query = query;
-		               settings.data = JSON.stringify($this.search_payload);
-		               return settings;
-		           },
-		           transform: function(response) {
-		             console.log(response);
-		               if(response.hits.hits.length > 0) {
-		                 console.log(response.hits.total);
-		                 $this.appbase_total = response.hits.total;
-		                 $('.appbase_title').html(response.hits.total+ " Results found" + " <sub>(in " + parseInt(response.took) + "ms)</sub>");
-		                 return $.map(response.hits.hits, function (hit) {
-		                     return hit;
-		                 });
-		               }
-		               else{
-		                 $(".appbase_title").text("No Results found");
-		               }
-		           }
-		       }
-		   });
+		    engine = new Bloodhound(variables().ENGINE());
 			//Bloodhound End
 
 			//Fire CreateHtml
@@ -116,7 +49,6 @@ var appbase_app = function(){
 				var overlay = $('<div>').addClass(abbr+'overlay');
 				var	modal = $('<div>').addClass(abbr+'modal').append(modal_content).append(overlay);
 				$('body').append(modal);
-
 
 				html_events(obj, modal, overlay);	
 			};
@@ -149,6 +81,7 @@ var appbase_app = function(){
 				  source: engine.ttAdapter(),
 				  templates: {
 				      suggestion: function(data){
+				      	console.log(data);
 				        // return '<div><h4><a href="https://www.digitalocean.com/community/tutorials/'+ data.fields.link + '">' + data.fields.title + '</a></h4><p> ' + "Abhi ke liye yeh hi body se kaam chala  lo baad mein kuch aur daal denge beta - Yo - I am loving this typing" + '</p></div>';
 				        return '<div><h4><a href="'+ data.fields.link +'">' + data.highlight.title + '</a></h4><p> ' + data.highlight.body.join('...') + '...</p></div>';
 				      }
@@ -265,7 +198,8 @@ jquery_js.require([
     function() {
 		var typeahead_js = new Loader();
 		typeahead_js.require([
-		    "http://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js"], 
+		    "http://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js",
+		    "js/variable.js"], 
 		    function() {
 		    	 var appbase = new appbase_app();
 			      appbase.initialize({
