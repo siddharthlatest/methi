@@ -50,6 +50,8 @@
   line-height: 1.3333333;
   border-radius: 0;
   box-sizing: border-box;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
 }
 .appbase_input:focus{
   outline: none;
@@ -73,11 +75,12 @@
   background: rgba(0,0,0,0.50);
 }
 .appbase_total_info{
-  font-size: 12px;
+  font-size: 14px;
   line-height: 20px;
   text-align: center;
   width: 100%;
   display: block;
+  padding-bottom: 5px;
 }
 .twitter-typeahead{
   width: 100%
@@ -120,7 +123,7 @@
   overflow: hidden;
   -ms-text-overflow: ellipsis;
   text-overflow: ellipsis;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: normal;
   line-height: 1.4;
   cursor: pointer;
@@ -130,9 +133,9 @@
     font-style: normal;
 }
 .twitter-typeahead .record_link .small_description{
-  max-height: 31px;
+  max-height: 40px;
   overflow: hidden;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 400;
   line-height: 1.4;
   color: #888;
