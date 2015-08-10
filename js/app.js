@@ -5,7 +5,7 @@ var appbase_app = function(){
 	};
 
 	function initialize(options){
-		
+
 		//Initialize Variables Start
 		$this.default_options = {
 			title:'Blazing fast search on your Documentation',
@@ -26,16 +26,16 @@ var appbase_app = function(){
 			    xhrFields: {
 			        withCredentials: true
 			    }
-			});           
+			});
 		    //Initialize Variables End
-		    
+
 		    //Bloodhound Start
 		    var engine_variable = variables().ENGINE();
 		    engine_variable['remote']['transform'] = function(response) {
 	          console.log(response);
 	          if (response.hits.hits.length > 0) {
 	            console.log(response.hits.total);
-	            $this.appbase_total = response.hits.total; 
+	            $this.appbase_total = response.hits.total;
 	            $(".appbase_total_info").html('Showing 1-'+response.hits.hits.length+' of '+response.hits.total + " for \""+$('.appbase_input').eq(1).val()+"\"");
 	            return $.map(response.hits.hits, function(hit) {
 	              return hit;
@@ -113,7 +113,7 @@ var appbase_app = function(){
 				var	modal = $('<div>').addClass(abbr+'modal').append(modal_content).append(overlay);
 				$('body').append(modal);
 
-				html_events(obj, modal, overlay);	
+				html_events(obj, modal, overlay);
 			};
 
 			function html_size(obj, modal){
@@ -146,8 +146,14 @@ var appbase_app = function(){
 				  templates: {
 				      suggestion: function(data){
 				        // return '<div><h4><a href="https://www.digitalocean.com/community/tutorials/'+ data.fields.link + '">' + data.fields.title + '</a></h4><p> ' + "Abhi ke liye yeh hi body se kaam chala  lo baad mein kuch aur daal denge beta - Yo - I am loving this typing" + '</p></div>';
+<<<<<<< HEAD
 				        var small_link = $('<span>').addClass('small_link').html(data.highlight.title);
 				  		var small_description = $('<p>').addClass('small_description').html(data.highlight.body.join('...')+'...');
+=======
+
+				  		var small_link = $('<span>').addClass('small_link').text(data.highlight.title);
+				  		var small_description = $('<p>').addClass('small_description').text(data.highlight.body.join('...')+'...');
+>>>>>>> c2787747708d9d7544e62473d4ccb6594b9b2d56
 				  		var single_record = $('<a>').attr({'class':'record_link', 'href':data.fields.link}).append(small_link).append(small_description);
 				        return single_record;
 				      }
@@ -166,16 +172,16 @@ var appbase_app = function(){
 				$(obj.selector).on('keyup',function(){
 					var input_val = $(this).val();
 					$(modal).find('.'+obj.abbr+'input').val(input_val);
-					$(modal).fadeIn(1000);
+					$(modal).fadeIn(300);
 					$(overlay).show();
 					$(modal).find('.'+obj.abbr+'input').focus();
 					$(this).val('');
 				});
 				$(document).keyup(function(e){
 					if (e.keyCode == 27){
-						$(modal).fadeOut(500);
-						$(overlay).fadeOut(500);		
-					} 
+						$(modal).fadeOut(300);
+						$(overlay).fadeOut(300);
+					}
 				});
 				$(overlay).on('click',function(){
 					$(modal).fadeOut(500);
@@ -190,7 +196,7 @@ var appbase_app = function(){
 			        }
 			    });
 
-				
+
 				function scroll_xhr(){
 					$this.appbase_xhr_flag = false;
 					$this.search_payload.query.multi_match.query = $('.'+obj.abbr+'input').eq(1).val();
@@ -209,7 +215,7 @@ var appbase_app = function(){
 					  	var hits = full_data.hits.hits;
 						$this.appbase_increment += hits.length;
 					  	$(".appbase_total_info").html('Showing 1-'+$this.appbase_increment+' of '+$this.appbase_total + " for \""+$('.appbase_input').eq(1).val()+"\"");
-	            
+
 					  	for(var i=0; i< hits.length; i++)
 					  	{
 					  		var data = hits[i];
@@ -225,11 +231,11 @@ var appbase_app = function(){
 					  }
 					});
 				}
-					
+
 			}
 			//CreateHtml End
 
-		               
+
 
 	}
 }
@@ -279,12 +285,12 @@ Loader.prototype = {
 var jquery_js = new Loader();
 jquery_js.require([
     "css/client.css",
-    "https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"], 
+    "https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"],
     function() {
 		var typeahead_js = new Loader();
 		typeahead_js.require([
 		    "http://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js",
-		    "js/variable.js"], 
+		    "js/variable.js"],
 		    function() {
 		    	 var appbase = new appbase_app();
 			      appbase.initialize({
@@ -293,5 +299,5 @@ jquery_js.require([
 			        logo:'images/Appbase.png',
 			        selector:'.appbase_external_search'
 			      });
-		    });    	
+		    });
     });
