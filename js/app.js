@@ -81,7 +81,7 @@ var appbase_app = function(){
            transform: function(response) {
               if (response.hits.hits.length > 0) {
 	            $this.appbase_total = response.hits.total;
-	            $(".appbase_total_info").html('Showing 1-'+response.hits.hits.length+' of '+response.hits.total + " for \""+$('.appbase_input').eq(1).val()+"\"");
+	            $(".appbase_total_info").html('Showing 1-'+response.hits.hits.length+' of '+response.hits.total + " for \""+$('.appbase_input').eq(1).val()+"\""+ " - in " + response.took + "ms");
 	            return $.map(response.hits.hits, function(hit) {
 	              return hit;
 	            });
@@ -208,7 +208,7 @@ var appbase_app = function(){
 					  success: function(full_data){
 					  	var hits = full_data.hits.hits;
 						$this.appbase_increment += hits.length;
-					  	$(".appbase_total_info").html('Showing 1-'+$this.appbase_increment+' of '+$this.appbase_total + " for \""+$('.appbase_input').eq(1).val()+"\"");
+					  	$(".appbase_total_info").html('Showing 1-'+$this.appbase_increment+' of '+$this.appbase_total + " for \""+$('.appbase_input').eq(1).val()+"\"" + "- in " + full_data.took + "ms");
 
 					  	for(var i=0; i< hits.length; i++)
 					  	{
