@@ -4,7 +4,8 @@ function variables() {
     URL: 'http://qHKbcf4M6:78a6cf0e-90dd-4e86-8243-33b459b5c7c5@scalr.api.appbase.io/1/article/_search',
     SIZE: 20,
     SEARCH_PAYLOAD: CreateSearchPayload,
-    ENGINE: CreateEngine
+    ENGINE: CreateEngine,
+    appbase_total:0
   };
   return default_variable;
 
@@ -37,7 +38,7 @@ function variables() {
     };
   }
 
-  function CreateEngine() {
+  function CreateEngine(callback) {
     var engineInside = {
       name: 'history',
       limit: 100,
@@ -66,21 +67,8 @@ function variables() {
           search_payload = default_variable.SEARCH_PAYLOAD();
           settings.data = JSON.stringify(search_payload);
           return settings;
-        },
-        transform: function(response) {
-          console.log(response);
-          if (response.hits.hits.length > 0) {
-            console.log(response.hits.total);
-            $("#search-title").html(response.hits.total + " Results found" + " <sub>(in " + parseInt(response.took) + "ms)</sub>");
-            return $.map(response.hits.hits, function(hit) {
-              return hit;
-            });
-          } else {
-            $("#search-title").text("No Results found");
-          }
-          // if(typeof callback != 'undefined')
-          //   callback();
         }
+        
       }
     };
 

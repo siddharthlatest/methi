@@ -20,7 +20,7 @@ var appbase_app = function(){
 		$this.appbase_increment = 20;
 		$this.size = $this.appbase_increment;
 		$this.appbase_xhr_flag = true;
-		$this.search_payload = $this.variables.SEARCH_PAYLOAD;
+		$this.search_payload = $this.variables.SEARCH_PAYLOAD();
 		    $.ajaxSetup({
 			    crossDomain: true,
 			    xhrFields: {
@@ -30,7 +30,24 @@ var appbase_app = function(){
 		    //Initialize Variables End
 		    
 		    //Bloodhound Start
-		    engine = new Bloodhound(variables().ENGINE());
+		    var engine_variable = variables().ENGINE();
+		    engine_variable['remote']['transform'] = function(response) {
+	          console.log(response);
+	          if (response.hits.hits.length > 0) {
+	            console.log(response.hits.total);
+	            $this.appbase_total = response.hits.total; 
+	            $(".appbase_total_info").html('Showing 1-'+response.hits.hits.length+' of '+response.hits.total + " for \""+$('.appbase_input').eq(1).val()+"\"");
+	            return $.map(response.hits.hits, function(hit) {
+	              return hit;
+	            });
+	          } else {
+	            $("#search-title").text("No Results found");
+	          }
+	          // if(typeof callback != 'undefined')
+	          //   callback();
+	        }
+
+		    engine = new Bloodhound(engine_variable);
 			//Bloodhound End
 
 			//Fire CreateHtml
@@ -45,7 +62,7 @@ var appbase_app = function(){
 				var	app_logo = $('<img>').addClass(abbr+'logo').attr({'src':obj.logo});
 				var	search_box = $('<div>').addClass(abbr+'search_box').append(input_box).append(app_logo);
 				var	search_box_container = $('<div>').addClass(abbr+'search_box').append(search_box);
-				var	modal_content = $('<div>').addClass(abbr+'modal_content').append(title).append(search_box_container);
+				var	modal_content = $('<div>').addClass(abbr+'modal_content').append(search_box_container);
 				var overlay = $('<div>').addClass(abbr+'overlay');
 				var	modal = $('<div>').addClass(abbr+'modal').append(modal_content).append(overlay);
 				$('body').append(modal);
@@ -57,12 +74,14 @@ var appbase_app = function(){
 				function appbase_resize(){
 					var win_height = $(window).height();
 					var modal_height = win_height - 150;
-					var tt_height = modal_height - $('.'+obj.abbr+'title').height()+$('.'+obj.abbr+'input').height()
+					var tt_height = modal_height - $('.'+obj.abbr+'input').height() - 50;
+					$('.tt-menu').height(tt_height);
 					$(modal).find('.'+obj.abbr+'modal_content').height(modal_height);
-					$(modal).find('.tt-open').height(tt_height);
-					
 				}
-				$(window).resize(appbase_resize());
+				$(window).resize(function(){
+					alert(1);
+					appbase_resize();
+				});
 				appbase_resize();
 			}
 
@@ -81,24 +100,42 @@ var appbase_app = function(){
 				  source: engine.ttAdapter(),
 				  templates: {
 				      suggestion: function(data){
-				      	console.log(data);
 				        // return '<div><h4><a href="https://www.digitalocean.com/community/tutorials/'+ data.fields.link + '">' + data.fields.title + '</a></h4><p> ' + "Abhi ke liye yeh hi body se kaam chala  lo baad mein kuch aur daal denge beta - Yo - I am loving this typing" + '</p></div>';
-				        return '<div><h4><a href="'+ data.fields.link +'">' + data.highlight.title + '</a></h4><p> ' + data.highlight.body.join('...') + '...</p></div>';
+				        
+				  		var small_link = $('<span>').addClass('small_link').text(data.highlight.title);
+				  		var small_description = $('<p>').addClass('small_description').text(data.highlight.body.join('...')+'...');
+				  		var single_record = $('<a>').attr({'class':'record_link', 'href':data.fields.link}).append(small_link).append(small_description);
+				        return single_record;
 				      }
 				  }
 				});
+				$(modal).find('.'+obj.abbr+'input').bind('typeahead:select', function(ev, suggestion) {
+				  $(ev).preventDefault();
+				  console.log('Selection: ' + suggestion);
+				});
+
+				var total_info = $('<span>').addClass(obj.abbr+'total_info').html('No record found.');
+				$('.tt-menu').prepend(total_info);
+
 				html_size(obj, modal);
 
 				$(obj.selector).on('keyup',function(){
 					var input_val = $(this).val();
 					$(modal).find('.'+obj.abbr+'input').val(input_val);
-					$(modal).show();
+					$(modal).fadeIn(1000);
 					$(overlay).show();
 					$(modal).find('.'+obj.abbr+'input').focus();
+					$(this).val('');
+				});
+				$(document).keyup(function(e){
+					if (e.keyCode == 27){
+						$(modal).fadeOut(500);
+						$(overlay).fadeOut(500);		
+					} 
 				});
 				$(overlay).on('click',function(){
-					$(modal).hide();
-					$(overlay).hide();
+					$(modal).fadeOut(500);
+					$(overlay).fadeOut(500);
 				});
 
 				$('.tt-menu').on('scroll', function() {
@@ -125,14 +162,18 @@ var appbase_app = function(){
 				      contentType:"application/json",
 					  data:  JSON.stringify($this.search_payload),
 					  success: function(full_data){
-					  	alert('success');
 					  	var hits = full_data.hits.hits;
 						$this.appbase_increment += hits.length;
-					  	
+					  	$(".appbase_total_info").html('Showing 1-'+$this.appbase_increment+' of '+$this.appbase_total + " for \""+$('.appbase_input').eq(1).val()+"\"");
+	            
 					  	for(var i=0; i< hits.length; i++)
 					  	{
 					  		var data = hits[i];
-					  		var single_record = '<div><h4><a href="'+ data.fields.link +'">' + data.highlight.title + '</a></h4><p> ' + data.highlight.body.join('...') + '...</p></div>';
+					  		var small_link = $('<span>').addClass('small_link').text(data.highlight.title);
+					  		var small_description = $('<p>').addClass('small_description').text(data.highlight.body.join('...')+'...');
+					  		var single_record = $('<a>').attr({'class':'record_link'}).append(small_link).append(small_description);
+
+					  		//var single_record = '<div><a cla href="'+ data.fields.link +'">' + data.highlight.title + '</a><p> ' + data.highlight.body.join('...') + '...</p></div>';
 				      		var tt_record = $('<div>').addClass('tt-suggestion tt-selectable').html(single_record);
 				      		$('.tt-menu .tt-dataset.tt-dataset-my-dataset').append(tt_record);
 				      	}
