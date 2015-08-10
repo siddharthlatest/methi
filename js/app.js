@@ -47,7 +47,53 @@ var appbase_app = function(){
 	          //   callback();
 	        }
 
-		    engine = new Bloodhound(engine_variable);
+		    //$this.engine = new Bloodhound(engine_variable);
+
+		    $this.engine = new Bloodhound({
+       name: 'history',
+       limit: 100,
+       datumTokenizer: function (datum) { return Bloodhound.tokenizers.whitespace(datum); },
+       queryTokenizer: Bloodhound.tokenizers.whitespace,
+       remote: {
+
+           url: $this.url,
+          //  url: 'http://localhost:9200/digitalocean/article/_search',
+           // he time interval in milliseconds that will be used by rateLimitBy. Defaults to 300
+           rateLimitWait: 300,
+            // Function that provides a hook to allow you to prepare the settings object passed to transport when a request is about to be made.
+            // The function signature should be prepare(query, settings), where query is the query #search was called with
+            // and settings is the default settings object created internally by the Bloodhound instance. The prepare function should return a settings object.
+           prepare: function (query, settings) {
+
+               settings.type = "POST";
+               settings.xhrFields= {
+                 withCredentials: true
+               };
+               settings.headers = {
+                 "Authorization": "Basic " + btoa("qHKbcf4M6:78a6cf0e-90dd-4e86-8243-33b459b5c7c5")
+               };
+               settings.contentType = "application/json; charset=UTF-8";
+               search_payload = $this.search_payload;
+              search_payload.query.multi_match.query = query;
+               settings.data = JSON.stringify(search_payload);
+               return settings;
+           },
+           transform: function(response) {
+              if (response.hits.hits.length > 0) {
+	            $this.appbase_total = response.hits.total; 
+	            $(".appbase_total_info").html('Showing 1-'+response.hits.hits.length+' of '+response.hits.total + " for \""+$('.appbase_input').eq(1).val()+"\"");
+	            return $.map(response.hits.hits, function(hit) {
+	              return hit;
+	            });
+	          } else {
+	            $(".appbase_total_info").text("No Results found");
+	          }
+	          // if(typeof callback != 'undefined')
+	          //   callback();
+           }
+       }
+   });
+
 			//Bloodhound End
 
 			//Fire CreateHtml
@@ -96,13 +142,12 @@ var appbase_app = function(){
 				{
 				  name: 'my-dataset',
 				  limit: 100,
-				  source: engine.ttAdapter(),
+				  source: $this.engine.ttAdapter(),
 				  templates: {
 				      suggestion: function(data){
 				        // return '<div><h4><a href="https://www.digitalocean.com/community/tutorials/'+ data.fields.link + '">' + data.fields.title + '</a></h4><p> ' + "Abhi ke liye yeh hi body se kaam chala  lo baad mein kuch aur daal denge beta - Yo - I am loving this typing" + '</p></div>';
-				        
-				  		var small_link = $('<span>').addClass('small_link').text(data.highlight.title);
-				  		var small_description = $('<p>').addClass('small_description').text(data.highlight.body.join('...')+'...');
+				        var small_link = $('<span>').addClass('small_link').html(data.highlight.title);
+				  		var small_description = $('<p>').addClass('small_description').html(data.highlight.body.join('...')+'...');
 				  		var single_record = $('<a>').attr({'class':'record_link', 'href':data.fields.link}).append(small_link).append(small_description);
 				        return single_record;
 				      }
@@ -113,7 +158,7 @@ var appbase_app = function(){
 				  console.log('Selection: ' + suggestion);
 				});
 
-				var total_info = $('<span>').addClass(obj.abbr+'total_info').html('No record found.');
+				var total_info = $('<span>').addClass(obj.abbr+'total_info').html('No Results found');
 				$('.tt-menu').prepend(total_info);
 
 				html_size(obj, modal);
