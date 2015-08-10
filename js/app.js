@@ -79,7 +79,6 @@ var appbase_app = function(){
 					$(modal).find('.'+obj.abbr+'modal_content').height(modal_height);
 				}
 				$(window).resize(function(){
-					alert(1);
 					appbase_resize();
 				});
 				appbase_resize();
