@@ -1,6 +1,8 @@
 *{
   box-sizing: border-box;
 }
+@import url('http://fonts.googleapis.com/css?family=Open+Sans:700,400,600');
+
 .appbase_modal{
   display: none;
   position: fixed;
@@ -11,6 +13,7 @@
   top: 0;
   left: 0;
   background: transparent;
+  font-family: 'Open Sans', sans-serif !important;
 }
 .appbase_modal_content{
   position: relative;
