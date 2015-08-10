@@ -80,7 +80,7 @@ var appbase_app = function(){
            },
            transform: function(response) {
               if (response.hits.hits.length > 0) {
-	            $this.appbase_total = response.hits.total; 
+	            $this.appbase_total = response.hits.total;
 	            $(".appbase_total_info").html('Showing 1-'+response.hits.hits.length+' of '+response.hits.total + " for \""+$('.appbase_input').eq(1).val()+"\"");
 	            return $.map(response.hits.hits, function(hit) {
 	              return hit;
@@ -146,14 +146,8 @@ var appbase_app = function(){
 				  templates: {
 				      suggestion: function(data){
 				        // return '<div><h4><a href="https://www.digitalocean.com/community/tutorials/'+ data.fields.link + '">' + data.fields.title + '</a></h4><p> ' + "Abhi ke liye yeh hi body se kaam chala  lo baad mein kuch aur daal denge beta - Yo - I am loving this typing" + '</p></div>';
-<<<<<<< HEAD
-				        var small_link = $('<span>').addClass('small_link').html(data.highlight.title);
+				      var small_link = $('<span>').addClass('small_link').html(data.highlight.title);
 				  		var small_description = $('<p>').addClass('small_description').html(data.highlight.body.join('...')+'...');
-=======
-
-				  		var small_link = $('<span>').addClass('small_link').text(data.highlight.title);
-				  		var small_description = $('<p>').addClass('small_description').text(data.highlight.body.join('...')+'...');
->>>>>>> c2787747708d9d7544e62473d4ccb6594b9b2d56
 				  		var single_record = $('<a>').attr({'class':'record_link', 'href':data.fields.link}).append(small_link).append(small_description);
 				        return single_record;
 				      }
