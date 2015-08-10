@@ -19,7 +19,8 @@ function variables() {
           "query": 'ap',
           "fields": [
             "title^3", "body"
-          ]
+          ],
+          "operator": "and"
         }
       },
       "highlight": {
