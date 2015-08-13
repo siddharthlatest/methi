@@ -15,8 +15,9 @@ var appbase_app = function() {
 			selector: '.appbase_external_search'
 		};
 
-		//Variable js
-		$this.variables = new variables('qHKbcf4M6:78a6cf0e-90dd-4e86-8243-33b459b5c7c5', '1', 'article');
+		//Variable js		
+		var options = $.extend($this.default_options, options);
+		$this.variables = new variables(options.credentials, options.app_name, options.index_document_type);
 		$this.url = $this.variables.createURL();
 		$this.appbase_total = 0;
 		$this.appbase_increment = $this.variables.SIZE;
@@ -42,7 +43,6 @@ var appbase_app = function() {
 		//Bloodhound End
 
 		//Fire CreateHtml
-		var options = $.extend($this.default_options, options);
 		createHtml(options);
 
 		//CreateHtml Start
@@ -240,7 +240,10 @@ jquery_js.require([
 					title: 'Blazing fast search1 on your Documentation',
 					input_placeholder: 'search here',
 					logo: 'images/Appbase.png',
-					selector: '.appbase_external_search'
+					selector: '.appbase_external_search',
+					credentials:appbase_variables.credentials,
+					app_name:appbase_variables.app_name,
+					index_document_type:appbase_variables.index_document_type
 				});
 			});
 	});
