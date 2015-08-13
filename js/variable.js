@@ -88,7 +88,7 @@ variables.prototype = {
             withCredentials: true
           };
           settings.headers = {
-            "Authorization": "Basic " + btoa("qHKbcf4M6:78a6cf0e-90dd-4e86-8243-33b459b5c7c5")
+            "Authorization": "Basic " + btoa(this.credentials)
           };
           settings.contentType = "application/json; charset=UTF-8";
           //console.log(search_payload);
@@ -132,7 +132,7 @@ variables.prototype = {
     $.ajax({
         type: "POST",
         beforeSend: function(request) {
-          request.setRequestHeader("Authorization", "Basic " + btoa("qHKbcf4M6:78a6cf0e-90dd-4e86-8243-33b459b5c7c5"));
+          request.setRequestHeader("Authorization", "Basic " + btoa(this.credentials));
         },
         'url':this.createURL(),
         dataType: 'json',
@@ -158,7 +158,7 @@ variables.prototype = {
     $.ajax({
       type: "POST",
       beforeSend: function(request) {
-        request.setRequestHeader("Authorization", "Basic " + btoa("qHKbcf4M6:78a6cf0e-90dd-4e86-8243-33b459b5c7c5"));
+        request.setRequestHeader("Authorization", "Basic " + btoa(this.credentials));
       },
       'url': this.createURL(),
       dataType: 'json',
