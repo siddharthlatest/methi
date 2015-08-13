@@ -2,7 +2,6 @@ function variables(credentials, app_name, index_document_type) {
   this.credentials = credentials;
   this.app_name = app_name;
   this.index_document_type = index_document_type;
-  this.URL = 'http://'+this.credentials+'@scalr.api.appbase.io/'+this.app_name+'/'+this.index_document_type+'/_search',
   this.SIZE = 20;
   this.SEARCH_PAYLOAD = {
     "from": 0,
@@ -35,6 +34,10 @@ function variables(credentials, app_name, index_document_type) {
 
 variables.prototype = {
   constructor: variables,
+  createURL: function(){
+    var created_url = 'http://'+this.credentials+'@scalr.api.appbase.io/'+this.app_name+'/'+this.index_document_type+'/_search';
+    return created_url;
+  },
   createEngine: function(callback) {
     var search_payload = this.SEARCH_PAYLOAD;
     var $this = this;
@@ -47,7 +50,7 @@ variables.prototype = {
       queryTokenizer: Bloodhound.tokenizers.whitespace,
       remote: {
 
-        url: this.URL,
+        url: this.createURL(),
         rateLimitWait: 300,
         prepare: function(query, settings) {
           settings.type = "POST";
@@ -85,15 +88,15 @@ variables.prototype = {
   },
   scroll_xhr:function($this, method, callback){
     $this.appbase_xhr_flag = false;
-        var value = method == 'client' ? $('.' + obj.abbr + 'input').eq(1).val() : $('.typeahead').eq(1).val();
-        $this.search_payload.query.multi_match.query = value;
+        var input_value = method == 'client' ? $('.appbase_input').eq(1).val() : $('.typeahead').eq(1).val();
+        $this.search_payload.query.multi_match.query = input_value;
         $this.search_payload.from = $this.appbase_increment;
         $.ajax({
           type: "POST",
           beforeSend: function(request) {
             request.setRequestHeader("Authorization", "Basic " + btoa("qHKbcf4M6:78a6cf0e-90dd-4e86-8243-33b459b5c7c5"));
           },
-          url: $this.url,
+          'url': this.createURL(),
           dataType: 'json',
           contentType: "application/json",
           data: JSON.stringify($this.search_payload),

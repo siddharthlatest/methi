@@ -17,7 +17,7 @@ var appbase_app = function() {
 
 		//Variable js
 		$this.variables = new variables('qHKbcf4M6:78a6cf0e-90dd-4e86-8243-33b459b5c7c5', '1', 'article');
-		$this.url = $this.variables.URL;
+		$this.url = $this.variables.createURL();
 		$this.appbase_total = 0;
 		$this.appbase_increment = $this.variables.SIZE;
 		$this.size = $this.appbase_increment;
@@ -147,7 +147,6 @@ var appbase_app = function() {
 					}
 				}
 			});
-
 
 			function scroll_callback(full_data) {
 				var hits = full_data.hits.hits;
