@@ -62,6 +62,11 @@ function appbase_main() {
     }
   });
 
+  $('.typeahead').on('keyup',function(){
+   if($(this).val().length == 0)
+      $('.appbase_total_info').text('No Results found');
+  });
+
   $(window).scroll(function() {
     if ($(window).scrollTop() + $(window).height() == $(document).height()) {
       if ($this.appbase_total != 0 && $this.appbase_total > $this.appbase_increment && $this.appbase_xhr_flag) {

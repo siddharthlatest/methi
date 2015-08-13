@@ -110,7 +110,7 @@ var appbase_app = function() {
 
 		function html_events(obj, modal, overlay) {
 			$(modal).find('.' + obj.abbr + 'input').typeahead({
-				minLength: 1,
+				minLength: 2,
 				highlight: true,
 				limit: 100,
 				change: function() {
@@ -140,6 +140,11 @@ var appbase_app = function() {
 						},500);
 					}
 				}
+			});
+
+			$(modal).find('.' + obj.abbr + 'input').on('keyup',function(){
+				if($(this).val().length == 0)
+					$('.appbase_total_info').text('No Results found');
 			});
 
 			$(modal).find('.' + obj.abbr + 'input').bind('typeahead:select', function(ev, suggestion) {
