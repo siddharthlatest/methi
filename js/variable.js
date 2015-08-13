@@ -1,46 +1,44 @@
-function variables() {
-
-  var default_variable = {
-    URL: 'http://qHKbcf4M6:78a6cf0e-90dd-4e86-8243-33b459b5c7c5@scalr.api.appbase.io/1/article/_search',
-    SIZE: 20,
-    SEARCH_PAYLOAD: CreateSearchPayload,
-    ENGINE: CreateEngine,
-    appbase_total:0
-  };
-  return default_variable;
-
-  function CreateSearchPayload() {
-    return {
-      "from": 0,
-      "size": default_variable.SIZE,
-      "fields": ["link"],
-      "query": {
-        "multi_match": {
-          "query": 'ap',
-          "fields": [
-            "title^3", "body"
-          ],
-          "operator": "and"
-        }
-      },
-      "highlight": {
-        "fields": {
-          "body": {
-            "fragment_size": 100,
-            "number_of_fragments": 2,
-            "no_match_size": 180
-          },
-          "title": {
-            "fragment_size": 500,
-            "no_match_size": 500
-          }
+function variables(credentials, app_name, index_document_type) {
+  this.credentials = credentials;
+  this.app_name = app_name;
+  this.index_document_type = index_document_type;
+  this.URL = 'http://'+this.credentials+'@scalr.api.appbase.io/'+this.app_name+'/'+this.index_document_type+'/_search',
+  this.SIZE = 20;
+  this.SEARCH_PAYLOAD = {
+    "from": 0,
+    "size": 20,
+    "fields": ["link"],
+    "query": {
+      "multi_match": {
+        "query": '',
+        "fields": [
+          "title^3", "body"
+        ],
+        "operator": "and"
+      }
+    },
+    "highlight": {
+      "fields": {
+        "body": {
+          "fragment_size": 100,
+          "number_of_fragments": 2,
+          "no_match_size": 180
+        },
+        "title": {
+          "fragment_size": 500,
+          "no_match_size": 500
         }
       }
-    };
-  }
+    }
+  };
+}
 
-  function CreateEngine(callback) {
-    var engineInside = {
+variables.prototype = {
+  constructor: variables,
+  createEngine: function(callback) {
+    var search_payload = this.SEARCH_PAYLOAD;
+    var $this = this;
+    var engine = new Bloodhound({
       name: 'history',
       limit: 100,
       datumTokenizer: function(datum) {
@@ -48,15 +46,10 @@ function variables() {
       },
       queryTokenizer: Bloodhound.tokenizers.whitespace,
       remote: {
-        url: 'http://qHKbcf4M6:78a6cf0e-90dd-4e86-8243-33b459b5c7c5@scalr.api.appbase.io/1/article/_search',
-        //  url: 'http://localhost:9200/digitalocean/article/_search',
-        // he time interval in milliseconds that will be used by rateLimitBy. Defaults to 300
-        rateLimitWait: 300,
-        // Function that provides a hook to allow you to prepare the settings object passed to transport when a request is about to be made.
-        // The function signature should be prepare(query, settings), where query is the query #search was called with
-        // and settings is the default settings object created internally by the Bloodhound instance. The prepare function should return a settings object.
-        prepare: function(query, settings) {
 
+        url: this.URL,
+        rateLimitWait: 300,
+        prepare: function(query, settings) {
           settings.type = "POST";
           settings.xhrFields = {
             withCredentials: true
@@ -65,15 +58,51 @@ function variables() {
             "Authorization": "Basic " + btoa("qHKbcf4M6:78a6cf0e-90dd-4e86-8243-33b459b5c7c5")
           };
           settings.contentType = "application/json; charset=UTF-8";
-          search_payload = default_variable.SEARCH_PAYLOAD();
+          console.log(search_payload);
+          search_payload.query.multi_match.query = query;
           settings.data = JSON.stringify(search_payload);
           return settings;
+        },
+        transform: function(response) {
+          if (response.hits.hits.length) {
+            //$this.appbase_total = response.hits.total;
+            if (typeof callback != 'undefined')
+              callback(response.hits.total);
+            var showing_text = $this.showing_text(response.hits.hits.length, response.hits.total, $('.appbase_input').eq(1).val(), response.took);
+            $(".appbase_total_info").html(showing_text);
+            return $.map(response.hits.hits, function(hit) {
+              return hit;
+            });
+          } else {
+            return response.hits.hits;
+            $(".appbase_total_info").text("No Results found");
+          }
         }
-        
       }
-    };
+    });
 
-    return engineInside;
+    return engine;
+  },
+  scroll_xhr:function($this, method, callback){
+    $this.appbase_xhr_flag = false;
+        var value = method == 'client' ? $('.' + obj.abbr + 'input').eq(1).val() : $('.typeahead').eq(1).val();
+        $this.search_payload.query.multi_match.query = value;
+        $this.search_payload.from = $this.appbase_increment;
+        $.ajax({
+          type: "POST",
+          beforeSend: function(request) {
+            request.setRequestHeader("Authorization", "Basic " + btoa("qHKbcf4M6:78a6cf0e-90dd-4e86-8243-33b459b5c7c5"));
+          },
+          url: $this.url,
+          dataType: 'json',
+          contentType: "application/json",
+          data: JSON.stringify($this.search_payload),
+          success: function(full_data) {
+            callback(full_data);
+          }
+        });
+  },
+  showing_text:function(init_no, total_no, value, time){
+    return 'Showing 1-' +init_no + ' of ' + total_no + " for \"" + value + "\"" + "- in " + time + "ms"
   }
-
 }
