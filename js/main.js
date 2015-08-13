@@ -3,7 +3,7 @@ function appbase_main() {
   var $this = this;
 
   //Variable js
-  $this.variables = new variables('qHKbcf4M6:78a6cf0e-90dd-4e86-8243-33b459b5c7c5', '1', 'article');
+  $this.variables = new variables('qHKbcf4M6:78a6cf0e-90dd-4e86-8243-33b459b5c7c5', '1', 'article', 'appbase');
   $this.url = $this.variables.createURL();
   $this.appbase_total = 0;
   $this.appbase_increment = $this.variables.SIZE;
@@ -16,16 +16,35 @@ function appbase_main() {
       withCredentials: true
     }
   });
+
+   function scroll_callback(full_data, method) {
+    var hits = full_data.hits.hits;
+    if(method == 'fuzzy')
+    {
+      $this.appbase_total = hits.length;
+      $("#search-title").html($this.variables.showing_text(hits.length, hits.length, $('.typeahead').eq(1).val(), full_data.took));
+    } else {
+      $this.appbase_increment += hits.length;
+      $("#search-title").html($this.variables.showing_text($this.appbase_increment, $this.appbase_total, $('.typeahead').eq(1).val(), full_data.took));
+    }
+    
+    for (var i = 0; i < hits.length; i++) {
+      var data = hits[i];
+      var single_record_in = '<div><h4><a href="' + data.fields.link + '">' + data.highlight.title + '</a></h4><p> ' + data.highlight.body.join('...') + '...</p></div>'
+      $('.tt-menu .tt-dataset.tt-dataset-my-dataset').append(single_record_in);
+    }
+    appbase_xhr_flag = true;
+  };
   //Initialize Variables End
 
   //Bloodhound Start
-  $this.engine = $this.variables.createEngine(function(length) {
+  $this.engine = $this.variables.createEngine($this, function(length) {
     $this.appbase_total = length;
     if (length)
       $this.appbase_xhr_flag = true;
     else
       $this.appbase_xhr_flag = false;
-  });
+  }, scroll_callback);
   //Bloodhound End
 
   $('.typeahead').typeahead({
@@ -45,24 +64,13 @@ function appbase_main() {
 
   $(window).scroll(function() {
     if ($(window).scrollTop() + $(window).height() == $(document).height()) {
-      if (appbase_total != 0 && appbase_total > appbase_increment && appbase_xhr_flag) {
-        $this.variables.scroll_xhr($this,'appabase', scroll_callback);
+      if ($this.appbase_total != 0 && $this.appbase_total > $this.appbase_increment && $this.appbase_xhr_flag) {
+        alert('hi');
+        $this.variables.scroll_xhr($this,'appbase', scroll_callback);
       }
     }
   });
 
-  function scroll_callback(full_data) {
-        var hits = full_data.hits.hits;
-        appbase_increment += hits.length;
-        $(".appbase_total_info").html('Showing 1-' + appbase_increment + ' of ' + appbase_total + " for \"" + $('.appbase_input').eq(1).val() + "\"");
-
-        for (var i = 0; i < hits.length; i++) {
-          var data = hits[i];
-          var single_record_in = '<div><h4><a href="' + data.fields.link + '">' + data.highlight.title + '</a></h4><p> ' + data.highlight.body.join('...') + '...</p></div>'
-          $('.tt-menu .tt-dataset.tt-dataset-my-dataset').append(single_record_in);
-        }
-        appbase_xhr_flag = true;
-      };
-
+ 
 }
 appbase_main();

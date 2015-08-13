@@ -17,7 +17,7 @@ var appbase_app = function() {
 
 		//Variable js		
 		var options = $.extend($this.default_options, options);
-		$this.variables = new variables(options.credentials, options.app_name, options.index_document_type);
+		$this.variables = new variables(options.credentials, options.app_name, options.index_document_type, 'client');
 		$this.url = $this.variables.createURL();
 		$this.appbase_total = 0;
 		$this.appbase_increment = $this.variables.SIZE;
@@ -30,16 +30,43 @@ var appbase_app = function() {
 				withCredentials: true
 			}
 		});
+		function scroll_callback(full_data, method) {
+			var hits = full_data.hits.hits;
+			if(hits.length){
+				if(method == 'fuzzy')
+				{
+      				$this.appbase_total = hits.length;
+					$(".appbase_total_info").html($this.variables.showing_text(hits.length, hits.length, $('.appbase_input').eq(1).val(), full_data.took));
+	            }
+	            else{
+	            	$this.appbase_increment += hits.length;
+		            $(".appbase_total_info").html($this.variables.showing_text($this.appbase_increment, $this.appbase_total, $('.appbase_input').eq(1).val(), full_data.took));
+	            }
+	            for (var i = 0; i < hits.length; i++) {
+	              var data = hits[i];
+	              var small_link = $('<span>').addClass('small_link').html(data.highlight.title);
+	              var small_description = $('<p>').addClass('small_description').html(data.highlight.body.join('...') + '...');
+	              var single_record = $('<a>').attr({
+	                'class': 'record_link'
+	              }).append(small_link).append(small_description);
+
+	              //var single_record = '<div><a cla href="'+ data.fields.link +'">' + data.highlight.title + '</a><p> ' + data.highlight.body.join('...') + '...</p></div>';
+	              var tt_record = $('<div>').addClass('tt-suggestion tt-selectable').html(single_record);
+	              $('.tt-menu .tt-dataset.tt-dataset-my-dataset').append(tt_record);
+	            }
+            	$this.appbase_xhr_flag = true;
+			}
+		}
 		//Initialize Variables End
 
 		//Bloodhound Start
-		$this.engine = $this.variables.createEngine(function(length){
+		$this.engine = $this.variables.createEngine($this, function(length){
 			$this.appbase_total = length;
 			if(length)
 				$this.appbase_xhr_flag = true;
 			else
 		    	$this.appbase_xhr_flag = false;
-		});
+		}, scroll_callback);
 		//Bloodhound End
 
 		//Fire CreateHtml
@@ -95,6 +122,7 @@ var appbase_app = function() {
 				source: $this.engine.ttAdapter(),
 				templates: {
 					suggestion: function(data) {
+						console.log(data);
 						if(data)
 						{
 							var small_link = $('<span>').addClass('small_link').html(data.highlight.title);
@@ -154,26 +182,7 @@ var appbase_app = function() {
 				}
 			});
 
-			function scroll_callback(full_data) {
-				var hits = full_data.hits.hits;
-				if(hits.length){
-	            	$this.appbase_increment += hits.length;
-		            $(".appbase_total_info").html($this.variables.showing_text($this.appbase_increment, $this.appbase_total, $('.appbase_input').eq(1).val(), full_data.took));
-		            for (var i = 0; i < hits.length; i++) {
-		              var data = hits[i];
-		              var small_link = $('<span>').addClass('small_link').text(data.highlight.title);
-		              var small_description = $('<p>').addClass('small_description').text(data.highlight.body.join('...') + '...');
-		              var single_record = $('<a>').attr({
-		                'class': 'record_link'
-		              }).append(small_link).append(small_description);
-
-		              //var single_record = '<div><a cla href="'+ data.fields.link +'">' + data.highlight.title + '</a><p> ' + data.highlight.body.join('...') + '...</p></div>';
-		              var tt_record = $('<div>').addClass('tt-suggestion tt-selectable').html(single_record);
-		              $('.tt-menu .tt-dataset.tt-dataset-my-dataset').append(tt_record);
-		            }
-	            	$this.appbase_xhr_flag = true;
-				}
-			}
+			
 
 		}
 		//CreateHtml End
