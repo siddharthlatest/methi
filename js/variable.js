@@ -5,7 +5,7 @@ function variables(credentials, app_name, index_document_type) {
   this.SIZE = 20;
   this.SEARCH_PAYLOAD = {
     "from": 0,
-    "size": 20,
+    "size": this.SIZE,
     "fields": ["link"],
     "query": {
       "multi_match": {
@@ -30,12 +30,40 @@ function variables(credentials, app_name, index_document_type) {
       }
     }
   };
+  // this.FUZZY_PAYLOAD = {
+  //   "from": 0,
+  //   "size": 10,
+  //   "fields": ["link"],
+  //   "query": {
+  //     "multi_match": {
+  //       "query": search_query,
+  //       "fields": [
+  //         "title^3", "body"
+  //       ],
+  //       "operator": "and",
+  //       "fuzziness": "AUTO"
+  //     }
+  //   },
+  //   "highlight": {
+  //     "fields": {
+  //       "body": {
+  //         "fragment_size": 100,
+  //         "number_of_fragments": 2,
+  //         "no_match_size": 180
+  //       },
+  //       "title": {
+  //         "fragment_size": 500,
+  //         "no_match_size": 500
+  //       }
+  //     }
+  //   }
+  // };
 }
 
 variables.prototype = {
   constructor: variables,
-  createURL: function(){
-    var created_url = 'http://'+this.credentials+'@scalr.api.appbase.io/'+this.app_name+'/'+this.index_document_type+'/_search';
+  createURL: function() {
+    var created_url = 'http://' + this.credentials + '@scalr.api.appbase.io/' + this.app_name + '/' + this.index_document_type + '/_search';
     return created_url;
   },
   createEngine: function(callback) {
@@ -70,7 +98,7 @@ variables.prototype = {
           if (response.hits.hits.length) {
             //$this.appbase_total = response.hits.total;
             if (typeof callback != 'undefined')
-              callback(response.hits.total);
+            callback(response.hits.total);
             var showing_text = $this.showing_text(response.hits.hits.length, response.hits.total, $('.appbase_input').eq(1).val(), response.took);
             $(".appbase_total_info").html(showing_text);
             return $.map(response.hits.hits, function(hit) {
@@ -86,26 +114,26 @@ variables.prototype = {
 
     return engine;
   },
-  scroll_xhr:function($this, method, callback){
+  scroll_xhr: function($this, method, callback) {
     $this.appbase_xhr_flag = false;
-        var input_value = method == 'client' ? $('.appbase_input').eq(1).val() : $('.typeahead').eq(1).val();
-        $this.search_payload.query.multi_match.query = input_value;
-        $this.search_payload.from = $this.appbase_increment;
-        $.ajax({
-          type: "POST",
-          beforeSend: function(request) {
-            request.setRequestHeader("Authorization", "Basic " + btoa("qHKbcf4M6:78a6cf0e-90dd-4e86-8243-33b459b5c7c5"));
-          },
-          'url': this.createURL(),
-          dataType: 'json',
-          contentType: "application/json",
-          data: JSON.stringify($this.search_payload),
-          success: function(full_data) {
-            callback(full_data);
-          }
-        });
+    var input_value = method == 'client' ? $('.appbase_input').eq(1).val() : $('.typeahead').eq(1).val();
+    $this.search_payload.query.multi_match.query = input_value;
+    $this.search_payload.from = $this.appbase_increment;
+    $.ajax({
+      type: "POST",
+      beforeSend: function(request) {
+        request.setRequestHeader("Authorization", "Basic " + btoa("qHKbcf4M6:78a6cf0e-90dd-4e86-8243-33b459b5c7c5"));
+      },
+      'url': this.createURL(),
+      dataType: 'json',
+      contentType: "application/json",
+      data: JSON.stringify($this.search_payload),
+      success: function(full_data) {
+        callback(full_data);
+      }
+    });
   },
-  showing_text:function(init_no, total_no, value, time){
-    return 'Showing 1-' +init_no + ' of ' + total_no + " for \"" + value + "\"" + "- in " + time + "ms"
+  showing_text: function(init_no, total_no, value, time) {
+    return 'Showing 1-' + init_no + ' of ' + total_no + " for \"" + value + "\"" + "- in " + time + "ms"
   }
 }
