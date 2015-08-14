@@ -147,10 +147,11 @@ var appbase_app = function() {
 			html_size(obj, modal);
 
 			$(obj.selector).on('keyup', function() {
-				var input_val = $(this).val();
+				var input_val = $(obj.selector).val();
+				$(modal).find('.' + obj.abbr + 'input').focus();
+				$(modal).find('.' + obj.abbr + 'input').val(input_val);
 				$(modal).fadeIn(300,function(){
 					$(modal).find('.' + obj.abbr + 'input').focus();
-					$(modal).find('.' + obj.abbr + 'input').val(input_val);
 				});
 				$(overlay).show();
 				$(this).val('');
