@@ -64,7 +64,7 @@ function variables(credentials, app_name, index_document_type, method) {
 variables.prototype = {
   constructor: variables,
   createURL: function() {
-    var created_url = 'http://' + this.credentials + '@scalr.api.appbase.io/' + this.app_name + '/' + this.index_document_type + '/_search';
+    var created_url = 'http://scalr.api.appbase.io/' + this.app_name + '/' + this.index_document_type + '/_search';
     return created_url;
   },
   createEngine: function($this, callback, on_fuzzy) {
@@ -78,7 +78,6 @@ variables.prototype = {
       },
       queryTokenizer: Bloodhound.tokenizers.whitespace,
       remote: {
-
         url: this.createURL(),
         rateLimitWait: 300,
         prepare: function(query, settings) {
@@ -169,6 +168,15 @@ variables.prototype = {
         callback(full_data);
       }
     });
+  },
+  createRecord:function(data){    
+    var small_link = $('<span>').addClass('small_link').html(data.highlight.title);
+    var small_description = $('<p>').addClass('small_description').html(data.highlight.body.join('...') + '...');
+    var single_record = $('<a>').attr({
+      'class': 'record_link',
+      'href': data.fields.link
+    }).append(small_link).append(small_description);
+    return single_record;
   },
   showing_text: function(init_no, total_no, value, time) {
     return 'Showing 1-' + init_no + ' of ' + total_no + " for \"" + value + "\"" + "- in " + time + "ms"

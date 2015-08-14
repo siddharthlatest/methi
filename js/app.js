@@ -44,11 +44,7 @@ var appbase_app = function() {
 	            }
 	            for (var i = 0; i < hits.length; i++) {
 	              var data = hits[i];
-	              var small_link = $('<span>').addClass('small_link').html(data.highlight.title);
-	              var small_description = $('<p>').addClass('small_description').html(data.highlight.body.join('...') + '...');
-	              var single_record = $('<a>').attr({
-	                'class': 'record_link'
-	              }).append(small_link).append(small_description);
+	              var single_record = $this.variables.createRecord(data);
 
 	              //var single_record = '<div><a cla href="'+ data.fields.link +'">' + data.highlight.title + '</a><p> ' + data.highlight.body.join('...') + '...</p></div>';
 	              var tt_record = $('<div>').addClass('tt-suggestion tt-selectable').html(single_record);
@@ -125,19 +121,12 @@ var appbase_app = function() {
 						console.log(data);
 						if(data)
 						{
-							var small_link = $('<span>').addClass('small_link').html(data.highlight.title);
-							var small_description = $('<p>').addClass('small_description').html(data.highlight.body.join('...') + '...');
-							var single_record = $('<a>').attr({
-								'class': 'record_link',
-								'href': data.fields.link
-							}).append(small_link).append(small_description);
+							var single_record = $this.variables.createRecord(data);
 							return single_record;
 						}
 						else
 							return;
-						setTimeout(function(){
-						 $(".tt-dropdown-menu .tt-suggestion").unbind('click');
-						},500);
+						
 					}
 				}
 			});
@@ -159,10 +148,11 @@ var appbase_app = function() {
 
 			$(obj.selector).on('keyup', function() {
 				var input_val = $(this).val();
-				$(modal).find('.' + obj.abbr + 'input').val(input_val);
-				$(modal).fadeIn(300);
+				$(modal).fadeIn(300,function(){
+					$(modal).find('.' + obj.abbr + 'input').focus();
+					$(modal).find('.' + obj.abbr + 'input').val(input_val);
+				});
 				$(overlay).show();
-				$(modal).find('.' + obj.abbr + 'input').focus();
 				$(this).val('');
 				$('body').css('overflow','hidden');
 			});
