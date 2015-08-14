@@ -180,6 +180,6 @@ variables.prototype = {
     return single_record;
   },
   showing_text: function(init_no, total_no, value, time) {
-    return 'Showing 1-' + init_no + ' of ' + total_no + " for \"" + value + "\"" + "- in " + time + "ms"
+    return 'Showing 1-' + init_no + ' of ' + total_no + " for \"" + value + "\"" + " in " + time + "ms"
   }
 }
