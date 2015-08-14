@@ -131,7 +131,7 @@
 }
 .appbase_modal .twitter-typeahead .record_link .small_link em{
     font-weight: 600;
-    font-style: normal;
+    font-style: normal !important;
 }
 .appbase_modal .twitter-typeahead .record_link .small_description{
   max-height: 40px;
