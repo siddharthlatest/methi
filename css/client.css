@@ -15,7 +15,7 @@
   background: transparent;
   font-family: 'Open Sans', sans-serif !important;
 }
-.appbase_modal_content{
+.appbase_modal .appbase_modal_content{
   position: relative;
   margin: 0 auto;
   display: block;
@@ -28,10 +28,10 @@
   z-index: 1000;
   box-sizing: border-box;
 }
-.appbase_search_box{
+.appbase_modal .appbase_search_box{
   position: relative;
 }
-.appbase_input{
+.appbase_modal .appbase_input{
   display: block;
   width: 100%;
   color: #555;
@@ -53,18 +53,18 @@
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
 }
-.appbase_input:focus{
+.appbase_modal .appbase_input:focus{
   outline: none;
   border-bottom: 2px solid #0089d7
 }
-.appbase_logo{
+.appbase_modal .appbase_logo{
   position: absolute;
   width: 15%;
   margin: auto;
   top: 10px;
   right: 10px;
 }
-.appbase_overlay{
+.appbase_modal .appbase_overlay{
   display: none;
   position: fixed;
   width: 100%;
@@ -74,7 +74,7 @@
   z-index: 999;
   background: rgba(0,0,0,0.50);
 }
-.appbase_total_info{
+.appbase_modal .appbase_total_info{
   font-size: 14px;
   line-height: 20px;
   text-align: center;
@@ -82,10 +82,10 @@
   display: block;
   padding-bottom: 5px;
 }
-.twitter-typeahead{
+.appbase_modal .twitter-typeahead{
   width: 100%
 }
-.twitter-typeahead .tt-menu{
+.appbase_modal .twitter-typeahead .tt-menu{
   position: relative !important;
   overflow: auto;
   height: 200px;
@@ -94,15 +94,15 @@
     margin-top: 5px;
     padding-top: 0;
 }
-.twitter-typeahead .tt-dataset{
+.appbase_modal .twitter-typeahead .tt-dataset{
   padding: 0 15px;
   background-color: #fff;
 }
-.twitter-typeahead .tt-suggestion{
+.appbase_modal .twitter-typeahead .tt-suggestion{
   background: #fff;
   border-bottom: 1px solid #f7f7f7
 }
-.twitter-typeahead .record_link{
+.appbase_modal .twitter-typeahead .record_link{
   width: 100%;
   display: block;
   position: relative;
@@ -113,7 +113,7 @@
   text-decoration: none;
   box-sizing: border-box;
 }
-.twitter-typeahead .record_link .small_link{
+.appbase_modal .twitter-typeahead .record_link .small_link{
   width: 100%;
   display: block;
   color: #0089d7;
@@ -128,11 +128,11 @@
   line-height: 1.4;
   cursor: pointer;
 }
-.twitter-typeahead .record_link .small_link em{
+.appbase_modal .twitter-typeahead .record_link .small_link em{
     font-weight: 600;
     font-style: normal;
 }
-.twitter-typeahead .record_link .small_description{
+.appbase_modal .twitter-typeahead .record_link .small_description{
   max-height: 40px;
   overflow: hidden;
   font-size: 14px;
