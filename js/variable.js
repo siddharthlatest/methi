@@ -174,7 +174,8 @@ variables.prototype = {
     var small_description = $('<p>').addClass('small_description').html(data.highlight.body.join('...') + '...');
     var single_record = $('<a>').attr({
       'class': 'record_link',
-      'href': data.fields.link
+      'href': data.fields.link,
+      'target': '_blank'
     }).append(small_link).append(small_description);
     return single_record;
   },
