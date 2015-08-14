@@ -70,7 +70,6 @@ variables.prototype = {
   createEngine: function($this, callback, on_fuzzy) {
     var search_payload = this.SEARCH_PAYLOAD;
     var parent_this = this;
-    var $engine_this = this;
     var engine = new Bloodhound({
       name: 'history',
       limit: 100,
@@ -88,7 +87,7 @@ variables.prototype = {
             withCredentials: true
           };
           settings.headers = {
-            "Authorization": "Basic " + btoa(this.credentials)
+            "Authorization": "Basic " + btoa(parent_this.credentials)
           };
           settings.contentType = "application/json; charset=UTF-8";
           //console.log(search_payload);
@@ -103,11 +102,11 @@ variables.prototype = {
             callback(response.hits.total);
             
             if(parent_this.method == 'client'){
-              var showing_text = $engine_this.showing_text(response.hits.hits.length, response.hits.total, $('.appbase_input').eq(1).val(), response.took);
+              var showing_text = parent_this.showing_text(response.hits.hits.length, response.hits.total, $('.appbase_input').eq(1).val(), response.took);
               $(".appbase_total_info").html(showing_text);
             }
             if(parent_this.method == 'appbase'){
-              var showing_text = $engine_this.showing_text(response.hits.hits.length, response.hits.total, $('.typeahead').eq(1).val(), response.took);
+              var showing_text = parent_this.showing_text(response.hits.hits.length, response.hits.total, $('.typeahead').eq(1).val(), response.took);
               $("#search-title").html(showing_text);
             }
 
@@ -129,10 +128,11 @@ variables.prototype = {
   },
   fuzzy_call:function(callback){
     var request_data = JSON.stringify(this.FUZZY_PAYLOAD);            
+    var credentials = this.credentials;
     $.ajax({
         type: "POST",
         beforeSend: function(request) {
-          request.setRequestHeader("Authorization", "Basic " + btoa(this.credentials));
+          request.setRequestHeader("Authorization", "Basic " + btoa(credentials));
         },
         'url':this.createURL(),
         dataType: 'json',
@@ -145,6 +145,7 @@ variables.prototype = {
   },
   scroll_xhr: function($this, method, callback) {
     $this.appbase_xhr_flag = false;
+    var credentials = this.credentials;
     var input_value = '';
     if(method == 'client')
       input_value = $('.appbase_input').eq(1).val();
@@ -158,7 +159,7 @@ variables.prototype = {
     $.ajax({
       type: "POST",
       beforeSend: function(request) {
-        request.setRequestHeader("Authorization", "Basic " + btoa(this.credentials));
+        request.setRequestHeader("Authorization", "Basic " + btoa(credentials));
       },
       'url': this.createURL(),
       dataType: 'json',
