@@ -12,7 +12,7 @@ function variables(credentials, app_name, index_document_type, method) {
       "multi_match": {
         "query": '',
         "fields": [
-          "title^3", "body"
+          "title_simple^2", "title_ngrams", "body"
         ],
         "operator": "and"
       }
@@ -39,7 +39,7 @@ function variables(credentials, app_name, index_document_type, method) {
       "multi_match": {
         "query": 'ap',
         "fields": [
-          "title^3", "body"
+          "title_simple^2", "title_ngrams", "body"
         ],
         "operator": "and",
         "fuzziness": "AUTO"
