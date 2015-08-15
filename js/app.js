@@ -36,19 +36,19 @@ var appbase_app = function() {
 				if(method == 'fuzzy')
 				{
       				$this.appbase_total = hits.length;
-					$(".appbase_total_info").html($this.variables.showing_text(hits.length, hits.length, $('.appbase_input').eq(1).val(), full_data.took));
+					jQuery(".appbase_total_info").html($this.variables.showing_text(hits.length, hits.length, jQuery('.appbase_input').eq(1).val(), full_data.took));
 	            }
 	            else{
 	            	$this.appbase_increment += hits.length;
-		            $(".appbase_total_info").html($this.variables.showing_text($this.appbase_increment, $this.appbase_total, $('.appbase_input').eq(1).val(), full_data.took));
+		            jQuery(".appbase_total_info").html($this.variables.showing_text($this.appbase_increment, $this.appbase_total, jQuery('.appbase_input').eq(1).val(), full_data.took));
 	            }
 	            for (var i = 0; i < hits.length; i++) {
 	              var data = hits[i];
 	              var single_record = $this.variables.createRecord(data);
 
 	              //var single_record = '<div><a cla href="'+ data.fields.link +'">' + data.highlight.title + '</a><p> ' + data.highlight.body.join('...') + '...</p></div>';
-	              var tt_record = $('<div>').addClass('tt-suggestion tt-selectable').html(single_record);
-	              $('.tt-menu .tt-dataset.tt-dataset-my-dataset').append(tt_record);
+	              var tt_record = jQuery('<div>').addClass('tt-suggestion tt-selectable').html(single_record);
+	              jQuery('.tt-menu .tt-dataset.tt-dataset-my-dataset').append(tt_record);
 	            }
             	$this.appbase_xhr_flag = true;
 			}
@@ -71,20 +71,20 @@ var appbase_app = function() {
 		//CreateHtml Start
 		function createHtml(obj) {
 			var abbr = obj.abbr;
-			var title = $('<h1>').addClass(abbr + 'title').html(obj.title);
-			var input_box = $('<input>').addClass(abbr + 'input').attr({
+			var title = jQuery('<h1>').addClass(abbr + 'title').html(obj.title);
+			var input_box = jQuery('<input>').addClass(abbr + 'input').attr({
 				'type': 'text',
 				'placeholder': obj.input_placeholder
 			});
-			var app_logo = $('<img>').addClass(abbr + 'logo').attr({
+			var app_logo = jQuery('<img>').addClass(abbr + 'logo').attr({
 				'src': obj.logo
 			});
-			var search_box = $('<div>').addClass(abbr + 'search_box').append(input_box).append(app_logo);
-			var search_box_container = $('<div>').addClass(abbr + 'search_box').append(search_box);
-			var modal_content = $('<div>').addClass(abbr + 'modal_content').append(search_box_container);
-			var overlay = $('<div>').addClass(abbr + 'overlay');
-			var modal = $('<div>').addClass(abbr + 'modal').append(modal_content).append(overlay);
-			$('body').append(modal);
+			var search_box = jQuery('<div>').addClass(abbr + 'search_box').append(input_box).append(app_logo);
+			var search_box_container = jQuery('<div>').addClass(abbr + 'search_box').append(search_box);
+			var modal_content = jQuery('<div>').addClass(abbr + 'modal_content').append(search_box_container);
+			var overlay = jQuery('<div>').addClass(abbr + 'overlay');
+			var modal = jQuery('<div>').addClass(abbr + 'modal').append(modal_content).append(overlay);
+			jQuery('body').append(modal);
 
 			//Bind events with html
 			html_events(obj, modal, overlay);
@@ -92,20 +92,20 @@ var appbase_app = function() {
 
 		function html_size(obj, modal) {
 			function appbase_resize() {
-				var win_height = $(window).height();
+				var win_height = jQuery(window).height();
 				var modal_height = win_height - 150;
-				var tt_height = modal_height - $('.' + obj.abbr + 'input').height() - 50;
-				$('.tt-menu').height(tt_height);
-				$(modal).find('.' + obj.abbr + 'modal_content').height(modal_height);
+				var tt_height = modal_height - jQuery('.' + obj.abbr + 'input').height() - 50;
+				jQuery('.tt-menu').height(tt_height);
+				jQuery(modal).find('.' + obj.abbr + 'modal_content').height(modal_height);
 			}
-			$(window).resize(function() {
+			jQuery(window).resize(function() {
 				appbase_resize();
 			});
 			appbase_resize();
 		}
 
 		function html_events(obj, modal, overlay) {
-			$(modal).find('.' + obj.abbr + 'input').typeahead({
+			jQuery(modal).find('.' + obj.abbr + 'input').typeahead({
 				minLength: 2,
 				highlight: true,
 				limit: 100,
@@ -130,47 +130,47 @@ var appbase_app = function() {
 				}
 			});
 
-			$(modal).find('.' + obj.abbr + 'input').on('keyup',function(){
-				if($(this).val().length == 0)
-					$('.appbase_total_info').text('No Results found');
+			jQuery(modal).find('.' + obj.abbr + 'input').on('keyup',function(){
+				if(jQuery(this).val().length == 0)
+					jQuery('.appbase_total_info').text('No Results found');
 			});
 
-			$(modal).find('.' + obj.abbr + 'input').bind('typeahead:select', function(ev, suggestion) {
+			jQuery(modal).find('.' + obj.abbr + 'input').bind('typeahead:select', function(ev, suggestion) {
 				ev.preventDefault();
 				console.log('Selection: ' + suggestion);
 			});
 
-			var total_info = $('<span>').addClass(obj.abbr + 'total_info').html('No Results found');
-			$('.tt-menu').prepend(total_info);
+			var total_info = jQuery('<span>').addClass(obj.abbr + 'total_info').html('No Results found');
+			jQuery('.tt-menu').prepend(total_info);
 
 			html_size(obj, modal);
 
-			$(obj.selector).on('keyup', function() {
-				var input_val = $(obj.selector).val();
-				$(modal).find('.' + obj.abbr + 'input').focus();
-				$(modal).find('.' + obj.abbr + 'input').val(input_val);
-				$(modal).fadeIn(300,function(){
-					$(modal).find('.' + obj.abbr + 'input').focus();
+			jQuery(obj.selector).on('keyup', function() {
+				var input_val = jQuery(obj.selector).val();
+				jQuery(modal).find('.' + obj.abbr + 'input').focus();
+				jQuery(modal).find('.' + obj.abbr + 'input').val(input_val);
+				jQuery(modal).fadeIn(300,function(){
+					jQuery(modal).find('.' + obj.abbr + 'input').focus();
 				});
-				$(overlay).show();
-				$(this).val('');
-				$('html,body').css('overflow','hidden');
+				jQuery(overlay).show();
+				jQuery(this).val('');
+				jQuery('html,body').css('overflow','hidden');
 			});
-			$(document).keyup(function(e) {
+			jQuery(document).keyup(function(e) {
 				if (e.keyCode == 27) {
-					$(modal).fadeOut(300);
-					$(overlay).fadeOut(300);
-					$('html,body').css('overflow','auto');
+					jQuery(modal).fadeOut(300);
+					jQuery(overlay).fadeOut(300);
+					jQuery('html,body').css('overflow','auto');
 				}
 			});
-			$(overlay).on('click', function() {
-				$(modal).fadeOut(500);
-				$(overlay).fadeOut(500);
-				$('html,body').css('overflow','auto');
+			jQuery(overlay).on('click', function() {
+				jQuery(modal).fadeOut(500);
+				jQuery(overlay).fadeOut(500);
+				jQuery('html,body').css('overflow','auto');
 			});
 
-			$('.tt-menu').on('scroll', function() {
-				if ($(this).scrollTop() + $(this).innerHeight() >= this.scrollHeight) {
+			jQuery('.tt-menu').on('scroll', function() {
+				if (jQuery(this).scrollTop() + jQuery(this).innerHeight() >= this.scrollHeight) {
 					if ($this.appbase_total != 0 && $this.appbase_total > $this.appbase_increment && $this.appbase_xhr_flag) {
 						$this.variables.scroll_xhr($this,'client', scroll_callback);
 					}
