@@ -154,19 +154,19 @@ var appbase_app = function() {
 				});
 				$(overlay).show();
 				$(this).val('');
-				$('body').css('overflow','hidden');
+				$('html,body').css('overflow','hidden');
 			});
 			$(document).keyup(function(e) {
 				if (e.keyCode == 27) {
 					$(modal).fadeOut(300);
 					$(overlay).fadeOut(300);
-					$('body').css('overflow','auto');
+					$('html,body').css('overflow','auto');
 				}
 			});
 			$(overlay).on('click', function() {
 				$(modal).fadeOut(500);
 				$(overlay).fadeOut(500);
-				$('body').css('overflow','auto');
+				$('html,body').css('overflow','auto');
 			});
 
 			$('.tt-menu').on('scroll', function() {
