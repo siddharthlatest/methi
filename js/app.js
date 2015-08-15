@@ -146,15 +146,13 @@ var appbase_app = function() {
 			html_size(obj, modal);
 
 			jQuery(obj.selector).on('keyup', function() {
-				var input_val = jQuery(obj.selector).val();
-				jQuery(modal).find('.' + obj.abbr + 'input').focus();
+				var input_val = jQuery(this).val();
 				jQuery(modal).find('.' + obj.abbr + 'input').val(input_val);
-				jQuery(modal).fadeIn(300,function(){
-					jQuery(modal).find('.' + obj.abbr + 'input').focus();
-				});
+				jQuery(modal).fadeIn(300);
 				jQuery(overlay).show();
+				jQuery(modal).find('.' + obj.abbr + 'input').focus();
 				jQuery(this).val('');
-				jQuery('html,body').css('overflow','hidden');
+				jQuery('body').css('overflow','hidden');
 			});
 			jQuery(document).keyup(function(e) {
 				if (e.keyCode == 27) {
