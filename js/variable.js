@@ -73,6 +73,10 @@ variables.prototype = {
     var engine = new Bloodhound({
       name: 'history',
       limit: 100,
+      async:true,
+      templates:{
+        pending:true
+      },
       datumTokenizer: function(datum) {
         return Bloodhound.tokenizers.whitespace(datum);
       },
@@ -113,8 +117,7 @@ variables.prototype = {
               return hit;
             });
           } else {
-            
-            parent_this.fuzzy_call(on_fuzzy);
+             parent_this.fuzzy_call(on_fuzzy);
 
             return response.hits.hits;
             $(".appbase_total_info").text("No Results found");

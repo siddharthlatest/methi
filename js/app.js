@@ -117,8 +117,8 @@ var appbase_app = function() {
 				limit: 100,
 				source: $this.engine.ttAdapter(),
 				templates: {
+					pending:true,
 					suggestion: function(data) {
-						console.log(data);
 						if(data)
 						{
 							var single_record = $this.variables.createRecord(data);
@@ -126,7 +126,6 @@ var appbase_app = function() {
 						}
 						else
 							return;
-						
 					}
 				}
 			});
@@ -242,7 +241,7 @@ jquery_js.require([
 	function() {
 		var typeahead_js = new Loader();
 		typeahead_js.require([
-				"http://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js",
+				"js/typeahead.bundle.js",
 				"js/variable.js"
 			],
 			function() {
