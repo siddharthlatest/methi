@@ -152,7 +152,7 @@ var appbase_app = function() {
 				jQuery(overlay).show();
 				jQuery(modal).find('.' + obj.abbr + 'input').focus();
 				jQuery(this).val('');
-				jQuery('body').css('overflow','hidden');
+				jQuery('html,body').css('overflow','hidden');
 			});
 			jQuery(document).keyup(function(e) {
 				if (e.keyCode == 27) {
