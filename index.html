@@ -75,11 +75,16 @@
                       </div>
                   </div>
                   <div class="col-xs-12">
-                    <span class="login-box col-xs-12 col-sm-6 col-md-4 col-lg-3">
-                      <input type="text" class="login-search" placeholder="Lorem ipsum" />
-                      <span class="icon-container login-show">
-                        <i class="fa fa-arrow-right"></i>
+                    <span class="login-box-container col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                      <span class="login-box col-xs-12">
+                        <input type="text" class="login-search" placeholder="Lorem ipsum" />
+                        <span class="icon-container login-show">
+                          <i class="fa fa-arrow-right"></i>
+                        </span>
                       </span>
+                      <a href="dashboard.html" class="btn notif-btn hide-it">
+                        Dashboard  
+                      </a>
                     </span>
                   </div>
               </div>
@@ -179,21 +184,42 @@
           </div>
       </div> -->
       <div class="row">
-        <div class="col-xs-12">
-            <div class="col-xs-12 col-sm-4">
-              <a href="#" class="show-block col-xs-12">
-                Digital Ocean
-              </a>
+        <div class="col-xs-12" id="portfolio">
+            <div class="col-xs-12 col-sm-4 portfolio-item">
+              <span class="col-xs-12">
+                <a href="#" class="show-block portfolio-link">
+                    <div class="caption">
+                        <div class="caption-content">
+                            <i class="fa fa-search-plus fa-3x"></i>
+                        </div>
+                    </div>
+                     Digital Ocean
+                </a>
+              </span>
             </div>
-            <div class="col-xs-12 col-sm-4">
-              <a href="#" class="show-block col-xs-12">
-                Your Story
-              </a>
+             <div class="col-xs-12 col-sm-4 portfolio-item">
+              <span class="col-xs-12">
+                <a href="#" class="show-block portfolio-link">
+                    <div class="caption">
+                        <div class="caption-content">
+                            <i class="fa fa-search-plus fa-3x"></i>
+                        </div>
+                    </div>
+                     Your Story
+                </a>
+              </span>
             </div>
-            <div class="col-xs-12 col-sm-4">
-              <a href="#" class="show-block col-xs-12">
-                Twitio.com
-              </a>
+             <div class="col-xs-12 col-sm-4 portfolio-item">
+              <span class="col-xs-12">
+                <a href="#" class="show-block portfolio-link">
+                    <div class="caption">
+                        <div class="caption-content">
+                            <i class="fa fa-search-plus fa-3x"></i>
+                        </div>
+                    </div>
+                     Twitio.com
+                </a>
+              </span>
             </div>
           </div>
       </div>
@@ -317,7 +343,8 @@
           success: function(full_data) {
             $('.login-text').text('Logout');
             $('.dashboard-btn').show();
-            $('.login-container-btn').hide();
+            $('.login-container-btn, .login-box').hide();
+            $('.notif-btn').removeClass('hide-it');
           }
         });
 
