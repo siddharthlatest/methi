@@ -175,6 +175,8 @@ variables.prototype = {
   createRecord:function(data){    
     var small_link = jQuery('<span>').addClass('small_link').html(data.highlight.title);
     var small_description = jQuery('<p>').addClass('small_description').html(data.highlight.body.join('...') + '...');
+    if (data.fields.link.toString().match(/index.html$/))
+      data.fields.link = data.fields.link.toString().slice(0,-10)
     var single_record = jQuery('<a>').attr({
       'class': 'record_link',
       'href': data.fields.link,
