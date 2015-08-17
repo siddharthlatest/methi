@@ -4,6 +4,9 @@ function variables(credentials, app_name, index_document_type, method) {
   this.index_document_type = index_document_type;
   this.SIZE = 20;
   this.method = method;
+  this.NO_RESULT_TEXT = "No Results found";
+  this.INITIAL_TEXT = "Start typing..";
+  this.FUZZY_FLAG = false;
   this.SEARCH_PAYLOAD = {
     "from": 0,
     "size": this.SIZE,
@@ -33,7 +36,7 @@ function variables(credentials, app_name, index_document_type, method) {
   };
   this.FUZZY_PAYLOAD = {
     "from": 0,
-    "size": 10,
+    "size": this.SIZE,
     "fields": ["link"],
     "query": {
       "multi_match": {
@@ -99,7 +102,9 @@ variables.prototype = {
           return settings;
         },
         transform: function(response) {
+          $this.appbase_increment = response.hits.hits.length;
           if (response.hits.hits.length) {
+            parent_this.FUZZY_FLAG = false;
             $this.appbase_total = response.hits.total;
             
             callback(response.hits.total);
@@ -117,10 +122,11 @@ variables.prototype = {
               return hit;
             });
           } else {
-             parent_this.fuzzy_call(on_fuzzy);
+            parent_this.FUZZY_FLAG = true;
+            parent_this.fuzzy_call($this, on_fuzzy);
 
             return response.hits.hits;
-            jQuery(".appbase_total_info").text("No Results found");
+            jQuery(".appbase_total_info").text(parent_this.NO_RESULT_TEXT);
           }
         }
       }
@@ -128,7 +134,7 @@ variables.prototype = {
 
     return engine;
   },
-  fuzzy_call:function(callback){
+  fuzzy_call:function($this, callback){
     this.FUZZY_PAYLOAD.query.multi_match.query = jQuery('.appbase_input').eq(1).val();
     var request_data = JSON.stringify(this.FUZZY_PAYLOAD);            
     var credentials = this.credentials;
@@ -142,22 +148,36 @@ variables.prototype = {
         contentType: "application/json",
         data: request_data,
         success: function(response) {
-           callback(response, 'fuzzy');
+          $this.appbase_total = response.hits.total;
+          callback(response, 'fuzzy');
         }
       });
   },
   scroll_xhr: function($this, method, callback) {
+    var fuzzy_flag = this.FUZZY_FLAG;
+    var scroll_payload = {};
+    var fuzzy_payload = this.FUZZY_PAYLOAD;
+    var search_payload = this.SEARCH_PAYLOAD;
     $this.appbase_xhr_flag = false;
     var credentials = this.credentials;
+    var parent_this = this;
     var input_value = '';
     if(method == 'client')
       input_value = jQuery('.appbase_input').eq(1).val();
     else if(method == 'appbase')
       input_value = jQuery('.typeahead').eq(1).val();
 
-    $this.search_payload.query.multi_match.query = input_value;
-    $this.search_payload.from = $this.appbase_increment;
-    var request_data = JSON.stringify($this.search_payload);
+    console.log(parent_this);
+    if(fuzzy_flag){
+      scroll_payload = fuzzy_payload;
+    }
+    else{
+      scroll_payload = search_payload; 
+    }
+
+    scroll_payload.query.multi_match.query = input_value;
+    scroll_payload.from = $this.appbase_increment;
+    var request_data = JSON.stringify(scroll_payload);
 
     jQuery.ajax({
       type: "POST",
@@ -186,6 +206,6 @@ variables.prototype = {
     return single_record;
   },
   showing_text: function(init_no, total_no, value, time) {
-    return total_no + " results for \"" + value + "\"" + " in " + time + "ms"
+    return init_no+" "+total_no + " results for \"" + value + "\"" + " in " + time + "ms"
   }
 }

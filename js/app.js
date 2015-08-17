@@ -33,24 +33,23 @@ var appbase_app = function() {
 		function scroll_callback(full_data, method) {
 			var hits = full_data.hits.hits;
 			if(hits.length){
-				if(method == 'fuzzy')
-				{
-      				$this.appbase_total = hits.length;
-					jQuery(".appbase_total_info").html($this.variables.showing_text(hits.length, hits.length, jQuery('.appbase_input').eq(1).val(), full_data.took));
-	            }
-	            else{
-	            	$this.appbase_increment += hits.length;
-		            jQuery(".appbase_total_info").html($this.variables.showing_text($this.appbase_increment, $this.appbase_total, jQuery('.appbase_input').eq(1).val(), full_data.took));
-	            }
+				$this.appbase_increment += hits.length;
+		        jQuery(".appbase_total_info").html($this.variables.showing_text($this.appbase_increment, $this.appbase_total, jQuery('.appbase_input').eq(1).val(), full_data.took));
+	            
 	            for (var i = 0; i < hits.length; i++) {
 	              var data = hits[i];
 	              var single_record = $this.variables.createRecord(data);
 
 	              //var single_record = '<div><a cla href="'+ data.fields.link +'">' + data.highlight.title + '</a><p> ' + data.highlight.body.join('...') + '...</p></div>';
+	              
 	              var tt_record = jQuery('<div>').addClass('tt-suggestion tt-selectable').html(single_record);
 	              jQuery('.tt-menu .tt-dataset.tt-dataset-my-dataset').append(tt_record);
 	            }
             	$this.appbase_xhr_flag = true;
+			}
+			else{
+				jQuery(".appbase_total_info").html($this.variables.NO_RESULT_TEXT);
+				jQuery('.tt-menu .tt-dataset.tt-dataset-my-dataset').html('');
 			}
 		}
 		//Initialize Variables End
@@ -132,7 +131,7 @@ var appbase_app = function() {
 
 			jQuery(modal).find('.' + obj.abbr + 'input').on('keyup',function(){
 				if(jQuery(this).val().length == 0)
-					jQuery('.appbase_total_info').text('No Results found');
+					jQuery('.appbase_total_info').text($this.variables.INITIAL_TEXT);
 			});
 
 			jQuery(modal).find('.' + obj.abbr + 'input').bind('typeahead:select', function(ev, suggestion) {
@@ -140,7 +139,7 @@ var appbase_app = function() {
 				console.log('Selection: ' + suggestion);
 			});
 
-			var total_info = jQuery('<span>').addClass(obj.abbr + 'total_info').html('No Results found');
+			var total_info = jQuery('<span>').addClass(obj.abbr + 'total_info').html($this.variables.NO_RESULT_TEXT);
 			jQuery('.tt-menu').prepend(total_info);
 
 			html_size(obj, modal);
