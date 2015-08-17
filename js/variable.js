@@ -129,6 +129,7 @@ variables.prototype = {
     return engine;
   },
   fuzzy_call:function(callback){
+    this.FUZZY_PAYLOAD.query.multi_match.query = jQuery('.appbase_input').eq(1).val();
     var request_data = JSON.stringify(this.FUZZY_PAYLOAD);            
     var credentials = this.credentials;
     jQuery.ajax({
