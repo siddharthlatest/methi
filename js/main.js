@@ -17,23 +17,23 @@ function appbase_main() {
     }
   });
 
-   function scroll_callback(full_data, method) {
+  function scroll_callback(full_data, method) {
     var hits = full_data.hits.hits;
-    if(method == 'fuzzy')
-    {
-      $this.appbase_total = hits.length;
-      $("#search-title").html($this.variables.showing_text(hits.length, hits.length, $('.typeahead').eq(1).val(), full_data.took));
-    } else {
+    if (hits.length) {
       $this.appbase_increment += hits.length;
       $("#search-title").html($this.variables.showing_text($this.appbase_increment, $this.appbase_total, $('.typeahead').eq(1).val(), full_data.took));
+
+      for (var i = 0; i < hits.length; i++) {
+        var data = hits[i];
+        var single_record_in = '<div><h4><a href="' + data.fields.link + '">' + data.highlight.title + '</a></h4><p> ' + data.highlight.body.join('...') + '...</p></div>'
+        $('.tt-menu .tt-dataset.tt-dataset-my-dataset').append(single_record_in);
+      }
+      appbase_xhr_flag = true;
     }
-    
-    for (var i = 0; i < hits.length; i++) {
-      var data = hits[i];
-      var single_record_in = '<div><h4><a href="' + data.fields.link + '">' + data.highlight.title + '</a></h4><p> ' + data.highlight.body.join('...') + '...</p></div>'
-      $('.tt-menu .tt-dataset.tt-dataset-my-dataset').append(single_record_in);
+    else{
+      $(".appbase_total_info").html($this.variables.NO_RESULT_TEXT);
+      $('.tt-menu .tt-dataset.tt-dataset-my-dataset').html('');
     }
-    appbase_xhr_flag = true;
   };
   //Initialize Variables End
 
@@ -62,20 +62,20 @@ function appbase_main() {
     }
   });
 
-  $('.typeahead').on('keyup',function(){
-   if($(this).val().length == 0)
-      $('.appbase_total_info').text('No Results found');
+  $('.typeahead').on('keyup', function() {
+    if ($(this).val().length == 0)
+      $('.appbase_total_info').text($this.variables.NO_RESULT_TEXT);
   });
 
   $(window).scroll(function() {
     if ($(window).scrollTop() + $(window).height() == $(document).height()) {
       if ($this.appbase_total != 0 && $this.appbase_total > $this.appbase_increment && $this.appbase_xhr_flag) {
         alert('hi');
-        $this.variables.scroll_xhr($this,'appbase', scroll_callback);
+        $this.variables.scroll_xhr($this, 'appbase', scroll_callback);
       }
     }
   });
 
- 
+
 }
 appbase_main();

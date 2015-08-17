@@ -135,7 +135,12 @@ variables.prototype = {
     return engine;
   },
   fuzzy_call:function($this, callback){
-    this.FUZZY_PAYLOAD.query.multi_match.query = jQuery('.appbase_input').eq(1).val();
+     if(this.method == 'client')
+      input_value = jQuery('.appbase_input').eq(1).val();
+    else if(this.method == 'appbase')
+      input_value = jQuery('.typeahead').eq(1).val();
+
+    this.FUZZY_PAYLOAD.query.multi_match.query = input_value;
     var request_data = JSON.stringify(this.FUZZY_PAYLOAD);            
     var credentials = this.credentials;
     jQuery.ajax({
@@ -206,6 +211,6 @@ variables.prototype = {
     return single_record;
   },
   showing_text: function(init_no, total_no, value, time) {
-    return init_no+" "+total_no + " results for \"" + value + "\"" + " in " + time + "ms"
+    return total_no + " results for \"" + value + "\"" + " in " + time + "ms"
   }
 }
