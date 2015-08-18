@@ -1601,7 +1601,6 @@
         _.mixin(Dataset.prototype, EventEmitter, {
             _overwrite: function overwrite(query, suggestions) {
                 suggestions = suggestions || [];
-                console.log(this.async, this.templates.pending);
                 if (suggestions.length) {
                     this._renderSuggestions(query, suggestions);
                 } else if (this.async && this.templates.pending) {
@@ -1751,7 +1750,6 @@
             }
         }
         function getTemplates(templates, displayFn) {
-            console.log(templates);
             return {
                 notFound: templates.notFound && _.templatify(templates.notFound),
                 pending: templates.pending && _.templatify(templates.pending),

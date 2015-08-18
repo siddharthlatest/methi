@@ -32,11 +32,14 @@ var appbase_app = function() {
 		});
 		function scroll_callback(full_data, method) {
 			var hits = full_data.hits.hits;
+			if(method == 'fuzzy')
+			{
+				jQuery('.tt-menu .tt-dataset.tt-dataset-my-dataset').html('');
+				jQuery(".appbase_total_info").html($this.variables.showing_text($this.appbase_increment, $this.appbase_total, jQuery('.appbase_input').eq(1).val(), full_data.took));
+	        }
 			if(hits.length){
 				$this.appbase_increment += hits.length;
-		        jQuery(".appbase_total_info").html($this.variables.showing_text($this.appbase_increment, $this.appbase_total, jQuery('.appbase_input').eq(1).val(), full_data.took));
-	            
-	            for (var i = 0; i < hits.length; i++) {
+		        for (var i = 0; i < hits.length; i++) {
 	              var data = hits[i];
 	              var single_record = $this.variables.createRecord(data);
 
