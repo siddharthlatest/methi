@@ -211,6 +211,15 @@ variables.prototype = {
     return single_record;
   },
   showing_text: function(init_no, total_no, value, time) {
-    return total_no + " results for \"" + value + "\"" + " in " + time + "ms"
+    var count_result = total_no + " results for \"" + value + "\"" + " in " + time + "ms";
+    if(this.method  == 'client')
+    {
+      if(jQuery('.appbase_input').eq(1).val().length)
+        return count_result;
+      else
+        return this.INITIAL_TEXT;  
+    }
+    else
+      return count_result;
   }
 }
