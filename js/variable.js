@@ -198,64 +198,6 @@ variables.prototype = {
       }
     });
   },
-  model_initialize: function($this, method, callback) {
-    var search_payload = this.SEARCH_PAYLOAD;
-    var credentials = this.credentials;
-    var parent_this = this;
-    var input_value = '';
-    if (method == 'client')
-      input_value = jQuery('.appbase_input').eq(1).val();
-    else if (method == 'appbase')
-      input_value = jQuery('.typeahead').eq(1).val();
-
-    search_payload.from = 0;
-    search_payload.query.multi_match.query = input_value;
-    var request_data = JSON.stringify(search_payload);
-
-    jQuery.ajax({
-      type: "POST",
-      beforeSend: function(request) {
-        request.setRequestHeader("Authorization", "Basic " + btoa(credentials));
-      },
-      'url': this.createURL(),
-      dataType: 'json',
-      contentType: "application/json",
-      data: request_data,
-      success: function(full_data) {
-
-        //If Result found
-        if (full_data.hits.hits.length)
-          callback(full_data, '', 'initialize');
-        
-        //Else Fuzzy search
-        else {
-          var fuzzy_payload = this.FUZZY_PAYLOAD;
-          if (method == 'client')
-            input_value = jQuery('.appbase_input').eq(1).val();
-          else if (method == 'appbase')
-            input_value = jQuery('.typeahead').eq(1).val();
-
-          fuzzy_payload.from = 0;
-          fuzzy_payload.query.multi_match.query = input_value;
-          var request_data = JSON.stringify(fuzzy_payload);
-
-          jQuery.ajax({
-            type: "POST",
-            beforeSend: function(request) {
-              request.setRequestHeader("Authorization", "Basic " + btoa(credentials));
-            },
-            'url': this.createURL(),
-            dataType: 'json',
-            contentType: "application/json",
-            data: request_data,
-            success: function(full_data) {
-              callback(full_data, '', 'initialize');
-            }
-          });
-        }
-      }
-    });
-  },
   createRecord: function(data) {
     var small_link = jQuery('<span>').addClass('small_link').html(data.highlight.title);
     var small_description = jQuery('<p>').addClass('small_description').html(data.highlight.body.join('...') + '...');

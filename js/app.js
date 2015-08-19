@@ -113,7 +113,7 @@ var appbase_app = function() {
 
 		function html_events(obj, modal, overlay) {
 			jQuery(modal).find('.' + obj.abbr + 'input').typeahead({
-				minLength: 2,
+				minLength: 1,
 				highlight: true,
 				limit: 100,
 				change: function() {
@@ -155,8 +155,10 @@ var appbase_app = function() {
 			jQuery(obj.selector).on('keyup', function() {
 				var input_val = jQuery(this).val();
 				jQuery(modal).find('.' + obj.abbr + 'input').val(input_val);
-				jQuery(modal).fadeIn(150);
-				$this.variables.model_initialize($this,'client', scroll_callback, 'initialize');
+				jQuery(modal).fadeIn(150, function(){
+					jQuery(modal).find('.' + obj.abbr + 'input').typeahead('val', '')
+					jQuery(modal).find('.' + obj.abbr + 'input').focus().typeahead('val',input_val).focus();
+				});
 				jQuery(overlay).show();
 				jQuery(modal).find('.' + obj.abbr + 'input').focus();
 				jQuery(this).val('');
