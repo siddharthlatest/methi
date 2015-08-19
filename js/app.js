@@ -150,7 +150,7 @@ var appbase_app = function() {
 			jQuery(obj.selector).on('keyup', function() {
 				var input_val = jQuery(this).val();
 				jQuery(modal).find('.' + obj.abbr + 'input').val(input_val);
-				jQuery(modal).fadeIn(300);
+				jQuery(modal).fadeIn(150);
 				jQuery(overlay).show();
 				jQuery(modal).find('.' + obj.abbr + 'input').focus();
 				jQuery(this).val('');
@@ -158,14 +158,14 @@ var appbase_app = function() {
 			});
 			jQuery(document).keyup(function(e) {
 				if (e.keyCode == 27) {
-					jQuery(modal).fadeOut(300);
-					jQuery(overlay).fadeOut(300);
+					jQuery(modal).fadeOut(150);
+					jQuery(overlay).fadeOut(150);
 					jQuery('html,body').css('overflow','auto');
 				}
 			});
 			jQuery(overlay).on('click', function() {
-				jQuery(modal).fadeOut(500);
-				jQuery(overlay).fadeOut(500);
+				jQuery(modal).fadeOut(150);
+				jQuery(overlay).fadeOut(150);
 				jQuery('html,body').css('overflow','auto');
 			});
 
