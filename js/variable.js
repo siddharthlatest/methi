@@ -97,6 +97,7 @@ variables.prototype = {
           };
           settings.contentType = "application/json; charset=UTF-8";
           //console.log(search_payload);
+          search_payload.from = 0;
           search_payload.query.multi_match.query = query;
           settings.data = JSON.stringify(search_payload);
           return settings;
@@ -139,7 +140,7 @@ variables.prototype = {
       input_value = jQuery('.appbase_input').eq(1).val();
     else if(this.method == 'appbase')
       input_value = jQuery('.typeahead').eq(1).val();
-
+    this.FUZZY_PAYLOAD.from = 0;
     this.FUZZY_PAYLOAD.query.multi_match.query = input_value;
     var request_data = JSON.stringify(this.FUZZY_PAYLOAD);            
     var credentials = this.credentials;

@@ -151,6 +151,7 @@ var appbase_app = function() {
 				var input_val = jQuery(this).val();
 				jQuery(modal).find('.' + obj.abbr + 'input').val(input_val);
 				jQuery(modal).fadeIn(150);
+				$this.variables.scroll_xhr($this,'client', scroll_callback);
 				jQuery(overlay).show();
 				jQuery(modal).find('.' + obj.abbr + 'input').focus();
 				jQuery(this).val('');
