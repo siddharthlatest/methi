@@ -76,9 +76,9 @@ variables.prototype = {
     var engine = new Bloodhound({
       name: 'history',
       limit: 100,
-      async:true,
-      templates:{
-        pending:true
+      async: true,
+      templates: {
+        pending: true
       },
       datumTokenizer: function(datum) {
         return Bloodhound.tokenizers.whitespace(datum);
@@ -107,14 +107,14 @@ variables.prototype = {
           if (response.hits.hits.length) {
             parent_this.FUZZY_FLAG = false;
             $this.appbase_total = response.hits.total;
-            
+
             callback(response.hits.total);
-            
-            if(parent_this.method == 'client'){
+
+            if (parent_this.method == 'client') {
               var showing_text = parent_this.showing_text(response.hits.hits.length, response.hits.total, jQuery('.appbase_input').eq(1).val(), response.took);
               jQuery(".appbase_total_info").html(showing_text);
             }
-            if(parent_this.method == 'appbase'){
+            if (parent_this.method == 'appbase') {
               var showing_text = parent_this.showing_text(response.hits.hits.length, response.hits.total, jQuery('.typeahead').eq(1).val(), response.took);
               jQuery("#search-title").html(showing_text);
             }
@@ -135,29 +135,29 @@ variables.prototype = {
 
     return engine;
   },
-  fuzzy_call:function($this, callback){
-     if(this.method == 'client')
+  fuzzy_call: function($this, callback) {
+    if (this.method == 'client')
       input_value = jQuery('.appbase_input').eq(1).val();
-    else if(this.method == 'appbase')
+    else if (this.method == 'appbase')
       input_value = jQuery('.typeahead').eq(1).val();
     this.FUZZY_PAYLOAD.from = 0;
     this.FUZZY_PAYLOAD.query.multi_match.query = input_value;
-    var request_data = JSON.stringify(this.FUZZY_PAYLOAD);            
+    var request_data = JSON.stringify(this.FUZZY_PAYLOAD);
     var credentials = this.credentials;
     jQuery.ajax({
-        type: "POST",
-        beforeSend: function(request) {
-          request.setRequestHeader("Authorization", "Basic " + btoa(credentials));
-        },
-        'url':this.createURL(),
-        dataType: 'json',
-        contentType: "application/json",
-        data: request_data,
-        success: function(response) {
-          $this.appbase_total = response.hits.total;
-          callback(response, 'fuzzy');
-        }
-      });
+      type: "POST",
+      beforeSend: function(request) {
+        request.setRequestHeader("Authorization", "Basic " + btoa(credentials));
+      },
+      'url': this.createURL(),
+      dataType: 'json',
+      contentType: "application/json",
+      data: request_data,
+      success: function(response) {
+        $this.appbase_total = response.hits.total;
+        callback(response, 'fuzzy');
+      }
+    });
   },
   scroll_xhr: function($this, method, callback) {
     var fuzzy_flag = this.FUZZY_FLAG;
@@ -168,21 +168,20 @@ variables.prototype = {
     var credentials = this.credentials;
     var parent_this = this;
     var input_value = '';
-    if(method == 'client')
+    if (method == 'client')
       input_value = jQuery('.appbase_input').eq(1).val();
-    else if(method == 'appbase')
+    else if (method == 'appbase')
       input_value = jQuery('.typeahead').eq(1).val();
 
     console.log(parent_this);
-    if(fuzzy_flag){
+    if (fuzzy_flag) {
       scroll_payload = fuzzy_payload;
-    }
-    else{
-      scroll_payload = search_payload; 
+    } else {
+      scroll_payload = search_payload;
     }
 
-    scroll_payload.query.multi_match.query = input_value;
     scroll_payload.from = $this.appbase_increment;
+    scroll_payload.query.multi_match.query = input_value;
     var request_data = JSON.stringify(scroll_payload);
 
     jQuery.ajax({
@@ -199,11 +198,69 @@ variables.prototype = {
       }
     });
   },
-  createRecord:function(data){    
+  model_initialize: function($this, method, callback) {
+    var search_payload = this.SEARCH_PAYLOAD;
+    var credentials = this.credentials;
+    var parent_this = this;
+    var input_value = '';
+    if (method == 'client')
+      input_value = jQuery('.appbase_input').eq(1).val();
+    else if (method == 'appbase')
+      input_value = jQuery('.typeahead').eq(1).val();
+
+    search_payload.from = 0;
+    search_payload.query.multi_match.query = input_value;
+    var request_data = JSON.stringify(search_payload);
+
+    jQuery.ajax({
+      type: "POST",
+      beforeSend: function(request) {
+        request.setRequestHeader("Authorization", "Basic " + btoa(credentials));
+      },
+      'url': this.createURL(),
+      dataType: 'json',
+      contentType: "application/json",
+      data: request_data,
+      success: function(full_data) {
+
+        //If Result found
+        if (full_data.hits.hits.length)
+          callback(full_data, '', 'initialize');
+        
+        //Else Fuzzy search
+        else {
+          var fuzzy_payload = this.FUZZY_PAYLOAD;
+          if (method == 'client')
+            input_value = jQuery('.appbase_input').eq(1).val();
+          else if (method == 'appbase')
+            input_value = jQuery('.typeahead').eq(1).val();
+
+          fuzzy_payload.from = 0;
+          fuzzy_payload.query.multi_match.query = input_value;
+          var request_data = JSON.stringify(fuzzy_payload);
+
+          jQuery.ajax({
+            type: "POST",
+            beforeSend: function(request) {
+              request.setRequestHeader("Authorization", "Basic " + btoa(credentials));
+            },
+            'url': this.createURL(),
+            dataType: 'json',
+            contentType: "application/json",
+            data: request_data,
+            success: function(full_data) {
+              callback(full_data, '', 'initialize');
+            }
+          });
+        }
+      }
+    });
+  },
+  createRecord: function(data) {
     var small_link = jQuery('<span>').addClass('small_link').html(data.highlight.title);
     var small_description = jQuery('<p>').addClass('small_description').html(data.highlight.body.join('...') + '...');
     if (data.fields.link.toString().match(/index.html$/))
-      data.fields.link = data.fields.link.toString().slice(0,-10)
+      data.fields.link = data.fields.link.toString().slice(0, -10)
     var single_record = jQuery('<a>').attr({
       'class': 'record_link',
       'href': data.fields.link,
@@ -213,14 +270,12 @@ variables.prototype = {
   },
   showing_text: function(init_no, total_no, value, time) {
     var count_result = total_no + " results for \"" + value + "\"" + " in " + time + "ms";
-    if(this.method  == 'client')
-    {
-      if(jQuery('.appbase_input').eq(1).val().length)
+    if (this.method == 'client') {
+      if (jQuery('.appbase_input').eq(1).val().length)
         return count_result;
       else
-        return this.INITIAL_TEXT;  
-    }
-    else
+        return this.INITIAL_TEXT;
+    } else
       return count_result;
   }
 }

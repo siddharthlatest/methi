@@ -30,7 +30,7 @@ var appbase_app = function() {
 				withCredentials: true
 			}
 		});
-		function scroll_callback(full_data, method) {
+		function scroll_callback(full_data, method, initialize) {
 			var hits = full_data.hits.hits;
 			if(method == 'fuzzy')
 			{
@@ -54,6 +54,11 @@ var appbase_app = function() {
 				jQuery(".appbase_total_info").html($this.variables.NO_RESULT_TEXT);
 				jQuery('.tt-menu .tt-dataset.tt-dataset-my-dataset').html('');
 			}
+
+			if(initialize == 'initialize'){
+				$this.appbase_total = full_data.hits.total;
+				jQuery(".appbase_total_info").html($this.variables.showing_text($this.appbase_increment, full_data.hits.total , jQuery('.appbase_input').eq(1).val(), full_data.took));
+	        }
 		}
 		//Initialize Variables End
 
@@ -151,7 +156,7 @@ var appbase_app = function() {
 				var input_val = jQuery(this).val();
 				jQuery(modal).find('.' + obj.abbr + 'input').val(input_val);
 				jQuery(modal).fadeIn(150);
-				$this.variables.scroll_xhr($this,'client', scroll_callback);
+				$this.variables.model_initialize($this,'client', scroll_callback, 'initialize');
 				jQuery(overlay).show();
 				jQuery(modal).find('.' + obj.abbr + 'input').focus();
 				jQuery(this).val('');
