@@ -17,6 +17,18 @@ function appbase_main() {
     }
   });
 
+  $.ajax({
+    type: "GET",
+    url: 'https://accapi.appbase.io/user',
+    dataType: 'json',
+    contentType: "application/json",
+    success: function(full_data) {
+    },
+    error:function(){
+      window.location.href = "index.html";
+    }
+  });
+
   function scroll_callback(full_data, method) {
     var hits = full_data.hits.hits;
     if (hits.length) {
@@ -79,3 +91,4 @@ function appbase_main() {
 
 }
 appbase_main();
+
