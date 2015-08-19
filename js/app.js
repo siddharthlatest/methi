@@ -155,10 +155,9 @@ var appbase_app = function() {
 			jQuery(obj.selector).on('keyup', function() {
 				var input_val = jQuery(this).val();
 				jQuery(modal).find('.' + obj.abbr + 'input').val(input_val);
-				jQuery(modal).fadeIn(150, function(){
-					jQuery(modal).find('.' + obj.abbr + 'input').typeahead('val', '')
-					jQuery(modal).find('.' + obj.abbr + 'input').focus().typeahead('val',input_val).focus();
-				});
+				jQuery(modal).fadeIn(150);
+				jQuery(modal).find('.' + obj.abbr + 'input').typeahead('val', '')
+				jQuery(modal).find('.' + obj.abbr + 'input').focus().typeahead('val',input_val).focus();
 				jQuery(overlay).show();
 				jQuery(modal).find('.' + obj.abbr + 'input').focus();
 				jQuery(this).val('');
