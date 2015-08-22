@@ -100,17 +100,27 @@ var appbase_app = function() {
 		function html_size(obj, modal) {
 			function appbase_resize() {
 				var win_height = jQuery(window).height();
-				var modal_height = win_height - 150;
+				var modal_height = win_height < 768 ? win_height : win_height - 150;
 				var tt_height = modal_height - jQuery('.' + obj.abbr + 'input').height() - 50;
 				jQuery('.tt-menu').height(tt_height);
 				jQuery(modal).find('.' + obj.abbr + 'modal_content').height(modal_height);
+				if(win_height < 768){
+					jQuery(modal).find('.' + obj.abbr + 'modal_content').css('margin-top',0);
+				}
+				else{
+					jQuery(modal).find('.' + obj.abbr + 'modal_content').css('margin-top','50px');
+				}
 			}
 			jQuery(window).resize(function() {
 				appbase_resize();
 			});
 			appbase_resize();
 		}
-
+		function close_modal(){
+			jQuery('.appbase_modal').fadeOut(150);
+			jQuery('.appbase_overlay').fadeOut(150);
+			jQuery('html,body').css('overflow','auto');
+		}
 		function html_events(obj, modal, overlay) {
 			jQuery(modal).find('.' + obj.abbr + 'input').typeahead({
 				minLength: 1,
@@ -165,15 +175,11 @@ var appbase_app = function() {
 			});
 			jQuery(document).keyup(function(e) {
 				if (e.keyCode == 27) {
-					jQuery(modal).fadeOut(150);
-					jQuery(overlay).fadeOut(150);
-					jQuery('html,body').css('overflow','auto');
+					close_modal()
 				}
 			});
 			jQuery(overlay).on('click', function() {
-				jQuery(modal).fadeOut(150);
-				jQuery(overlay).fadeOut(150);
-				jQuery('html,body').css('overflow','auto');
+				close_modal();
 			});
 
 			jQuery('.tt-menu').on('scroll', function() {
@@ -183,7 +189,9 @@ var appbase_app = function() {
 					}
 				}
 			});
-
+			jQuery('.'+obj.abbr + 'logo').click(function(){
+				close_modal();
+			});
 			
 
 		}
@@ -240,6 +248,14 @@ Loader.prototype = {
 	}
 }
 
+function meta_head(){
+	var meta = document.createElement('meta');
+	//meta.httpEquiv = "X-UA-Compatible";
+	meta.content = "width=device-width, initial-scale=1";
+	meta.name = 'viewport';
+	document.getElementsByTagName('head')[0].appendChild(meta);
+}
+meta_head();
 var jquery_js = new Loader();
 jquery_js.require([
 		"css/client.css",
