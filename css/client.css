@@ -201,6 +201,8 @@
   }
   .appbase_modal .twitter-typeahead .modal_grid_view .small_link{
     max-height: 160px;
+    font-size: 15px;
+    line-height: 21px;
   }
   .appbase_modal .twitter-typeahead .modal_grid_view .small_description {
     display: none;
