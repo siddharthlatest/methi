@@ -217,9 +217,9 @@ variables.prototype = {
     }
     else{     
       var image_url = data.fields.image_url[0] != 'None' ? data.fields.image_url[0] : this.IMAGE;
-      //console.log(image_url);
+      console.log(image_url);
       var small_info_container = jQuery('<div>').addClass('small_info_container').append(small_link).append(small_description);
-      var record_img = jQuery('<img>').addClass('record_img').attr({'src':image_url, 'alt':data.highlight.title});
+      var record_img = jQuery('<img>').addClass('record_img').attr({'src':image_url, 'alt':data.highlight.title, 'onerror':'this.onerror = null; this.src="'+this.IMAGE+'"'});
       var record_img_container = jQuery('<span>').addClass('record_img_container').append(record_img);
       var record_link_container = jQuery('<div>').addClass('record_link_container').append(record_img_container).append(small_info_container);
       if (data.fields.link.toString().match(/index.html$/))
