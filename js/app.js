@@ -159,7 +159,9 @@ var appbase_app = function() {
 			});
 
 			var total_info = jQuery('<span>').addClass(obj.abbr + 'total_info').html($this.variables.NO_RESULT_TEXT);
-			jQuery('.tt-menu').prepend(total_info);
+			var toggle_view = jQuery('<a>').addClass(obj.abbr + 'toggle_view').html('view');			
+			var total_info_container = jQuery('<span>').addClass(obj.abbr + 'total_info_container').append(total_info).append(toggle_view);
+			jQuery('.tt-menu').prepend(total_info_container);
 
 			html_size(obj, modal);
 
@@ -193,7 +195,11 @@ var appbase_app = function() {
 			jQuery('.'+obj.abbr + 'logo').click(function(){
 				close_modal();
 			});
-			
+			jQuery(toggle_view).click(function(){
+				$this.variables.VIEWFLAG = $this.variables.VIEWFLAG ? false:true;
+				var input_val = jQuery(modal).find('.' + obj.abbr + 'input').eq(1).val();
+				jQuery(modal).find('.' + obj.abbr + 'input').typeahead('val','').typeahead('val',input_val).focus();
+			});
 
 		}
 		//CreateHtml End

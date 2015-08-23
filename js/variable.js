@@ -7,7 +7,8 @@ function variables(credentials, app_name, index_document_type, method) {
   this.NO_RESULT_TEXT = "No Results found";
   this.INITIAL_TEXT = "Start typing..";
   this.FUZZY_FLAG = false;
-  this.image = 'http://www.passionforneedygh.com/wp-content/themes/nobeliumful/styles/images/default-archive.png';
+  this.IMAGE = 'http://www.passionforneedygh.com/wp-content/themes/nobeliumful/styles/images/default-archive.png';
+  this.VIEWFLAG = false;
   this.SEARCH_PAYLOAD = {
     "from": 0,
     "size": this.SIZE,
@@ -200,15 +201,30 @@ variables.prototype = {
     });
   },
   createRecord: function(data) {
-    var small_link = jQuery('<span>').addClass('small_link').html(data.highlight.title);
-    var small_description = jQuery('<p>').addClass('small_description').html(data.highlight.body.join('...') + '...');
-    if (data.fields.link.toString().match(/index.html$/))
-      data.fields.link = data.fields.link.toString().slice(0, -10)
-    var single_record = jQuery('<a>').attr({
-      'class': 'record_link',
-      'href': data.fields.link,
-      'target': '_blank'
-    }).append(small_link).append(small_description);
+    if(this.VIEWFLAG){
+      var small_link = jQuery('<span>').addClass('small_link').html(data.highlight.title);
+      var small_description = jQuery('<p>').addClass('small_description').html(data.highlight.body.join('...') + '...');
+      if (data.fields.link.toString().match(/index.html$/))
+        data.fields.link = data.fields.link.toString().slice(0, -10)
+      var single_record = jQuery('<a>').attr({
+        'class': 'record_link',
+        'href': data.fields.link,
+        'target': '_blank'
+      }).append(small_link).append(small_description);
+    }
+    else{     
+      var small_link = jQuery('<span>').addClass('small_link').html(data.highlight.title);
+      var record_img = jQuery('<img>').addClass('record_img').attr({'src':this.IMAGE, 'alt':data.highlight.title});
+      var record_img_container = jQuery('<span>').addClass('record_img_container').append(record_img);
+      if (data.fields.link.toString().match(/index.html$/))
+        data.fields.link = data.fields.link.toString().slice(0, -10)
+      var single_record = jQuery('<a>').attr({
+        'class': 'record_link modal_grid_view',
+        'href': data.fields.link,
+        'target': '_blank'
+      }).append(record_img_container).append(small_link); 
+    }
+
     return single_record;
   },
   showing_text: function(init_no, total_no, value, time) {

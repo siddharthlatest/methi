@@ -82,6 +82,13 @@
   width: 100%;
   display: block;
   padding-bottom: 5px;
+  padding-right: 25px;
+}
+.appbase_toggle_view{
+  position: absolute;
+  top: 0;
+  right: 10px;
+  cursor: pointer;
 }
 .appbase_modal .twitter-typeahead{
   width: 100%
@@ -107,7 +114,7 @@
   width: 100%;
   display: block;
   position: relative;
-  padding: 12px 18px 14px 0;
+  padding: 12px 18px 12px 0;
   cursor: pointer;
   border-bottom: 1px solid #eee;
   text-align: left;
@@ -143,6 +150,23 @@
   margin: 0;
   padding: 0;
 }
+.appbase_modal .modal_grid_view{
+  min-height: 100px; 
+}
+.appbase_modal .modal_grid_view .record_img_container{
+  position: absolute;
+  width: 75px;
+  height: 75px;
+  top: 12px;
+  left: 0;
+}
+.appbase_modal .modal_grid_view .record_img{
+  max-width: 100%;
+}
+.appbase_modal .modal_grid_view .small_link{
+  padding-left: 87px
+}
+
 @media(max-width: 768px){
   .appbase_modal .appbase_logo{
     width: 70px;
