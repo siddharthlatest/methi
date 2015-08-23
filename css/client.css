@@ -163,8 +163,9 @@
 .appbase_modal .modal_grid_view .record_img{
   max-width: 100%;
 }
-.appbase_modal .modal_grid_view .small_link{
-  padding-left: 87px
+.appbase_modal .twitter-typeahead .modal_grid_view .small_link{
+  padding-left: 87px;
+  white-space: normal;
 }
 
 @media(max-width: 768px){
