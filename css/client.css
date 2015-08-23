@@ -133,7 +133,7 @@
   text-overflow: ellipsis;
   font-size: 16px;
   font-weight: normal;
-  line-height: 1.4;
+  line-height: 22px;
   cursor: pointer;
 }
 .appbase_modal .twitter-typeahead .record_link em{
@@ -151,23 +151,27 @@
   padding: 0;
 }
 .appbase_modal .modal_grid_view{
-  min-height: 100px; 
+  min-height: 184px; 
 }
 .appbase_modal .modal_grid_view .record_img_container{
-  position: absolute;
-  width: 75px;
-  height: 75px;
-  top: 12px;
-  left: 0;
+      position: absolute;
+    max-width: 220px;
+    max-height: 160px;
+    top: 12px;
+    left: 0;
+    overflow: hidden;
 }
 .appbase_modal .modal_grid_view .record_img{
-  max-width: 100%;
+ /* max-width: 100%;*/
 }
-.appbase_modal .twitter-typeahead .modal_grid_view .small_link{
-  padding-left: 87px;
-  white-space: normal;
+.appbase_modal .twitter-typeahead .modal_grid_view .small_info_container{
+  padding-left:232px;
 }
 
+.appbase_modal .twitter-typeahead .modal_grid_view .small_link{
+    white-space: normal;
+    max-height: 44px;
+}
 @media(max-width: 768px){
   .appbase_modal .appbase_logo{
     width: 70px;

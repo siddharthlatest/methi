@@ -7,7 +7,7 @@ function variables(credentials, app_name, index_document_type, method) {
   this.NO_RESULT_TEXT = "No Results found";
   this.INITIAL_TEXT = "Start typing..";
   this.FUZZY_FLAG = false;
-  this.IMAGE = 'http://www.passionforneedygh.com/wp-content/themes/nobeliumful/styles/images/default-archive.png';
+  this.IMAGE = 'http://d152j5tfobgaot.cloudfront.net/wp-content/uploads/2015/08/yourstory-the-road-to-reinvention-josh-linkner-280x140.jpg';
   this.VIEWFLAG = false;
   this.SEARCH_PAYLOAD = {
     "from": 0,
@@ -214,6 +214,8 @@ variables.prototype = {
     }
     else{     
       var small_link = jQuery('<span>').addClass('small_link').html(data.highlight.title);
+      var small_description = jQuery('<p>').addClass('small_description').html(data.highlight.body.join('...') + '...');
+      var small_info_container = $('<div>').addClass('small_info_container').append(small_link).append(small_description);
       var record_img = jQuery('<img>').addClass('record_img').attr({'src':this.IMAGE, 'alt':data.highlight.title});
       var record_img_container = jQuery('<span>').addClass('record_img_container').append(record_img);
       if (data.fields.link.toString().match(/index.html$/))
@@ -222,7 +224,7 @@ variables.prototype = {
         'class': 'record_link modal_grid_view',
         'href': data.fields.link,
         'target': '_blank'
-      }).append(record_img_container).append(small_link); 
+      }).append(record_img_container).append(small_info_container); 
     }
 
     return single_record;
