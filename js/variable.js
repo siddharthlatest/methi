@@ -8,13 +8,13 @@ function variables(credentials, app_name, index_document_type, method) {
   this.INITIAL_TEXT = "Start typing..";
   this.FUZZY_FLAG = false;
   //this.IMAGE = 'http://d152j5tfobgaot.cloudfront.net/wp-content/uploads/2015/08/yourstory-the-road-to-reinvention-josh-linkner-280x140.jpg';
-  this.IMAGE = 'http://www2.pictures.zimbio.com/gi/Alia+Bhatt+Alia+Bhatt+Portrait+Session+3ukI6nYTRwLl.jpg';
-  //this.IMAGE = 'http://d152j5tfobgaot.cloudfront.net/wp-content/uploads/2015/01/YourStory_Transparent-1.png';
+  //this.IMAGE = 'http://www2.pictures.zimbio.com/gi/Alia+Bhatt+Alia+Bhatt+Portrait+Session+3ukI6nYTRwLl.jpg';
+  this.IMAGE = 'http://d152j5tfobgaot.cloudfront.net/wp-content/uploads/2015/01/YourStory_Transparent-1.png';
   this.VIEWFLAG = false;
   this.SEARCH_PAYLOAD = {
     "from": 0,
     "size": this.SIZE,
-    "fields": ["link"],
+    "fields": ["link","image_url"],
     "query": {
       "multi_match": {
         "query": '',
@@ -41,7 +41,7 @@ function variables(credentials, app_name, index_document_type, method) {
   this.FUZZY_PAYLOAD = {
     "from": 0,
     "size": this.SIZE,
-    "fields": ["link"],
+    "fields": ["link","image_url"],
     "query": {
       "multi_match": {
         "query": 'ap',
@@ -216,7 +216,7 @@ variables.prototype = {
       }).append(small_link).append(small_description);
     }
     else{     
-      var image_url = this.IMAGE;
+      var image_url = data.fields.image_url[0] != 'None' ? data.fields.image_url[0] : this.IMAGE;
       //console.log(image_url);
       var small_info_container = jQuery('<div>').addClass('small_info_container').append(small_link).append(small_description);
       var record_img = jQuery('<img>').addClass('record_img').attr({'src':image_url, 'alt':data.highlight.title});
