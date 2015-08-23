@@ -109,7 +109,7 @@ var appbase_app = function() {
 					jQuery(modal).find('.' + obj.abbr + 'modal_content').css({'margin-top':0, 'max-width':'768px'});
 				}
 				else{
-					jQuery(modal).find('.' + obj.abbr + 'modal_content').css('margin-top','50px');
+					jQuery(modal).find('.' + obj.abbr + 'modal_content').css({'margin-top':'50px', 'max-width':'600px'});
 				}
 			}
 			jQuery(window).resize(function() {

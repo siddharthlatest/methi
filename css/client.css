@@ -105,6 +105,8 @@
 .appbase_modal .twitter-typeahead .tt-dataset{
   padding: 0 15px;
   background-color: #fff;
+  float: left;
+  width: 100%;
 }
 .appbase_modal .twitter-typeahead .tt-suggestion{
   background: #fff;
@@ -114,7 +116,7 @@
   width: 100%;
   display: block;
   position: relative;
-  padding: 12px 18px 12px 0;
+  padding: 12px 0;
   cursor: pointer;
   border-bottom: 1px solid #eee;
   text-align: left;
@@ -151,30 +153,56 @@
   padding: 0;
 }
 .appbase_modal .modal_grid_view{
-  min-height: 184px; 
+  height: auto;
+  float: left;
 }
 .appbase_modal .modal_grid_view .record_img_container{
-      position: absolute;
+    position: relative;
+    float: left;
     max-width: 220px;
     max-height: 160px;
-    top: 12px;
-    left: 0;
     overflow: hidden;
 }
 .appbase_modal .modal_grid_view .record_img{
- /* max-width: 100%;*/
+ width: 100%
 }
 .appbase_modal .twitter-typeahead .modal_grid_view .small_info_container{
   padding-left:232px;
+  position: absolute;
+  top:0;
+  left: 0;
+  width: 100%;
+  display: block;
 }
-
+.appbase_modal .twitter-typeahead .modal_grid_view .small_description{
+  max-height: 160px
+}
 .appbase_modal .twitter-typeahead .modal_grid_view .small_link{
     white-space: normal;
     max-height: 44px;
+}
+.appbase_modal .record_link_container{
+  position: relative;
+  display: block;
+  width: 100%;
+  overflow: hidden;
 }
 @media(max-width: 768px){
   .appbase_modal .appbase_logo{
     width: 70px;
     top: 15px;
+  }
+  .appbase_modal .modal_grid_view .record_img_container{
+    max-width: 110px;
+    max-height: 80px;
+  }
+  .appbase_modal .twitter-typeahead .modal_grid_view .small_info_container{
+    padding-left: 122px
+  }
+  .appbase_modal .twitter-typeahead .modal_grid_view .small_link{
+    max-height: 160px;
+  }
+  .appbase_modal .twitter-typeahead .modal_grid_view .small_description {
+    display: none;
   }
 }
