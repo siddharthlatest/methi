@@ -100,12 +100,13 @@ var appbase_app = function() {
 		function html_size(obj, modal) {
 			function appbase_resize() {
 				var win_height = jQuery(window).height();
-				var modal_height = win_height < 768 ? win_height : win_height - 150;
+				var win_width = jQuery(window).width();
+				var modal_height = win_width < 768 ? win_height : win_height - 150;
 				var tt_height = modal_height - jQuery('.' + obj.abbr + 'input').height() - 50;
 				jQuery('.tt-menu').height(tt_height);
 				jQuery(modal).find('.' + obj.abbr + 'modal_content').height(modal_height);
-				if(win_height < 768){
-					jQuery(modal).find('.' + obj.abbr + 'modal_content').css('margin-top',0);
+				if(win_width < 768){
+					jQuery(modal).find('.' + obj.abbr + 'modal_content').css({'margin-top':0, 'max-width':'768px'});
 				}
 				else{
 					jQuery(modal).find('.' + obj.abbr + 'modal_content').css('margin-top','50px');

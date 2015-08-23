@@ -7,6 +7,7 @@ function variables(credentials, app_name, index_document_type, method) {
   this.NO_RESULT_TEXT = "No Results found";
   this.INITIAL_TEXT = "Start typing..";
   this.FUZZY_FLAG = false;
+  this.image = 'http://www.passionforneedygh.com/wp-content/themes/nobeliumful/styles/images/default-archive.png';
   this.SEARCH_PAYLOAD = {
     "from": 0,
     "size": this.SIZE,
