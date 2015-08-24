@@ -1,4 +1,4 @@
-function variables(credentials, app_name, index_document_type, method) {
+function variables(credentials, app_name, index_document_type, method, grid_view) {
   this.credentials = credentials;
   this.app_name = app_name;
   this.index_document_type = index_document_type;
@@ -7,10 +7,11 @@ function variables(credentials, app_name, index_document_type, method) {
   this.NO_RESULT_TEXT = "No Results found";
   this.INITIAL_TEXT = "Start typing..";
   this.FUZZY_FLAG = false;
+  this.GridView = grid_view;
   //this.IMAGE = 'http://d152j5tfobgaot.cloudfront.net/wp-content/uploads/2015/08/yourstory-the-road-to-reinvention-josh-linkner-280x140.jpg';
   //this.IMAGE = 'http://www2.pictures.zimbio.com/gi/Alia+Bhatt+Alia+Bhatt+Portrait+Session+3ukI6nYTRwLl.jpg';
   this.IMAGE = 'http://d152j5tfobgaot.cloudfront.net/wp-content/uploads/2015/01/YourStory_Transparent-1.png';
-  this.VIEWFLAG = false;
+  this.VIEWFLAG = this.GridView;
   this.SEARCH_PAYLOAD = {
     "from": 0,
     "size": this.SIZE,
@@ -206,17 +207,9 @@ variables.prototype = {
     var small_link = jQuery('<span>').addClass('small_link').html(data.highlight.title);
     var small_description = jQuery('<p>').addClass('small_description').html(data.highlight.body.join('...') + '...');
       
+    // Grid View 
     if(this.VIEWFLAG){
-      if (data.fields.link.toString().match(/index.html$/))
-        data.fields.link = data.fields.link.toString().slice(0, -10)
-      var single_record = jQuery('<a>').attr({
-        'class': 'record_link',
-        'href': data.fields.link,
-        'target': '_blank'
-      }).append(small_link).append(small_description);
-    }
-    else{     
-      var image_url = data.fields.image_url[0] != 'None' ? data.fields.image_url[0] : this.IMAGE;
+       var image_url = data.fields.image_url[0] != 'None' ? data.fields.image_url[0] : this.IMAGE;
       console.log(image_url);
       var small_info_container = jQuery('<div>').addClass('small_info_container').append(small_link).append(small_description);
       var record_img = jQuery('<img>').addClass('record_img').attr({'src':image_url, 'alt':data.highlight.title, 'onerror':'this.onerror = null; this.src="'+this.IMAGE+'"'});
@@ -229,6 +222,16 @@ variables.prototype = {
         'href': data.fields.link,
         'target': '_blank'
       }).append(record_link_container); 
+    }
+    // List View
+    else{          
+      if (data.fields.link.toString().match(/index.html$/))
+        data.fields.link = data.fields.link.toString().slice(0, -10)
+      var single_record = jQuery('<a>').attr({
+        'class': 'record_link',
+        'href': data.fields.link,
+        'target': '_blank'
+      }).append(small_link).append(small_description);
     }
 
     return single_record;

@@ -12,12 +12,13 @@ var appbase_app = function() {
 			input_placeholder: 'search here',
 			logo: 'images/Appbase.png',
 			abbr: 'appbase_',
-			selector: '.appbase_external_search'
+			selector: '.appbase_external_search',
+			grid_view:false
 		};
 
 		//Variable js		
 		var options = $.extend($this.default_options, options);
-		$this.variables = new variables(options.credentials, options.app_name, options.index_document_type, 'client');
+		$this.variables = new variables(options.credentials, options.app_name, options.index_document_type, 'client', options.grid_view);
 		$this.url = $this.variables.createURL();
 		$this.appbase_total = 0;
 		$this.appbase_increment = $this.variables.SIZE;
@@ -159,8 +160,12 @@ var appbase_app = function() {
 			});
 
 			var total_info = jQuery('<span>').addClass(obj.abbr + 'total_info').html($this.variables.NO_RESULT_TEXT);
-			var toggle_view = jQuery('<a>').addClass(obj.abbr + 'toggle_view').html('view');			
-			var total_info_container = jQuery('<span>').addClass(obj.abbr + 'total_info_container').append(total_info).append(toggle_view);
+			var toggle_view = jQuery('<a>').addClass(obj.abbr + 'toggle_view').html('view');
+			var total_info_container = jQuery('<span>').addClass(obj.abbr + 'total_info_container').append(total_info);
+			if(options.grid_view)
+				total_info_container.append(toggle_view);
+
+			
 			jQuery('.tt-menu').prepend(total_info_container);
 
 			html_size(obj, modal);
@@ -276,6 +281,7 @@ jquery_js.require([
 			],
 			function() {
 				var appbase = new appbase_app();
+				var grid_view = appbase_variables.hasOwnProperty('grid') ? true : false;
 				appbase.initialize({
 					title: 'Blazing fast search1 on your Documentation',
 					input_placeholder: 'search here',
@@ -283,7 +289,8 @@ jquery_js.require([
 					selector: '.appbase_external_search',
 					credentials:appbase_variables.credentials,
 					app_name:appbase_variables.app_name,
-					index_document_type:appbase_variables.index_document_type
+					index_document_type:appbase_variables.index_document_type,
+					grid_view:grid_view
 				});
 			});
 	});
