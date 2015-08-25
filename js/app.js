@@ -164,7 +164,7 @@ var appbase_app = function() {
 			var grid_thumb = jQuery('<img>').attr({src:$this.variables.GRID_THUMB});
 			var list_thumb_container = jQuery('<span>').addClass('list_thumb appbase-thumbnail').attr('title','List view').append(list_thumb);
 			var grid_thumb_container = jQuery('<span>').addClass('grid_thumb appbase-thumbnail').attr('title','Grid view').append(grid_thumb);
-			var thumb_container = jQuery('<span>').addClass('appbase_thumb_container').append(list_thumb_container).append(grid_thumb_container);
+			var thumb_container = jQuery('<span>').addClass('appbase_thumb_container').append(grid_thumb_container).append(list_thumb_container);
 
 			var toggle_view = jQuery('<a>').addClass(obj.abbr + 'toggle_view').html('view');
 			var total_info_container = jQuery('<span>').addClass(obj.abbr + 'total_info_container').append(total_info);
