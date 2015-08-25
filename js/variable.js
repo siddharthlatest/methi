@@ -11,6 +11,8 @@ function variables(credentials, app_name, index_document_type, method, grid_view
   //this.IMAGE = 'http://d152j5tfobgaot.cloudfront.net/wp-content/uploads/2015/08/yourstory-the-road-to-reinvention-josh-linkner-280x140.jpg';
   //this.IMAGE = 'http://www2.pictures.zimbio.com/gi/Alia+Bhatt+Alia+Bhatt+Portrait+Session+3ukI6nYTRwLl.jpg';
   this.IMAGE = 'http://d152j5tfobgaot.cloudfront.net/wp-content/uploads/2015/01/YourStory_Transparent-1.png';
+  this.LIST_THUMB = 'images/list_thumb.png';
+  this.GRID_THUMB = 'images/grid_thumb.png';
   this.VIEWFLAG = this.GridView;
   this.SEARCH_PAYLOAD = {
     "from": 0,

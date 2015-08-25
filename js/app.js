@@ -160,11 +160,18 @@ var appbase_app = function() {
 			});
 
 			var total_info = jQuery('<span>').addClass(obj.abbr + 'total_info').html($this.variables.NO_RESULT_TEXT);
+			var list_thumb = jQuery('<img>').attr({src:$this.variables.LIST_THUMB});
+			var grid_thumb = jQuery('<img>').attr({src:$this.variables.GRID_THUMB});
+			var list_thumb_container = jQuery('<span>').addClass('list_thumb appbase-thumbnail').attr('title','List view').append(list_thumb);
+			var grid_thumb_container = jQuery('<span>').addClass('grid_thumb appbase-thumbnail').attr('title','Grid view').append(grid_thumb);
+			var thumb_container = jQuery('<span>').addClass('appbase_thumb_container').append(list_thumb_container).append(grid_thumb_container);
+
 			var toggle_view = jQuery('<a>').addClass(obj.abbr + 'toggle_view').html('view');
 			var total_info_container = jQuery('<span>').addClass(obj.abbr + 'total_info_container').append(total_info);
-			if(options.grid_view)
-				total_info_container.append(toggle_view);
-
+			if(options.grid_view){
+				jQuery(grid_thumb_container).addClass('active');
+				total_info_container.append(thumb_container);
+			}
 			
 			jQuery('.tt-menu').prepend(total_info_container);
 
@@ -200,10 +207,15 @@ var appbase_app = function() {
 			jQuery('.'+obj.abbr + 'logo').click(function(){
 				close_modal();
 			});
-			jQuery(toggle_view).click(function(){
-				$this.variables.VIEWFLAG = $this.variables.VIEWFLAG ? false:true;
-				var input_val = jQuery(modal).find('.' + obj.abbr + 'input').eq(1).val();
-				jQuery(modal).find('.' + obj.abbr + 'input').typeahead('val','').typeahead('val',input_val).focus();
+			jQuery('.appbase-thumbnail').click(function(){
+				if(!$(this).hasClass('active')){
+					//debugger
+					$('.appbase-thumbnail').removeClass('active');
+					$(this).addClass('active');
+					$this.variables.VIEWFLAG = $(this).hasClass('grid_thumb') ? true:false
+					var input_val = jQuery(modal).find('.' + obj.abbr + 'input').eq(1).val();
+					jQuery(modal).find('.' + obj.abbr + 'input').typeahead('val','').typeahead('val',input_val).focus();
+				}
 			});
 
 		}
