@@ -211,7 +211,7 @@
 }
 .appbase-thumbnail img{
   width: 100%;
-  opacity: 0.2
+  opacity: 0.4
 }
 .appbase-thumbnail.active{
   background-color:#ddd 
