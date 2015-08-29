@@ -109,6 +109,16 @@ var appbase_app = function() {
 			};
 			obj.total_info_container = total_info_container;
 
+			//Create Right info			
+			var date_list = jQuery('<ul>').addClass('appabse_list');
+			for(var i =0; i < $this.variables.date.date_content.length; i++){
+				var single_list = jQuery('<li>').text($this.variables.date.date_content[i]);
+				date_list.append(single_list);
+			}
+			var date_label = jQuery('<label>').text($this.variables.date.label);
+			var date_list_container = $('<div>').addClass('appbase_block').append(date_label).append(date_list);
+			obj.date_list_container = date_list_container;
+
 			//Bind events with html
 			html_events(obj, modal, overlay);
 		};
@@ -175,7 +185,8 @@ var appbase_app = function() {
 				console.log('Selection: ' + suggestion);
 			});
 			
-			jQuery('.twitter-typeahead').prepend(obj.total_info_container);
+			var side_container = jQuery('<div>').addClass('appbase_side_container').append(obj.date_list_container);
+			jQuery('.twitter-typeahead').prepend(obj.total_info_container).prepend(side_container);
 
 			html_size(obj, modal);
 
