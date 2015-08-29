@@ -93,6 +93,20 @@ var appbase_app = function() {
 			var overlay = jQuery('<div>').addClass(abbr + 'overlay');
 			var modal = jQuery('<div>').addClass(abbr + 'modal').append(modal_content).append(overlay);
 			jQuery('body').append(modal);
+			
+			//Create Top info
+			var list_thumb = jQuery('<img>').attr({src:$this.variables.LIST_THUMB});
+			var grid_thumb = jQuery('<img>').attr({src:$this.variables.GRID_THUMB});
+			var list_thumb_container = jQuery('<span>').addClass('list_thumb appbase-thumbnail').attr('title','List view').append(list_thumb);
+			var grid_thumb_container = jQuery('<span>').addClass('grid_thumb appbase-thumbnail').attr('title','Grid view').append(grid_thumb);
+			var thumb_container = jQuery('<span>').addClass('appbase_thumb_container').append(list_thumb_container).append(grid_thumb_container);
+			var total_info = jQuery('<span>').addClass(obj.abbr + 'total_info').html($this.variables.NO_RESULT_TEXT);
+			var total_info_container = jQuery('<span>').addClass(obj.abbr + 'total_info_container').append(total_info);
+			if(options.grid_view){
+				jQuery(grid_thumb_container).addClass('active');
+				total_info_container.append(thumb_container);
+			};
+			obj.total_info_container = total_info_container;
 
 			//Bind events with html
 			html_events(obj, modal, overlay);
@@ -105,12 +119,12 @@ var appbase_app = function() {
 				var modal_height = win_width < 768 ? win_height : win_height - 150;
 				var tt_height = modal_height - jQuery('.' + obj.abbr + 'input').height() - 50;
 				jQuery('.tt-menu').height(tt_height);
-				jQuery(modal).find('.' + obj.abbr + 'modal_content').height(modal_height);
+				//jQuery(modal).find('.' + obj.abbr + 'modal_content').height(modal_height);
 				if(win_width < 768){
-					jQuery(modal).find('.' + obj.abbr + 'modal_content').css({'margin-top':0, 'max-width':'768px'});
+					jQuery(modal).find('.' + obj.abbr + 'modal_content').css({'margin-top':0, 'max-width':'960px'});
 				}
 				else{
-					jQuery(modal).find('.' + obj.abbr + 'modal_content').css({'margin-top':'50px', 'max-width':'768px'});
+					jQuery(modal).find('.' + obj.abbr + 'modal_content').css({'margin-top':'50px', 'max-width':'960px'});
 				}
 			}
 			jQuery(window).resize(function() {
@@ -154,26 +168,15 @@ var appbase_app = function() {
 					jQuery('.appbase_total_info').text($this.variables.INITIAL_TEXT);
 			});
 
+
 			jQuery(modal).find('.' + obj.abbr + 'input').bind('typeahead:select', function(ev, suggestion) {
 				ev.preventDefault();
 				console.log('Selection: ' + suggestion);
 			});
 
-			var total_info = jQuery('<span>').addClass(obj.abbr + 'total_info').html($this.variables.NO_RESULT_TEXT);
-			var list_thumb = jQuery('<img>').attr({src:$this.variables.LIST_THUMB});
-			var grid_thumb = jQuery('<img>').attr({src:$this.variables.GRID_THUMB});
-			var list_thumb_container = jQuery('<span>').addClass('list_thumb appbase-thumbnail').attr('title','List view').append(list_thumb);
-			var grid_thumb_container = jQuery('<span>').addClass('grid_thumb appbase-thumbnail').attr('title','Grid view').append(grid_thumb);
-			var thumb_container = jQuery('<span>').addClass('appbase_thumb_container').append(list_thumb_container).append(grid_thumb_container);
-
-			var toggle_view = jQuery('<a>').addClass(obj.abbr + 'toggle_view').html('view');
-			var total_info_container = jQuery('<span>').addClass(obj.abbr + 'total_info_container').append(total_info);
-			if(options.grid_view){
-				jQuery(grid_thumb_container).addClass('active');
-				total_info_container.append(thumb_container);
-			}
 			
-			jQuery('.tt-menu').prepend(total_info_container);
+			var toggle_view = jQuery('<a>').addClass(obj.abbr + 'toggle_view').html('view');
+			jQuery('.twitter-typeahead').prepend(obj.total_info_container);
 
 			html_size(obj, modal);
 
