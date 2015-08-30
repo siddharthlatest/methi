@@ -113,7 +113,7 @@
   margin: 0
 }
 .appabse_list li{
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #f7f7f7;
   font-size: 12px;
   line-height: 24px;
   padding: 0 4px;
@@ -121,9 +121,30 @@
   font-weight: bold;
   cursor: pointer;
 }
-.appabse_list li:first-child, .appabse_list li:hover{
+.date_list li:first-child, .date_list li:hover,.appbase_modal  .brand_list .twitter-typeahead .tt-suggestion:hover{
   background-color: #eee;
     border-radius: 4px;
+}
+.brand_list{
+  max-height: 175px;
+  overflow: auto
+}
+.appabse_list .appbase_brand_search{
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 3px;
+  background-color: #eee;
+}
+.appbase_modal .appabse_list .twitter-typeahead .tt-menu{
+  padding: 0;
+  margin: 0;
+  height: auto !important;
+}
+.appbase_modal .appabse_list .twitter-typeahead .tt-dataset{
+  padding: 0;
+  background-color: transparent;
+  float: none;
 }
 .appbase_toggle_view{
   position: absolute;

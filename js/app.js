@@ -109,16 +109,69 @@ var appbase_app = function() {
 			};
 			obj.total_info_container = total_info_container;
 
-			//Create Right info			
-			var date_list = jQuery('<ul>').addClass('appabse_list');
-			for(var i =0; i < $this.variables.date.date_content.length; i++){
-				var single_list = jQuery('<li>').text($this.variables.date.date_content[i]);
+			//Create Right info		
+			//Date Range	
+			var date_list = jQuery('<ul>').addClass('appabse_list date_list');
+			for(var i =0; i < $this.variables.date.content.length; i++){
+				var single_list = jQuery('<li>').text($this.variables.date.content[i]);
 				date_list.append(single_list);
 			}
 			var date_label = jQuery('<label>').text($this.variables.date.label);
 			var date_list_container = $('<div>').addClass('appbase_block').append(date_label).append(date_list);
 			obj.date_list_container = date_list_container;
 
+			//Brand
+			var brand_list = jQuery('<ul>').addClass('appabse_list brand_list');
+			var single_search = $('<input>').attr({'type':'text','class':'appbase_brand_search','placeholder':$this.variables.brand.placeholder});
+			var single_list = jQuery('<li>').append(single_search);
+			brand_list.append(single_list);
+			var brand_label = jQuery('<label>').text($this.variables.brand.label);
+			var brand_list_container = $('<div>').addClass('appbase_block').append(brand_label).append(brand_list);
+			obj.brand_list_container = brand_list_container;
+			
+
+			var substringMatcher = function(strs) {
+			  return function findMatches(q, cb) {
+			    var matches, substringRegex;
+
+			    // an array that will be populated with substring matches
+			    matches = [];
+
+			    // regex used to determine if a string contains the substring `q`
+			    substrRegex = new RegExp(q, 'i');
+
+			    // iterate through the pool of strings and for any string that
+			    // contains the substring `q`, add it to the `matches` array
+			    $.each(strs, function(i, str) {
+			      if (substrRegex.test(str)) {
+			        matches.push(str);
+			      }
+			    });
+
+			    cb(matches);
+			  };
+			};
+
+			var states = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California',
+			  'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii',
+			  'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana',
+			  'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota',
+			  'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire',
+			  'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota',
+			  'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island',
+			  'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont',
+			  'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
+			];
+
+			$(single_search).typeahead({
+			  hint: true,
+			  highlight: true,
+			  minLength: 0
+			},
+			{
+			  name: 'states',
+			  source: substringMatcher(states)
+			});
 			//Bind events with html
 			html_events(obj, modal, overlay);
 		};
@@ -185,7 +238,7 @@ var appbase_app = function() {
 				console.log('Selection: ' + suggestion);
 			});
 			
-			var side_container = jQuery('<div>').addClass('appbase_side_container').append(obj.date_list_container);
+			var side_container = jQuery('<div>').addClass('appbase_side_container').append(obj.date_list_container).append(obj.brand_list_container);
 			jQuery('.twitter-typeahead').prepend(obj.total_info_container).prepend(side_container);
 
 			html_size(obj, modal);
@@ -196,6 +249,7 @@ var appbase_app = function() {
 				jQuery(modal).fadeIn(150);
 				jQuery(modal).find('.' + obj.abbr + 'input').typeahead('val', '')
 				jQuery(modal).find('.' + obj.abbr + 'input').focus().typeahead('val',input_val).focus();
+				jQuery('.appbase_brand_search').typeahead('val','').focus();
 				jQuery(overlay).show();
 				jQuery(modal).find('.' + obj.abbr + 'input').focus();
 				jQuery(this).val('');
@@ -222,7 +276,6 @@ var appbase_app = function() {
 			});
 			jQuery('.appbase-thumbnail').click(function(){
 				if(!$(this).hasClass('active')){
-					//debugger
 					$('.appbase-thumbnail').removeClass('active');
 					$(this).addClass('active');
 					$this.variables.VIEWFLAG = $(this).hasClass('grid_thumb') ? true:false
