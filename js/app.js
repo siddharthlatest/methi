@@ -115,7 +115,8 @@ var appbase_app = function() {
 			//Date Range	
 			var date_list = jQuery('<ul>').addClass('appabse_list date_list');
 			for(var i =0; i < $this.variables.date.content.length; i++){
-				var single_list = jQuery('<li>').text($this.variables.date.content[i]);
+				var current_list = $this.variables.date.content[i];
+				var single_list = jQuery('<li>').text(current_list.text).data('val',current_list.val);
 				date_list.append(single_list);
 			}
 			var date_label = jQuery('<label>').text($this.variables.date.label);
@@ -278,6 +279,8 @@ var appbase_app = function() {
 			jQuery('.'+obj.abbr + 'logo').click(function(){
 				close_modal();
 			});
+
+			//Top row events
 			jQuery('.appbase_thumb_container .appbase-thumbnail').click(function(){
 				if(!jQuery(this).hasClass('active')){
 					jQuery('.appbase_thumb_container .appbase-thumbnail').removeClass('active');
@@ -294,6 +297,12 @@ var appbase_app = function() {
 					}
 				else
 					jQuery('.appbase_side_container').removeClass('active').hide();
+			});
+
+			//Filter events
+			jQuery('.date_list li').click(function(){
+				var val = jQuery(this).data('val');
+				alert(val);
 			});
 		}
 		//CreateHtml End

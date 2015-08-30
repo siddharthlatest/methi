@@ -10,7 +10,22 @@ function variables(credentials, app_name, index_document_type, method, grid_view
   this.GridView = grid_view;
   this.date = {
     label: 'Date Range',
-    content: ['Past 24 Hours', 'Past week', 'Past month', 'Past year']
+    content: [{
+      text: 'Any time',
+      val: '0'
+    }, {
+      text: 'Past 24 Hours',
+      val: 'now-1d'
+    }, {
+      text: 'Past week',
+      val: 'now-1w'
+    }, {
+      text: 'Past month',
+      val: 'now-1M'
+    }, {
+      text: 'Past year',
+      val: 'now-1y'
+    }]
   };
   this.brand = {
       label: 'Brand',
