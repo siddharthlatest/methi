@@ -66,21 +66,22 @@ $(document).ready(function() {
 					"write": false
 				}),
 				success: function(full_data) {
-					permission(app_id, 'read');
+					permission(app_id, 'read', app_name);
 				}
 			});
 		}
 	}
 
 	function methi_creation() {
-		var app_name = 'methi-1234571';
+		var app_name = 'methi-'+Math.floor(Math.random() * Math.random() * 160000000);
+		console.log(app_name);
 		$.ajax({
 			type: "PUT",
 			url: 'https://accapi.appbase.io/app/' + app_name,
 			dataType: 'json',
 			contentType: "application/json",
 			success: function(full_data) {
-				permission(full_data.body.id, 'write');
+				permission(full_data.body.id, 'write', app_name);
 			}
 		});
 	}
