@@ -253,6 +253,34 @@ body.index{
 #portfolio .portfolio-item .portfolio-link .caption:hover{
   background-color: rgba(130, 58, 193,0.5);
 }
+.appbase-modal-btn
+{
+  background-color: #363636;
+  color: #fff;
+  border: 1px solid #fff;
+  margin: 10px;
+  padding: 5px 15px;
+  font-weight: 400;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  background-image: none;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.428571429;
+  border-radius: 4px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.appbase-modal-btn:hover, .appbase-modal-btn:focus, .appbase-modal-btn:active{
+  background-color: #fff;
+  color: #363636;
+  border-color:#363636;
+}
 /*Index page End*/
 
 /*Dashboard Page Start*/
