@@ -42,11 +42,12 @@ html{
         Free Account<br />
         Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
       </div>
-      <div class="row">
-        <textarea class="code_snippet"><script type="text/javascript">
-         var appbase_variables={app_name:"methi-1299",credentials:"sD2YBlBKk:706d9a4f-56b9-4513-a35d-14885d60373a",index_document_type:"article"},src="js/app.js",s=document.createElement("script");s.type="text/javascript",s.async=!0,s.src=src,s.addEventListener("load",function(){},!1);var head=document.getElementsByTagName("head")[0];head.appendChild(s);
-         </script>
-       </textarea>
+      <div class="row textarea_container">
+        <div class="loading">
+          Loading Please wait..
+        </div>
+        <span class="copy_button">Copy to clipboard</span>
+        <textarea class="code_snippet"></textarea>
      </div>
    </div>
  </div>
@@ -54,6 +55,18 @@ html{
 </section>
 <!-- Header Section end -->
 </div>
-    <script type="text/javascript" src="js/dashboard.js"></script>
+    <script type="text/javascript" src="js/installation.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function(){
+      function size(){
+        var win_height = $(window).height();
+        $('.dashboard-body').height(win_height);
+      }
+      size();
+      $(window).resize(function(){
+        size();
+      });
+    });
+    </script>
 </body>
 </html>

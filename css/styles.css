@@ -288,7 +288,33 @@ textarea.code_snippet {
     color: #444;
     background: #f6fcfe;
     border: 1px solid #bbe5f7;
-    height: 140px;
+    height: 100px;
+}
+.textarea_container{
+  position: relative;
+}
+.loading{
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: rgba(0,0,0,0.20);
+  width: 100%;
+  height: 100px;
+  line-height: 100px;
+  top: 50px;
+}
+.copy_button{
+  position: absolute;
+  right: 0;
+  bottom: 6px;
+  background: #eee;
+  color: #555;
+  padding: 5px 15px;
+  cursor: pointer;
+  border-top-left-radius: 5px;
+}
+.copy_button:hover{
+  background: #ddd
 }
 /*Dashboard Page End*/
 
