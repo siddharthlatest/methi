@@ -370,7 +370,7 @@ jquery_js.require([
 			],
 			function() {
 				var appbase = new appbase_app();
-				var grid_view = appbase_variables.hasOwnProperty('grid') ? true : false;
+				var grid_view = appbase_variables.hasOwnProperty('grid') ? appbase_variables.grid : false;
 				appbase.initialize({
 					title: 'Blazing fast search1 on your Documentation',
 					input_placeholder: 'search here',

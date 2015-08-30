@@ -9,16 +9,16 @@ function variables(credentials, app_name, index_document_type, method, grid_view
   this.FUZZY_FLAG = false;
   this.GridView = grid_view;
   this.date = {
-    label:'Date Range',
-    content:[ 'Past 24 Hours', 'Past week', 'Past month', 'Past year']
+    label: 'Date Range',
+    content: ['Past 24 Hours', 'Past week', 'Past month', 'Past year']
   };
   this.brand = {
-    label:'Brand',
-    content:[ 'Past 24 Hours', 'Past week', 'Past month', 'Past year'],
-    placeholder:'Search..'
-  }
-  //this.IMAGE = 'http://d152j5tfobgaot.cloudfront.net/wp-content/uploads/2015/08/yourstory-the-road-to-reinvention-josh-linkner-280x140.jpg';
-  //this.IMAGE = 'http://www2.pictures.zimbio.com/gi/Alia+Bhatt+Alia+Bhatt+Portrait+Session+3ukI6nYTRwLl.jpg';
+      label: 'Brand',
+      content: ['Past 24 Hours', 'Past week', 'Past month', 'Past year'],
+      placeholder: 'Search..'
+    }
+    //this.IMAGE = 'http://d152j5tfobgaot.cloudfront.net/wp-content/uploads/2015/08/yourstory-the-road-to-reinvention-josh-linkner-280x140.jpg';
+    //this.IMAGE = 'http://www2.pictures.zimbio.com/gi/Alia+Bhatt+Alia+Bhatt+Portrait+Session+3ukI6nYTRwLl.jpg';
   this.IMAGE = 'http://d152j5tfobgaot.cloudfront.net/wp-content/uploads/2015/01/YourStory_Transparent-1.png';
   this.LIST_THUMB = 'images/list_thumb.png';
   this.GRID_THUMB = 'images/grid_thumb.png';
@@ -26,7 +26,7 @@ function variables(credentials, app_name, index_document_type, method, grid_view
   this.SEARCH_PAYLOAD = {
     "from": 0,
     "size": this.SIZE,
-    "fields": ["link","image_url"],
+    "fields": ["link", "image_url"],
     "query": {
       "multi_match": {
         "query": '',
@@ -48,12 +48,19 @@ function variables(credentials, app_name, index_document_type, method, grid_view
           "no_match_size": 500
         }
       }
+    },
+    "filter": {
+      "range": {
+        "created_at": {
+          "gte": "0"
+        }
+      }
     }
   };
   this.FUZZY_PAYLOAD = {
     "from": 0,
     "size": this.SIZE,
-    "fields": ["link","image_url"],
+    "fields": ["link", "image_url"],
     "query": {
       "multi_match": {
         "query": 'ap',
@@ -74,6 +81,13 @@ function variables(credentials, app_name, index_document_type, method, grid_view
         "title": {
           "fragment_size": 500,
           "no_match_size": 500
+        }
+      }
+    },
+    "filter": {
+      "range": {
+        "created_at": {
+          "gte": "0"
         }
       }
     }
@@ -217,12 +231,16 @@ variables.prototype = {
   createRecord: function(data) {
     var small_link = jQuery('<span>').addClass('small_link').html(data.highlight.title);
     var small_description = jQuery('<p>').addClass('small_description').html(data.highlight.body.join('...') + '...');
-      
+
     // Grid View 
-    if(this.VIEWFLAG){
+    if (this.VIEWFLAG) {
       var image_url = data.fields.image_url[0] != 'None' ? data.fields.image_url[0] : this.IMAGE;
       var small_info_container = jQuery('<div>').addClass('small_info_container').append(small_link).append(small_description);
-      var record_img = jQuery('<img>').addClass('record_img').attr({'src':image_url, 'alt':data.highlight.title, 'onerror':'this.onerror = null; this.src="'+this.IMAGE+'"'});
+      var record_img = jQuery('<img>').addClass('record_img').attr({
+        'src': image_url,
+        'alt': data.highlight.title,
+        'onerror': 'this.onerror = null; this.src="' + this.IMAGE + '"'
+      });
       var record_img_container = jQuery('<span>').addClass('record_img_container').append(record_img);
       var record_link_container = jQuery('<div>').addClass('record_link_container').append(record_img_container).append(small_info_container);
       if (data.fields.link.toString().match(/index.html$/))
@@ -231,10 +249,10 @@ variables.prototype = {
         'class': 'record_link modal_grid_view',
         'href': data.fields.link,
         'target': '_blank'
-      }).append(record_link_container); 
+      }).append(record_link_container);
     }
     // List View
-    else{          
+    else {
       if (data.fields.link.toString().match(/index.html$/))
         data.fields.link = data.fields.link.toString().slice(0, -10)
       var single_record = jQuery('<a>').attr({
