@@ -99,7 +99,8 @@ function variables(credentials, app_name, index_document_type, method, grid_view
           "no_match_size": 500
         }
       }
-    },
+    }
+    ,
     "filter": {
       "range": {
         "created_at": {
@@ -144,6 +145,7 @@ variables.prototype = {
           settings.contentType = "application/json; charset=UTF-8";
           //console.log(search_payload);
           search_payload.from = 0;
+          query = query.toLowerCase();
           search_payload.query.multi_match.query = query;
           settings.data = JSON.stringify(search_payload);
           return settings;
@@ -187,6 +189,7 @@ variables.prototype = {
     else if (this.method == 'appbase')
       input_value = jQuery('.typeahead').eq(1).val();
     this.FUZZY_PAYLOAD.from = 0;
+    input_value = input_value.toLowerCase();
     this.FUZZY_PAYLOAD.query.multi_match.query = input_value;
     var request_data = JSON.stringify(this.FUZZY_PAYLOAD);
     var credentials = this.credentials;
@@ -219,7 +222,7 @@ variables.prototype = {
     else if (method == 'appbase')
       input_value = jQuery('.typeahead').eq(1).val();
 
-    console.log(parent_this);
+    input_value = input_value.toLowerCase();
     if (fuzzy_flag) {
       scroll_payload = fuzzy_payload;
     } else {
