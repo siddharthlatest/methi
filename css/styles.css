@@ -174,8 +174,11 @@ body.index{
 .index .important h4{
   line-height: 1.6em
 }
-.index .img-container img{
+.index .img-container .logo img{
   max-width: 140px;
+}
+.index .img-container img{
+  max-width: 80px;
 }
 .index .white-bg{
   background: #fff;
