@@ -31,7 +31,7 @@ function variables(credentials, app_name, index_document_type, method, grid_view
       label: 'Brand',
       content: ['Past 24 Hours', 'Past week', 'Past month', 'Past year'],
       placeholder: 'Search..',
-      fetch:[]
+      fetch: []
     }
     //this.IMAGE = 'http://d152j5tfobgaot.cloudfront.net/wp-content/uploads/2015/08/yourstory-the-road-to-reinvention-josh-linkner-280x140.jpg';
     //this.IMAGE = 'http://www2.pictures.zimbio.com/gi/Alia+Bhatt+Alia+Bhatt+Portrait+Session+3ukI6nYTRwLl.jpg';
@@ -250,7 +250,10 @@ variables.prototype = {
 
     // Grid View 
     if (this.VIEWFLAG) {
-      var image_url = data.fields.image_url[0] != 'None' ? data.fields.image_url[0] : this.IMAGE;
+      if (data.fields.hasOwnProperty('image_url') && data.fields.image_url[0] != 'None')
+        var image_url = data.fields.image_url[0];
+      else
+        var image_url = this.IMAGE;
       var small_info_container = jQuery('<div>').addClass('small_info_container').append(small_link).append(small_description);
       var record_img = jQuery('<img>').addClass('record_img').attr({
         'src': image_url,
@@ -290,22 +293,26 @@ variables.prototype = {
     } else
       return count_result;
   },
-  set_date:function(val){   
+  set_date: function(val) {
     this.SEARCH_PAYLOAD.filter.range.created_at.gte = val;
     this.FUZZY_PAYLOAD.filter.range.created_at.gte = val;
   },
-  createBrand:function(data){
+  createBrand: function(data) {
     var $parent_this = this;
-    var checkbox = jQuery('<input>').attr({type:'checkbox', name:'brand', value:data});
-    if(jQuery.inArray(data, $parent_this.brand.fetch) != -1)
-      checkbox.prop('checked',true);
+    var checkbox = jQuery('<input>').attr({
+      type: 'checkbox',
+      name: 'brand',
+      value: data
+    });
+    if (jQuery.inArray(data, $parent_this.brand.fetch) != -1)
+      checkbox.prop('checked', true);
     var checkbox_text = jQuery('<span>').text(data);
     var single_tag = jQuery('<label>').append(checkbox).append(checkbox_text);
 
-    checkbox.change(function(){
-      if(jQuery(this).is(':checked'))
+    checkbox.change(function() {
+      if (jQuery(this).is(':checked'))
         $parent_this.brand.fetch.push(jQuery(this).val());
-      else{
+      else {
         $parent_this.brand.fetch.remove(jQuery(this).val());
       }
       console.log($parent_this.brand.fetch);
@@ -314,12 +321,14 @@ variables.prototype = {
   }
 }
 Array.prototype.remove = function() {
-    var what, a = arguments, L = a.length, ax;
-    while (L && this.length) {
-        what = a[--L];
-        while ((ax = this.indexOf(what)) !== -1) {
-            this.splice(ax, 1);
-        }
+  var what, a = arguments,
+    L = a.length,
+    ax;
+  while (L && this.length) {
+    what = a[--L];
+    while ((ax = this.indexOf(what)) !== -1) {
+      this.splice(ax, 1);
     }
-    return this;
+  }
+  return this;
 };
