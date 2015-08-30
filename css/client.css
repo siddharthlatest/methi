@@ -99,7 +99,13 @@
     width: 230px;
     padding: 10px;
     background-color: #fff;
-    z-index: 1000
+    z-index: 1000;
+    overflow: auto;
+}
+.appbase_side_container_inside{
+  display: block;
+  width: 100%;
+  position: relative;
 }
 .appbase_side_container label{
   font-weight: bold;
@@ -290,10 +296,18 @@
     padding-left: 12px;
     background-color: #eee;
 }
+.setting_thumb{
+  position: absolute;
+  left: 10px;
+  display: none;
+}
 @media(max-width: 768px){
   .appbase_modal .appbase_logo{
     width: 70px;
     top: 15px;
+  }
+  .setting_thumb{
+    display: block;
   }
   .appbase_modal .modal_grid_view .record_img_container{
     max-width: 110px;
@@ -309,7 +323,25 @@
     line-height: 20px;
     -webkit-line-clamp: 4;
   }
-  .appbase_modal .twitter-typeahead .modal_grid_view .small_description {
+  .appbase_modal .twitter-typeahead .modal_grid_view .small_description, .appbase_side_container {
     display: none;
+  }
+  .appbase_side_container.active{
+    width: 100%;
+    left: 0px;
+    top: 85px;
+    background-color: transparent;
+    padding-right: 15px;
+  }
+  .appbase_side_container_inside{
+    background-color: #fff;
+    height: 100%;
+    padding: 0 10px;
+  }
+  .appbase_modal .twitter-typeahead .tt-menu{
+    padding: 40px 15px 20px 10px;
+  }
+  .appbase_thumb_container{
+    right:15px;
   }
 }

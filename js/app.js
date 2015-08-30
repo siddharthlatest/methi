@@ -98,11 +98,13 @@ var appbase_app = function() {
 			var total_info = jQuery('<span>').addClass(obj.abbr + 'total_info').html($this.variables.NO_RESULT_TEXT);
 			var list_thumb = jQuery('<img>').attr({src:$this.variables.LIST_THUMB});
 			var grid_thumb = jQuery('<img>').attr({src:$this.variables.GRID_THUMB});
-			var list_thumb_container = jQuery('<span>').addClass('list_thumb appbase-thumbnail').attr('title','List view').append(list_thumb);
+			var setting_thumb = jQuery('<img>').attr({src:$this.variables.GRID_THUMB});
+			var list_thumb_container = jQuery('<span>').addClass('list_thumb appbase-thumbnail ').attr('title','List view').append(list_thumb);
 			var grid_thumb_container = jQuery('<span>').addClass('grid_thumb appbase-thumbnail').attr('title','Grid view').append(grid_thumb);
+			var setting_thumb_container = jQuery('<span>').addClass('setting_thumb appbase-thumbnail').attr('title','Filter').append(setting_thumb);
 			var thumb_container = jQuery('<span>').addClass('appbase_thumb_container').append(grid_thumb_container).append(list_thumb_container);
 			var total_info = jQuery('<span>').addClass(obj.abbr + 'total_info').html($this.variables.NO_RESULT_TEXT);
-			var total_info_container = jQuery('<span>').addClass(obj.abbr + 'total_info_container').append(total_info);
+			var total_info_container = jQuery('<span>').addClass(obj.abbr + 'total_info_container').append(setting_thumb_container).append(total_info);
 			if(options.grid_view){
 				jQuery(grid_thumb_container).addClass('active');
 				total_info_container.append(thumb_container);
@@ -117,16 +119,16 @@ var appbase_app = function() {
 				date_list.append(single_list);
 			}
 			var date_label = jQuery('<label>').text($this.variables.date.label);
-			var date_list_container = $('<div>').addClass('appbase_block').append(date_label).append(date_list);
+			var date_list_container = jQuery('<div>').addClass('appbase_block').append(date_label).append(date_list);
 			obj.date_list_container = date_list_container;
 
 			//Brand
 			var brand_list = jQuery('<ul>').addClass('appabse_list brand_list');
-			var single_search = $('<input>').attr({'type':'text','class':'appbase_brand_search','placeholder':$this.variables.brand.placeholder});
+			var single_search = jQuery('<input>').attr({'type':'text','class':'appbase_brand_search','placeholder':$this.variables.brand.placeholder});
 			var single_list = jQuery('<li>').append(single_search);
 			brand_list.append(single_list);
 			var brand_label = jQuery('<label>').text($this.variables.brand.label);
-			var brand_list_container = $('<div>').addClass('appbase_block').append(brand_label).append(brand_list);
+			var brand_list_container = jQuery('<div>').addClass('appbase_block').append(brand_label).append(brand_list);
 			obj.brand_list_container = brand_list_container;
 			
 
@@ -163,7 +165,7 @@ var appbase_app = function() {
 			  'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
 			];
 
-			$(single_search).typeahead({
+			jQuery(single_search).typeahead({
 			  hint: true,
 			  highlight: true,
 			  minLength: 0
@@ -183,6 +185,7 @@ var appbase_app = function() {
 				var modal_height = win_width < 768 ? win_height : win_height - 150;
 				var tt_height = modal_height - jQuery('.' + obj.abbr + 'input').height() - 50;
 				jQuery('.tt-menu').height(tt_height);
+				jQuery('.appbase_side_container').height(tt_height);
 				//jQuery(modal).find('.' + obj.abbr + 'modal_content').height(modal_height);
 				if(win_width < 768){
 					jQuery(modal).find('.' + obj.abbr + 'modal_content').css({'margin-top':0, 'max-width':'960px'});
@@ -238,8 +241,9 @@ var appbase_app = function() {
 				console.log('Selection: ' + suggestion);
 			});
 			
-			var side_container = jQuery('<div>').addClass('appbase_side_container').append(obj.date_list_container).append(obj.brand_list_container);
-			jQuery('.twitter-typeahead').prepend(obj.total_info_container).prepend(side_container);
+			var side_container = jQuery('<div>').addClass('appbase_side_container_inside').append(obj.date_list_container).append(obj.brand_list_container);
+			var side_container_inside = jQuery('<div>').addClass('appbase_side_container').append(side_container);
+			jQuery('.twitter-typeahead').prepend(obj.total_info_container).prepend(side_container_inside);
 
 			html_size(obj, modal);
 
@@ -274,16 +278,23 @@ var appbase_app = function() {
 			jQuery('.'+obj.abbr + 'logo').click(function(){
 				close_modal();
 			});
-			jQuery('.appbase-thumbnail').click(function(){
-				if(!$(this).hasClass('active')){
-					$('.appbase-thumbnail').removeClass('active');
-					$(this).addClass('active');
-					$this.variables.VIEWFLAG = $(this).hasClass('grid_thumb') ? true:false
+			jQuery('.appbase_thumb_container .appbase-thumbnail').click(function(){
+				if(!jQuery(this).hasClass('active')){
+					jQuery('.appbase_thumb_container .appbase-thumbnail').removeClass('active');
+					jQuery(this).addClass('active');
+					$this.variables.VIEWFLAG = jQuery(this).hasClass('grid_thumb') ? true:false
 					var input_val = jQuery(modal).find('.' + obj.abbr + 'input').eq(1).val();
 					jQuery(modal).find('.' + obj.abbr + 'input').typeahead('val','').typeahead('val',input_val).focus();
 				}
 			});
-
+			jQuery('.setting_thumb').click(function(){
+				if(!jQuery('.appbase_side_container').hasClass('active')){
+						jQuery('.appbase_side_container').addClass('active').show();
+						jQuery('.appbase_brand_search').typeahead('val','').focus();
+					}
+				else
+					jQuery('.appbase_side_container').removeClass('active').hide();
+			});
 		}
 		//CreateHtml End
 
