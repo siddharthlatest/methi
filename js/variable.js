@@ -288,5 +288,9 @@ variables.prototype = {
         return this.INITIAL_TEXT;
     } else
       return count_result;
+  },
+  set_date:function(val){   
+    this.SEARCH_PAYLOAD.filter.range.created_at.gte = val;
+    this.FUZZY_PAYLOAD.filter.range.created_at.gte = val;
   }
 }

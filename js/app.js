@@ -302,7 +302,9 @@ var appbase_app = function() {
 			//Filter events
 			jQuery('.date_list li').click(function(){
 				var val = jQuery(this).data('val');
-				alert(val);
+				$this.variables.set_date(val);
+				var input_val = jQuery('.appbase_input').eq(1).val();
+				jQuery(modal).find('.' + obj.abbr + 'input').typeahead('val','').typeahead('val',input_val).focus();
 			});
 		}
 		//CreateHtml End
