@@ -135,6 +135,8 @@ var appbase_app = function() {
 			var brand_list_container = jQuery('<div>').addClass('appbase_block').append(brand_label).append(brand_list);
 			obj.brand_list_container = brand_list_container;
 			
+			var done_button = jQuery('<a>').addClass('appbase-btn done-btn').text('Done');
+			obj.done_button = done_button;
 
 			var substringMatcher = function(strs) {
 			  return function findMatches(q, cb) {
@@ -258,7 +260,7 @@ var appbase_app = function() {
 				console.log('Selection: ' + suggestion);
 			});
 			
-			var side_container = jQuery('<div>').addClass('appbase_side_container_inside').append(obj.date_list_container).append(obj.brand_list_container);
+			var side_container = jQuery('<div>').addClass('appbase_side_container_inside').append(obj.date_list_container).append(obj.brand_list_container).append(obj.done_button);
 			var side_container_inside = jQuery('<div>').addClass('appbase_side_container').append(side_container);
 			jQuery('.twitter-typeahead').prepend(obj.total_info_container).prepend(side_container_inside);
 
@@ -313,6 +315,9 @@ var appbase_app = function() {
 					}
 				else
 					jQuery('.appbase_side_container').removeClass('active').hide();
+			});
+			jQuery('.done-btn').click(function(){
+				jQuery('.appbase_side_container').removeClass('active').hide();
 			});
 
 			//Filter events

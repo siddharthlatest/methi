@@ -321,6 +321,16 @@
   left: 10px;
   display: none;
 }
+.appbase-btn{
+  background: #2F649D;
+  color: #fff;
+  border-radius: 4px;
+  padding: 5px;
+  text-align: center;
+}
+.done-btn{
+  display: none;
+}
 @media(max-width: 768px){
   .appbase_modal .appbase_logo{
     width: 70px;
@@ -364,5 +374,8 @@
   }
   .appbase_thumb_container{
     right:15px;
+  } 
+  .done-btn{
+    display: block;
   }
 }
