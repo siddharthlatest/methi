@@ -185,7 +185,19 @@
 }
 .appbase_modal .twitter-typeahead .tt-suggestion{
   background: #fff;
-  border-bottom: 1px solid #f7f7f7
+  border-bottom: 1px solid #f7f7f7;
+}
+.appbase_modal .appabse_list .twitter-typeahead label.tt-suggestion{
+    width: 100%;
+    display: block;
+    float: left;
+    padding: 3px 0
+}
+.appbase_modal .appabse_list .twitter-typeahead .tt-suggestion input, .appbase_modal .appabse_list .twitter-typeahead .tt-suggestion span{
+      display: inline-block;
+      float: left;    
+      line-height: 19px;
+    padding-left: 3px;
 }
 .appbase_modal .twitter-typeahead .record_link{
   width: 100%;

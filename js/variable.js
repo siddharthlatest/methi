@@ -297,7 +297,8 @@ variables.prototype = {
   createBrand:function(data){
     var $parent_this = this;
     var checkbox = jQuery('<input>').attr({type:'checkbox', name:'brand', value:data});
-    var single_tag = jQuery('<label>').append(checkbox).append(data);
+    var checkbox_text = jQuery('<span>').text(data);
+    var single_tag = jQuery('<label>').append(checkbox).append(checkbox_text);
     checkbox.change(function(){
       if(jQuery(this).is(':checked'))
         $parent_this.brand.fetch.push(jQuery(this).val());
