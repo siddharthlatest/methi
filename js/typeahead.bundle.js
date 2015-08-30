@@ -1639,12 +1639,12 @@
             _renderPending: function renderPending(query) {
                 var template = this.templates.pending;
                 this._resetLastSuggestion();
-                // *** appabse_change *** 2015/8/15 - farhan start
+                // *** appabse_change *** 2015/8/15 -  start
                 // template && this.$el.html(template({
                 //     query: query,
                 //     dataset: this.name
                 // }));
-                // *** appabse_change *** 2015/8/15 - farhan end
+                // *** appabse_change *** 2015/8/15 -  end
             },
             _renderNotFound: function renderNotFound(query) {
                 var template = this.templates.notFound;
@@ -1785,9 +1785,9 @@
         }
         _.mixin(Menu.prototype, EventEmitter, {
             _onSelectableClick: function onSelectableClick($e) {
-                // *** appabse_change *** 2015/8/15 - farhan start
+                // *** appabse_change *** 2015/8/15 -  start
                 //this.trigger("selectableClicked", $($e.currentTarget));
-                // *** appabse_change *** 2015/8/15 - farhan end
+                // *** appabse_change *** 2015/8/15 -  end
             },
             _onRendered: function onRendered(type, dataset, suggestions, async) {
                 this.$node.toggleClass(this.classes.empty, this._allDatasetsEmpty());
@@ -1977,12 +1977,16 @@
             onFocused = c(this, "activate", "open", "_onFocused");
             onBlurred = c(this, "deactivate", "_onBlurred");
             onEnterKeyed = c(this, "isActive", "isOpen", "_onEnterKeyed");
-            onTabKeyed = c(this, "isActive", "isOpen", "_onTabKeyed");
+            // *** appabse_change *** 2015/8/30 -  start
+            // onTabKeyed = c(this, "isActive", "isOpen", "_onTabKeyed");
+            // onRightKeyed = c(this, "isActive", "isOpen", "_onRightKeyed");
+            onTabKeyed = '';
+            onRightKeyed = '';
+            // *** appabse_change *** 2015/8/30 -  end
             onEscKeyed = c(this, "isActive", "_onEscKeyed");
             onUpKeyed = c(this, "isActive", "open", "_onUpKeyed");
             onDownKeyed = c(this, "isActive", "open", "_onDownKeyed");
             onLeftKeyed = c(this, "isActive", "isOpen", "_onLeftKeyed");
-            onRightKeyed = c(this, "isActive", "isOpen", "_onRightKeyed");
             onQueryChanged = c(this, "_openIfActive", "_onQueryChanged");
             onWhitespaceChanged = c(this, "_openIfActive", "_onWhitespaceChanged");
             this.input.bind().onSync("focused", onFocused, this).onSync("blurred", onBlurred, this).onSync("enterKeyed", onEnterKeyed, this).onSync("tabKeyed", onTabKeyed, this).onSync("escKeyed", onEscKeyed, this).onSync("upKeyed", onUpKeyed, this).onSync("downKeyed", onDownKeyed, this).onSync("leftKeyed", onLeftKeyed, this).onSync("rightKeyed", onRightKeyed, this).onSync("queryChanged", onQueryChanged, this).onSync("whitespaceChanged", onWhitespaceChanged, this).onSync("langDirChanged", this._onLangDirChanged, this);

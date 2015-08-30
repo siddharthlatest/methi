@@ -220,8 +220,7 @@ variables.prototype = {
       
     // Grid View 
     if(this.VIEWFLAG){
-       var image_url = data.fields.image_url[0] != 'None' ? data.fields.image_url[0] : this.IMAGE;
-      console.log(image_url);
+      var image_url = data.fields.image_url[0] != 'None' ? data.fields.image_url[0] : this.IMAGE;
       var small_info_container = jQuery('<div>').addClass('small_info_container').append(small_link).append(small_description);
       var record_img = jQuery('<img>').addClass('record_img').attr({'src':image_url, 'alt':data.highlight.title, 'onerror':'this.onerror = null; this.src="'+this.IMAGE+'"'});
       var record_img_container = jQuery('<span>').addClass('record_img_container').append(record_img);
