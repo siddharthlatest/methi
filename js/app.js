@@ -118,6 +118,8 @@ var appbase_app = function() {
 			for(var i =0; i < $this.variables.date.content.length; i++){
 				var current_list = $this.variables.date.content[i];
 				var single_list = jQuery('<li>').text(current_list.text).data('val',current_list.val);
+				if(i == 0)
+					single_list.addClass('active');
 				date_list.append(single_list);
 			}
 			var date_label = jQuery('<label>').text($this.variables.date.label);
@@ -314,15 +316,13 @@ var appbase_app = function() {
 
 			//Filter events
 			jQuery('.date_list li').click(function(){
+				jQuery('.date_list li').removeClass('active');
+				jQuery(this).addClass('active');
 				var val = jQuery(this).data('val');
 				$this.variables.set_date(val);
 				var input_val = jQuery('.appbase_input').eq(1).val();
 				jQuery(modal).find('.' + obj.abbr + 'input').typeahead('val','').typeahead('val',input_val).focus();
 			});
-
-			changeBrand = function(){
-				alert(1);
-			};
 		}
 		//CreateHtml End
 

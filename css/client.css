@@ -127,7 +127,7 @@
   font-weight: bold;
   cursor: pointer;
 }
-.date_list li:first-child, .date_list li:hover,.appbase_modal  .brand_list .twitter-typeahead .tt-suggestion:hover{
+.date_list li.active, .date_list li:hover,.appbase_modal  .brand_list .twitter-typeahead .tt-suggestion:hover{
   background-color: #eee;
     border-radius: 4px;
 }
