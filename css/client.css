@@ -95,7 +95,7 @@
 .appbase_side_container{
     position: absolute;
     right: 20px;
-    top: 90px;
+    top: 85px;
     width: 230px;
     padding: 10px;
     background-color: #fff;
@@ -131,9 +131,9 @@
   background-color: #eee;
     border-radius: 4px;
 }
-.brand_list{
-  max-height: 175px;
-  overflow: auto
+.brand_list {
+  /*max-height: 175px;
+  overflow: auto*/
 }
 .appabse_list .appbase_brand_search{
   width: 100%;
@@ -146,6 +146,8 @@
   padding: 0;
   margin: 0;
   height: auto !important;
+  max-height: 175px;
+  overflow: auto;
 }
 .appbase_modal .appabse_list .twitter-typeahead .tt-dataset{
   padding: 0;
@@ -166,7 +168,7 @@
   overflow: scroll;
   height: 200px;
   display: block !important;
-  padding: 40px 250px 20px 20px;
+  padding: 35px 250px 20px 20px;
   margin-top: 5px;
 }
 .appbase_modal .twitter-typeahead .tt-dataset{

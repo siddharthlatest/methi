@@ -176,6 +176,7 @@ var appbase_app = function() {
 			},
 			{
 			  name: 'states',
+			  limit: 100,
 			  source: substringMatcher(states),
 			  templates: {
 					pending:true,
