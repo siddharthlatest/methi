@@ -30,7 +30,8 @@ function variables(credentials, app_name, index_document_type, method, grid_view
   this.brand = {
       label: 'Brand',
       content: ['Past 24 Hours', 'Past week', 'Past month', 'Past year'],
-      placeholder: 'Search..'
+      placeholder: 'Search..',
+      fetch:[]
     }
     //this.IMAGE = 'http://d152j5tfobgaot.cloudfront.net/wp-content/uploads/2015/08/yourstory-the-road-to-reinvention-josh-linkner-280x140.jpg';
     //this.IMAGE = 'http://www2.pictures.zimbio.com/gi/Alia+Bhatt+Alia+Bhatt+Portrait+Session+3ukI6nYTRwLl.jpg';
@@ -292,5 +293,29 @@ variables.prototype = {
   set_date:function(val){   
     this.SEARCH_PAYLOAD.filter.range.created_at.gte = val;
     this.FUZZY_PAYLOAD.filter.range.created_at.gte = val;
+  },
+  createBrand:function(data){
+    var $parent_this = this;
+    var checkbox = jQuery('<input>').attr({type:'checkbox', name:'brand', value:data});
+    var single_tag = jQuery('<label>').append(checkbox).append(data);
+    checkbox.change(function(){
+      if(jQuery(this).is(':checked'))
+        $parent_this.brand.fetch.push(jQuery(this).val());
+      else{
+        $parent_this.brand.fetch.remove(jQuery(this).val());
+      }
+      console.log($parent_this.brand.fetch);
+    });
+    return single_tag;
   }
 }
+Array.prototype.remove = function() {
+    var what, a = arguments, L = a.length, ax;
+    while (L && this.length) {
+        what = a[--L];
+        while ((ax = this.indexOf(what)) !== -1) {
+            this.splice(ax, 1);
+        }
+    }
+    return this;
+};

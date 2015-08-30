@@ -1,5 +1,6 @@
 var appbase_app = function() {
 	var $this = this;
+	var changeBrand;
 	return {
 		initialize: initialize
 	};
@@ -173,7 +174,19 @@ var appbase_app = function() {
 			},
 			{
 			  name: 'states',
-			  source: substringMatcher(states)
+			  source: substringMatcher(states),
+			  templates: {
+					pending:true,
+					suggestion: function(data) {
+						if(data)
+						{
+							var single_record = $this.variables.createBrand(data);
+							return single_record;
+						}
+						else
+							return;
+					}
+				}
 			});
 			//Bind events with html
 			html_events(obj, modal, overlay);
@@ -306,6 +319,10 @@ var appbase_app = function() {
 				var input_val = jQuery('.appbase_input').eq(1).val();
 				jQuery(modal).find('.' + obj.abbr + 'input').typeahead('val','').typeahead('val',input_val).focus();
 			});
+
+			changeBrand = function(){
+				alert(1);
+			};
 		}
 		//CreateHtml End
 
