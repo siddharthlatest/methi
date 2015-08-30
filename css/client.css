@@ -349,14 +349,15 @@
   .appbase_side_container.active{
     width: 100%;
     left: 0px;
-    top: 85px;
+    top: 90px;
     background-color: transparent;
     padding-right: 15px;
+    padding-left: 10px;
   }
   .appbase_side_container_inside{
-    background-color: #fff;
+    background-color: #eee;
     height: 100%;
-    padding: 0 10px;
+    padding: 0;
   }
   .appbase_modal .twitter-typeahead .tt-menu{
     padding: 40px 15px 20px 10px;
