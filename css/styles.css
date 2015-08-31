@@ -133,10 +133,10 @@ body.index{
 .index .nav-container{
   padding: 0 8px;
 }
-.index .navbar{
+/*.index .navbar{
   border-bottom: 1px solid #fff;
   border-radius: 0;  
-}
+}*/
 .index .header-container{
   padding: 100px;
 }
@@ -174,8 +174,8 @@ body.index{
 .index .important h4{
   line-height: 1.6em
 }
-.index .img-container .logo img{
-  max-width: 140px;
+#logo{
+  max-width: 100px;
 }
 .index .img-container img{
   max-width: 80px;
