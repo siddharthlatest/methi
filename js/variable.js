@@ -29,8 +29,7 @@ function variables(credentials, app_name, index_document_type, method, grid_view
     }]
   };
   this.brand = {
-      label: 'Brand',
-      content: ['Past 24 Hours', 'Past week', 'Past month', 'Past year'],
+      label: 'Tags',
       placeholder: 'Search..',
       fetch: []
     }
