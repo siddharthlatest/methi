@@ -350,7 +350,10 @@ textarea.code_snippet {
 /*Dashboard Page End*/
 /*Demo Page START*/
 .dashboard-body .demo-section{
-  padding: 20px 0
+  padding: 0
+}
+.dashboard-body .demo-section, .dashboard-body .search-box{
+  margin-top: 50px;
 }
 /*Demo Page END*/
 
