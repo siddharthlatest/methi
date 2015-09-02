@@ -338,11 +338,10 @@
   display: none;
 }
 .appbase_modal .search_thumb{
-      position: absolute;
-    left: 8px;
-    top: 3px;
-    width: 15px;
-    height: 15px;
+     left: 9px;
+    top: 4px;
+    width: 14px;
+    height: 14px;
 }
 @media(max-width: 768px){
   .appbase_modal .appbase_logo{
