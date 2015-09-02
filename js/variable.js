@@ -1,4 +1,4 @@
-function variables(credentials, app_name, index_document_type, method, grid_view) {
+function variables(credentials, app_name, index_document_type, method, grid_view, filter_view) {
   this.credentials = credentials;
   this.app_name = app_name;
   this.index_document_type = index_document_type;
@@ -8,6 +8,7 @@ function variables(credentials, app_name, index_document_type, method, grid_view
   this.INITIAL_TEXT = "Start typing..";
   this.FUZZY_FLAG = false;
   this.GridView = grid_view;
+  this.FILTER_VIEW = filter_view;
   this.date = {
     label: 'Date Range',
     content: [{
@@ -64,13 +65,6 @@ function variables(credentials, app_name, index_document_type, method, grid_view
           "no_match_size": 500
         }
       }
-    },
-    "filter": {
-      "range": {
-        "created_at": {
-          "gte": "0"
-        }
-      }
     }
   };
   this.FUZZY_PAYLOAD = {
@@ -100,15 +94,23 @@ function variables(credentials, app_name, index_document_type, method, grid_view
         }
       }
     }
-    ,
-    "filter": {
+  };
+  if (this.FILTER_VIEW) {
+    this.SEARCH_PAYLOAD['filter'] = {
+      "range": {
+        "created_at": {
+          "gte": "0"
+        }
+      }
+    };
+    this.FUZZY_PAYLOAD['filter'] = {
       "range": {
         "created_at": {
           "gte": "0"
         }
       }
     }
-  };
+  }
 }
 
 variables.prototype = {
