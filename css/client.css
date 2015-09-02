@@ -14,6 +14,7 @@
   left: 0;
   background: transparent;
   font-family: 'Open Sans', sans-serif !important;
+  color: #555;
 }
 .appbase_modal .appbase_modal_content{
   position: relative;
