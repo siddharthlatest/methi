@@ -352,8 +352,11 @@ textarea.code_snippet {
 .dashboard-body .demo-section{
   padding: 0
 }
-.dashboard-body .demo-section, .dashboard-body .search-box{
-  margin-top: 50px;
+.dashboard-body .demo-section{
+  margin-top: 3rem;
+}
+.dashboard-body .search-box{
+  margin-top: 3.5rem;
 }
 .search-box .fa-search{
   position: absolute;
@@ -362,6 +365,10 @@ textarea.code_snippet {
   font-size: 24px;
   line-height: 46px;
   color: #555;
+}
+.dashboard-body .sub-text{
+  font-size: 1.5rem;
+  line-height: 2.5rem;
 }
 .dashboard-body .search-box input.typeahead
 {
@@ -401,6 +408,10 @@ textarea.code_snippet {
   .dashboard-body h1{
     font-size: 2.5rem
   }
+  .dashboard-body .sub-text{
+    font-size: 1.5rem;
+    line-height: 2.5rem
+  }
 }
 @media (max-width: 468px){
   html{
@@ -429,7 +440,11 @@ textarea.code_snippet {
     width: 80px;
   }
   .dashboard-body h1{
-    font-size: 2rem
+    font-size: 2.5rem
+  } 
+  .dashboard-body .sub-text{
+    font-size: 1.5rem;
+    line-height: 2.5rem
   }
 }
 
