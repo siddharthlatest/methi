@@ -345,6 +345,11 @@ textarea.code_snippet {
   background: #ddd
 }
 /*Dashboard Page End*/
+/*Demo Page START*/
+.dashboard-body .demo-section{
+  padding: 20px 0
+}
+/*Demo Page END*/
 
 @media (min-width: 468px) and (max-width: 768px)  {
   html{
