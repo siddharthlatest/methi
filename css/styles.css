@@ -17,7 +17,7 @@ em{
   font-style: normal;
 }
 .typeahead {
-  font-size: 24px;
+  font-size: 20px;
   line-height: 30px;
 }
 .twitter-typeahead {
@@ -28,7 +28,7 @@ em{
 }
 .appbase{
   position:absolute;
-  width:15%;
+  width:14%;
   margin: auto;
   top:0px;
   bottom: 0px;
