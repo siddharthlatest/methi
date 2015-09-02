@@ -135,12 +135,17 @@ var appbase_app = function() {
 
 				//Brand
 				var brand_list = jQuery('<ul>').addClass('appabse_list brand_list');
+				var search_thumb = jQuery('<img>').attr({
+					src: $this.variables.SEARCH_THUMB,
+					class:'search_thumb'
+				});
+				
 				var single_search = jQuery('<input>').attr({
 					'type': 'text',
 					'class': 'appbase_brand_search',
 					'placeholder': $this.variables.brand.placeholder
 				});
-				var single_list = jQuery('<li>').append(single_search);
+				var single_list = jQuery('<li>').append(single_search).append(search_thumb);
 				brand_list.append(single_list);
 				var brand_label = jQuery('<label>').text($this.variables.brand.label);
 				var brand_list_container = jQuery('<div>').addClass('appbase_block').append(brand_label).append(brand_list);

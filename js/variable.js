@@ -38,6 +38,7 @@ function variables(credentials, app_name, index_document_type, method, grid_view
   this.IMAGE = 'http://d152j5tfobgaot.cloudfront.net/wp-content/uploads/2015/01/YourStory_Transparent-1.png';
   this.LIST_THUMB = 'images/list_thumb.png';
   this.GRID_THUMB = 'images/grid_thumb.png';
+  this.SEARCH_THUMB = 'images/search.png';
   this.VIEWFLAG = this.GridView;
   this.SEARCH_PAYLOAD = {
     "from": 0,
