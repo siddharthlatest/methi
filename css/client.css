@@ -342,6 +342,7 @@
     top: 4px;
     width: 14px;
     height: 14px;
+        position: absolute;
 }
 @media(max-width: 768px){
   .appbase_modal .appbase_logo{
