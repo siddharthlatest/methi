@@ -1980,13 +1980,13 @@
             // *** appabse_change *** 2015/8/30 -  start
             // onTabKeyed = c(this, "isActive", "isOpen", "_onTabKeyed");
             // onRightKeyed = c(this, "isActive", "isOpen", "_onRightKeyed");
+            // onUpKeyed = c(this, "isActive", "open", "_onUpKeyed");
+            // onDownKeyed = c(this, "isActive", "open", "_onDownKeyed");
+            // onLeftKeyed = c(this, "isActive", "isOpen", "_onLeftKeyed");
             onTabKeyed = '';
             onRightKeyed = '';
             // *** appabse_change *** 2015/8/30 -  end
             onEscKeyed = c(this, "isActive", "_onEscKeyed");
-            onUpKeyed = c(this, "isActive", "open", "_onUpKeyed");
-            onDownKeyed = c(this, "isActive", "open", "_onDownKeyed");
-            onLeftKeyed = c(this, "isActive", "isOpen", "_onLeftKeyed");
             onQueryChanged = c(this, "_openIfActive", "_onQueryChanged");
             onWhitespaceChanged = c(this, "_openIfActive", "_onWhitespaceChanged");
             this.input.bind().onSync("focused", onFocused, this).onSync("blurred", onBlurred, this).onSync("enterKeyed", onEnterKeyed, this).onSync("tabKeyed", onTabKeyed, this).onSync("escKeyed", onEscKeyed, this).onSync("upKeyed", onUpKeyed, this).onSync("downKeyed", onDownKeyed, this).onSync("leftKeyed", onLeftKeyed, this).onSync("rightKeyed", onRightKeyed, this).onSync("queryChanged", onQueryChanged, this).onSync("whitespaceChanged", onWhitespaceChanged, this).onSync("langDirChanged", this._onLangDirChanged, this);
