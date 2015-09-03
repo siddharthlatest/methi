@@ -382,7 +382,7 @@
     height: 100%;
     padding: 0;
   }
-  .appbase_modal .twitter-typeahead .tt-menu{
+  .appbase_modal .twitter-typeahead.filter_append .tt-menu, .appbase_modal .twitter-typeahead .tt-menu{
     padding: 40px 15px 20px 10px;
   }
   .appbase_thumb_container{
