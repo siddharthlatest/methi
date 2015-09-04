@@ -68,7 +68,7 @@ $(document).ready(function() {
 						'app_name':app_name,
 						'permission':permission_credentials
 					};
-					var final_snippet = final_data.app_name+':'+final_data.permission.read+':'+final_data.permission.write;
+					var final_snippet = final_data.app_name+':'+final_data.permission.write+':'+final_data.permission.read;
 					$('.code_snippet').text(final_snippet);
 					$('.loading').hide();
 				}
