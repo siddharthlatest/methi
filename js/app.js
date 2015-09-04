@@ -289,8 +289,21 @@ var appbase_app = function() {
 
 			html_size(obj, modal);
 
-			jQuery(obj.selector).on('keyup', function() {
-				var input_val = jQuery(this).val();
+			//Events
+			// 1) Keyup events
+			// jQuery(obj.selector).on('keyup', function(){
+			// 	InitMethi(this);
+			// });
+			// 2) Focus events
+			jQuery(obj.selector).on('focus', function(){
+				InitMethi(this);
+			});
+			// 3) Click events
+			jQuery(obj.selector).on('click', function(){
+				InitMethi(this);
+			});
+			function InitMethi(eve){
+				var input_val = jQuery(eve).val();
 				jQuery(modal).find('.' + obj.abbr + 'input').val(input_val);
 				jQuery(modal).fadeIn(150);
 				jQuery(modal).find('.' + obj.abbr + 'input').typeahead('val', '')
@@ -298,9 +311,9 @@ var appbase_app = function() {
 				jQuery('.appbase_brand_search').typeahead('val', '').focus();
 				jQuery(overlay).show();
 				jQuery(modal).find('.' + obj.abbr + 'input').focus();
-				jQuery(this).val('');
+				jQuery(eve).val('');
 				jQuery('html,body').css('overflow', 'hidden');
-			});
+			}
 			jQuery(document).keyup(function(e) {
 				if (e.keyCode == 27) {
 					close_modal()
