@@ -15,10 +15,26 @@ $(document).ready(function() {
 		contentType: "application/json",
 		success: function(full_data) {
 			var app_property = Object.getOwnPropertyNames(full_data.body.apps);
-			if (app_property.length && app_property[0].split('-')[0] == 'methi') {
-				permission(full_data.body.apps[app_property[0]], 'read', app_property[0]);
-				store_methi(full_data.apps);
-			} else {
+			var app_creation_flag = true;
+			var single_app = {};
+			if(app_property.length){
+				for(var i = 0; i < app_property.length; i++){
+					if(app_creation_flag){
+						app_creation_flag = app_property[i].split('-')[0] != 'methi';
+						single_app['obj'] = full_data.body.apps[app_property[i]];
+						single_app['app'] = app_property[i];
+					}
+					if(i == app_property.length-1){
+						if (!app_creation_flag) {
+							permission(single_app['obj'], 'read', single_app['app']);
+							store_methi(full_data.apps);
+						} else {
+							methi_creation();
+						}
+					}
+				}
+			}
+			else{
 				methi_creation();
 			}
 		},
