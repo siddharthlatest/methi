@@ -111,7 +111,7 @@ var appbase_app = function() {
 			var setting_thumb_container = jQuery('<span>').addClass('setting_thumb appbase-thumbnail').attr('title', 'Filter').append(setting_thumb);
 			var thumb_container = jQuery('<span>').addClass('appbase_thumb_container').append(grid_thumb_container).append(list_thumb_container);
 			var total_info = jQuery('<span>').addClass(obj.abbr + 'total_info').html($this.variables.NO_RESULT_TEXT);
-			var total_info_container = jQuery('<span>').addClass(obj.abbr + 'total_info_container').append(setting_thumb_container).append(total_info);
+			var total_info_container = jQuery('<span>').addClass(obj.abbr + 'total_info_container').append(total_info);
 			if (options.grid_view) {
 				jQuery(grid_thumb_container).addClass('active');
 				total_info_container.append(thumb_container);
@@ -120,6 +120,7 @@ var appbase_app = function() {
 
 			//Create Right info	
 			if (options.filter_view) {
+				total_info_container.append(setting_thumb_container);
 				//Date Range	
 				var date_list = jQuery('<ul>').addClass('appabse_list date_list');
 				for (var i = 0; i < $this.variables.date.content.length; i++) {
