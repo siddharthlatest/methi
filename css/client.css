@@ -267,6 +267,7 @@
     min-height: 124px;
     max-height: 160px;
     overflow: hidden;
+    background: url(http://d152j5tfobgaot.cloudfront.net/wp-content/uploads/2015/01/YourStory_Transparent-1.png);
 }
 .appbase_modal .modal_grid_view .record_img{
  width: 100%
