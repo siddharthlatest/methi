@@ -306,6 +306,7 @@ var appbase_app = function() {
 			function InitMethi(eve){
 				var input_val = jQuery(eve).val();
 				jQuery(modal).find('.' + obj.abbr + 'input').val(input_val);
+				jQuery('.appbase_total_info').text($this.variables.INITIAL_TEXT);
 				jQuery(modal).fadeIn(150);
 				jQuery(modal).find('.' + obj.abbr + 'input').typeahead('val', '')
 				jQuery(modal).find('.' + obj.abbr + 'input').focus().typeahead('val', input_val).focus();
