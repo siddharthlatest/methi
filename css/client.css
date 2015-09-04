@@ -305,7 +305,8 @@
 }
 .appbase-thumbnail img{
   width: 100%;
-  opacity: 0.4
+  opacity: 0.4;
+  vertical-align: text-top;
 }
 .appbase-thumbnail.active{
   background-color:#ddd 
