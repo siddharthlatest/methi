@@ -1,72 +1,165 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>Documentation Search - Powered by Appbase.io</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-  <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js"></script>
-  <!-- Latest compiled and minified CSS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-  <link href='http://fonts.googleapis.com/css?family=Open+Sans:700,400,600' rel='stylesheet' type='text/css'>    <!-- Latest compiled and minified JavaScript -->
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.min.js"></script>
-</script>
-<link rel="stylesheet" href="css/styles.css">   
-<style type="text/css">
-html{
-  overflow: hidden;
-}
-</style>
-</head>
-<body class="dashboard-body demo-body">
- <!-- main container start -->
- <div class="container-fluid main-container">
-  <!-- Header Section start -->
-  
-  <div class="header-container text-center">
-    <div class="row">
-      <div class="col-lg-12">
-        <div class="intro-text">
-          <h1>
-           Build Unique Search Experience
-         </h1>
-       </div>
-     </div>
-   </div>
- </div>
- <section class="demo-section">
-  <div class="row">
-    <div class="col-sm-8 col-sm-offset-2 text-center">
-      <div class="row sub-text">
-        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
-      </div>
-      <div class="row">
-          <div class="search-box">
-            <i class="fa fa-search"></i>
-            <input type="text" class="form-control input-lg typeahead appbase_external_search" placeholder="Lets see how fast you can type...">
-            <img src="images/Appbase.png" class = "appbase">
-          </div>
-      </div>
-   </div>
- </div>
-</section>
+<html lang="en">
 
-<!-- Header Section end -->
-</div>
-    <script type="text/javascript">
-    $(document).ready(function(){
-      function size(){
-        var win_height = $(window).height();
-        $('.dashboard-body').height(win_height);
-      }
-      size();
-      $(window).resize(function(){
-        size();
-      });
-    });
-    var appbase_variables={app_name:"methi-yourstory",credentials:"uw3qB83pZ:ac1a0fc1-e4eb-4344-9c0d-2c24c69fc91d",index_document_type:"article",grid:true},src="js/app.js",s=document.createElement("script");s.type="text/javascript",s.async=!0,s.src=src,s.addEventListener("load",function(){},!1);var head=document.getElementsByTagName("head")[0];head.appendChild(s);
-    </script>
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Methi</title>
+
+    <!-- Bootstrap Core CSS - Uses Bootswatch Flatly Theme: http://bootswatch.com/flatly/ -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:700,400,600' rel='stylesheet' type='text/css'>
+    
+    <!-- Custom CSS -->
+    <link href="css/theme.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css">
+  
+    <link href="css/styles.css" rel="stylesheet">
+    
+</head>
+
+<body id="page-top" class="index">
+  
+  <!-- main container start -->
+  <div class="container-fluid main-container">
+    <!-- Header Section start -->
+    <section class=" header">
+       <!-- Navigation -->
+       <div class="nav-container">
+        <nav class="navbar navbar-default">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header page-scroll">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#page-top">
+                      <div class="img-container">
+                        <img src="images/Methi_logo.png" id="logo" class="img-responsive center-block" alt="Responsive image">
+                      </div>
+                    </a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="hidden">
+                            <a href="#page-top"></a>
+                        </li>
+                        <li class="page-scroll">
+                            <a href="#" class="login-show login-text">Login</a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
+        </nav>
+      </div>
+      <!-- Header -->
+      <header>
+          <div class="header-container">
+              <div class="row">
+                  <div class="col-lg-12">
+                      <div class="intro-text">
+                        <h1>
+                          Search at a speed of your thought that cares, convert and engages your users.
+                        </h1>
+                      </div>
+                  </div>
+                  <div class="col-xs-12">
+                    <span class="login-box-container col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                      <!-- <span class="login-box col-xs-12">
+                        <input type="text" class="login-search" placeholder="Lorem ipsum" />
+                        <span class="icon-container login-show">
+                          <i class="fa fa-arrow-right"></i>
+                        </span>
+                      </span> -->
+                       <a class="login-box col-xs-12 btn notif-btn">
+                        Get for your website >> 
+                      </a>
+                      <a href="installation.html" class="btn notif-btn hide-it">
+                        Go To Dashboard >>  
+                      </a>
+                    </span>
+                  </div>
+              </div>
+          </div>
+      </header>
+    </section>
+    <!-- Header Section end -->
+
+    <!-- Experience Section start -->
+    <section class="experience white-bg">
+      <!-- <div class="row">
+        <div class="col-xs-12">
+            <h2 class="text-center">
+              Experiences
+            </h2>
+        </div>
+      </div> -->
+      <div class="row">
+        <div class="col-xs-12 col-sm-4">
+          <div class="col-xs-12">
+            <div class="img-container">
+              <img src="images/Experiences icon_1.png" class="img-responsive center-block" alt="Responsive image">
+            </div>
+          </div>
+          <span class="col-xs-12">
+            <h4>
+              A better browsing experience
+            </h4>
+             <p>
+              Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+            </p> 
+          </span>
+        </div>
+        <div class="col-xs-12 col-sm-4">
+          <div class="col-xs-12">
+            <div class="img-container">
+              <img src="images/Experiences icon_1.png" class="img-responsive center-block" alt="Responsive image">
+            </div>
+          </div>
+          <span class="col-xs-12">
+            <h4>
+              A better browsing experience
+            </h4>
+             <p>
+              Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+            </p> 
+          </span>
+        </div>
+        <div class="col-xs-12 col-sm-4">
+          <div class="col-xs-12">
+            <div class="img-container">
+              <img src="images/Experiences icon_1.png" class="img-responsive center-block" alt="Responsive image">
+            </div>
+          </div>
+          <span class="col-xs-12">
+            <h4>
+              A better browsing experience
+            </h4>
+             <p>
+              Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+            </p> 
+          </span>
+        </div>
+      </div>
+    </section>
+    <!-- Experience Section start -->
+
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    
+    <!-- Bootstrap Core JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 </body>
+
 </html>

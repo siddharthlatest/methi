@@ -20,8 +20,7 @@ $(document).ready(function() {
 			var single_app = {};
 			if(app_property.length){
 			for(var i = 0; i < app_property.length; i++){
-				if(app_creation_flag){
-					
+				if(app_creation_flag){					
 					app_creation_flag = app_property[i].split('-')[0] != 'methi';
 					single_app['obj'] = full_data.body.apps[app_property[i]];
 					single_app['app'] = app_property[i];
