@@ -4,6 +4,8 @@ html{
 body{
   padding-top: 50px;
   font-family: 'Open Sans', sans-serif !important;
+  overflow-y:auto;
+  overflow-x:hidden 
 }
 h1 sub{
   bottom: 0.10em !important;
@@ -385,6 +387,10 @@ textarea.code_snippet {
 .methi-section-text{
   padding: 0 8px 50px 8px;
 }
+.demo_page .intro-text h1,
+.demo_page .intro-text h2{
+  padding: 0 16px
+}
 .demo_page .header-container{
   padding: 0
 }
@@ -393,7 +399,7 @@ textarea.code_snippet {
 }
 .demo_page h1{
   margin-top: 0;
-  margin-bottom: 20px
+  margin-bottom: 10px
 }
 .demo_page h2{
   padding: 0
@@ -417,6 +423,7 @@ textarea.code_snippet {
 .demo_page .features .feature-block{
   padding: 30px;
 }
+
 .demo_page .font-xs{
   font-size: 0.8rem;
   line-height: 1rem
@@ -433,8 +440,21 @@ textarea.code_snippet {
   font-size: 2rem;
   line-height: 2.6rem
 }
+.demo_page h1{
+  font-size: 3.5rem;
+  line-height: 4.5rem
+}
+.demo_page h2{
+  font-size: 3rem;
+  line-height: 4rem
+}
 /*Demo Page END*/
 
+@media (min-width: 767px) and (max-width: 1024px)  {
+  html{
+    font-size: 12px !important;
+  }
+}
 @media (min-width: 468px) and (max-width: 768px)  {
   html{
     font-size: 12px !important;
@@ -467,6 +487,15 @@ textarea.code_snippet {
     font-size: 1.5rem;
     line-height: 2.5rem
   }
+   /*.demo_page h1{
+    font-size: 2.6rem;
+    line-height: 3.2rem
+  }
+  .demo_page h2{
+    font-size: 2rem;
+    line-height: 2.6rem
+  }*/
+ 
 }
 @media (max-width: 468px){
   html{
@@ -501,6 +530,15 @@ textarea.code_snippet {
     font-size: 1.5rem;
     line-height: 2.5rem
   }
+   .demo_page h1{
+    font-size: 2.6rem;
+    line-height: 3.2rem
+  }
+  .demo_page .intro-text h2{
+    font-size: 2rem;
+    line-height: 2.6rem
+  }
+  
 }
 
 
