@@ -370,13 +370,48 @@ textarea.code_snippet {
   font-size: 1.5rem;
   line-height: 2.5rem;
 }
-.dashboard-body .search-box input.typeahead
+.demo_page .search-box input.typeahead
 {
   padding-left: 42px;
 }
-.dashboard-body .search-box
+.demo_page .search-box
 {
-  margin-bottom: 50px;
+  padding-bottom: 10px;
+}
+
+.demo_page .nav-container,
+.demo_page .intro-text,
+.demo_page .search-block,
+.methi-section-text{
+  padding: 0 8px 50px 8px;
+}
+.demo_page .header-container{
+  padding: 0
+}
+.demo_page .header .navbar{
+  margin-bottom: 0
+}
+.demo_page h1{
+  margin-top: 0;
+  margin-bottom: 20px
+}
+.demo_page h2{
+  padding: 0
+}
+.demo_page p{
+  color: #fff !important
+}
+.demo_page .font-xs{
+  font-size: 0.8rem;
+  line-height: 1rem
+}
+.demo_page .font-sm{
+  font-size: 1rem;
+  line-height: 1.4rem
+}
+.demo_page .font-md{
+  font-size: 1.5rem;
+  line-height: 2rem
 }
 /*Demo Page END*/
 
