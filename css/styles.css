@@ -398,8 +398,24 @@ textarea.code_snippet {
 .demo_page h2{
   padding: 0
 }
-.demo_page p{
+.demo_page .header-container p{
   color: #fff !important
+}
+.demo_page .features{
+  padding: 50px 0 0 0;
+  text-align: center;
+}
+.demo_page .features .title{
+  padding-bottom: 30px;
+}
+.demo_page .features .img-container{
+  padding: 0 0 20px 0
+}
+.demo_page .features .img-container img{
+  max-width: 120px
+}
+.demo_page .features .feature-block{
+  padding: 30px;
 }
 .demo_page .font-xs{
   font-size: 0.8rem;
@@ -412,6 +428,10 @@ textarea.code_snippet {
 .demo_page .font-md{
   font-size: 1.5rem;
   line-height: 2rem
+}
+.demo_page .font-lg{
+  font-size: 2rem;
+  line-height: 2.6rem
 }
 /*Demo Page END*/
 
