@@ -147,9 +147,9 @@ body.index{
     font-family: 'Open Sans', sans-serif !important;
     font-weight: normal;
 }
-.index p{
+/*.index p{
   font-size: 14px;
-}
+}*/
 .index section, .dashboard-body section {
     padding: 100px 0;
 }
@@ -175,6 +175,12 @@ body.index{
 }
 .index .important h4{
   line-height: 1.6em
+}
+.proudly_built{
+  margin-bottom: 30px;
+}
+.proudly_built .msg{
+  font-size: 4rem;
 }
 #logo{
   max-width: 100px;
@@ -285,6 +291,9 @@ body.index{
   background-color: #fff;
   color: #363636;
   border-color:#363636;
+}
+.index .important-msg{
+  padding-top: 30px;
 }
 /*Index page End*/
 
@@ -414,37 +423,40 @@ textarea.code_snippet {
 .demo_page .features .title{
   padding-bottom: 30px;
 }
-.demo_page .features .img-container{
+.demo_page .features .img-container,
+.index .experience .img-container{
   padding: 0 0 20px 0
 }
-.demo_page .features .img-container img{
+.demo_page .features .img-container img,
+.index .experience .img-container img{
   max-width: 120px
 }
-.demo_page .features .feature-block{
+.demo_page .features .feature-block,
+.index .experience .feature-block{
   padding: 30px;
 }
 
-.demo_page .font-xs{
+.font-xs{
   font-size: 0.8rem;
   line-height: 1rem
 }
-.demo_page .font-sm{
+.font-sm{
   font-size: 1rem;
   line-height: 1.4rem
 }
-.demo_page .font-md{
+.font-md{
   font-size: 1.5rem;
   line-height: 2rem
 }
-.demo_page .font-lg{
+.font-lg{
   font-size: 2rem;
   line-height: 2.6rem
 }
-.demo_page h1{
+.demo_page h1, .index h1.methi-main-text{
   font-size: 3.5rem;
   line-height: 4.5rem
 }
-.demo_page h2{
+.demo_page h2, .methi-sub-text{
   font-size: 3rem;
   line-height: 4rem
 }
@@ -495,9 +507,15 @@ textarea.code_snippet {
     font-size: 2rem;
     line-height: 2.6rem
   }*/
- 
+ .index .header-container{
+    padding: 50px 10px;
+ }
 }
 @media (max-width: 468px){
+
+ .index .header-container{
+    padding: 50px 10px;
+ }
   html{
     font-size: 10px !important;
   }
@@ -530,11 +548,11 @@ textarea.code_snippet {
     font-size: 1.5rem;
     line-height: 2.5rem
   }
-   .demo_page h1{
+   .demo_page h1, .index h1.methi-main-text{
     font-size: 2.6rem;
     line-height: 3.2rem
   }
-  .demo_page .intro-text h2{
+  .demo_page .intro-text h2, .methi-sub-text{
     font-size: 2rem;
     line-height: 2.6rem
   }
