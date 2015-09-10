@@ -472,8 +472,8 @@ textarea.code_snippet {
   padding-bottom: 20px !important;
 }
 .index .footer h3{
-  font-size: 2.5rem;
-  line-height: 3.5rem;
+  font-size: 2rem;
+  line-height: 3rem;
 }
 /*Demo Page END*/
 
@@ -525,6 +525,9 @@ textarea.code_snippet {
  .index .header-container{
     padding: 50px 10px;
  }
+ .important-msg{
+  text-align: center;
+ }
 }
 @media (max-width: 468px){
 
@@ -571,6 +574,10 @@ textarea.code_snippet {
     font-size: 2rem;
     line-height: 2.6rem
   }
+
+ .important-msg{
+  text-align: center;
+ }
   
 }
 
