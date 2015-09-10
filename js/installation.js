@@ -111,5 +111,6 @@ $(document).ready(function() {
 	$('.copy_button').click(function(){
 		$('.code_snippet').select();
 		document.execCommand("copy");
+		toastr.success('Text copied to clipboard!')
 	});
 });
