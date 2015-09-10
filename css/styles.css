@@ -332,6 +332,7 @@ textarea.code_snippet {
     background: #f6fcfe;
     border: 1px solid #bbe5f7;
     height: 100px;
+    font-size: 1.3rem;
 }
 .textarea_container{
   position: relative;
