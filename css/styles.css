@@ -180,7 +180,7 @@ body.index{
   margin-bottom: 10px;
 }
 .proudly_built .msg{
-  font-size: 3em;
+  font-size: 3rem;
 }
 #logo{
   max-width: 120px;
@@ -460,6 +460,20 @@ textarea.code_snippet {
 .demo_page h2, .methi-sub-text{
   font-size: 3rem;
   line-height: 4rem
+}
+.img-inside{
+  padding:0 50px;
+  display: block; 
+}
+.img-inside img{
+  max-width: 100%;
+}
+.feature-title{
+  padding-bottom: 20px !important;
+}
+.index .footer h3{
+  font-size: 2.5rem;
+  line-height: 3.5rem;
 }
 /*Demo Page END*/
 
