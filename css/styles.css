@@ -476,6 +476,11 @@ textarea.code_snippet {
   font-size: 2rem;
   line-height: 3rem;
 }
+.toast{
+  background-color: #fff;
+  color: #555 !important;
+  opacity: 1;
+}
 /*Demo Page END*/
 
 @media (min-width: 767px) and (max-width: 1024px)  {
