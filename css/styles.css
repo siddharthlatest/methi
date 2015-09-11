@@ -476,6 +476,10 @@ textarea.code_snippet {
   font-size: 2rem;
   line-height: 3rem;
 }
+.installation-text{
+  font-size: 1.7rem;
+  line-height: 2.7rem
+}
 .toast{
   background-color: #fff;
   color: #555 !important;
