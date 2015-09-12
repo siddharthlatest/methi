@@ -145,7 +145,7 @@
   width: 100%;
   border: 1px solid #ccc;
   border-radius: 4px;
-  padding: 3px;
+  padding: 5px;
   padding-left: 22px;
   background-color: #eee;
 }
@@ -181,6 +181,7 @@
   height: auto !important;
   max-height: 150px;
   overflow: auto;
+  margin-top: 3px;
 }
 .appbase_modal .twitter-typeahead .tt-dataset{
   padding: 0 15px;
@@ -340,7 +341,7 @@
 }
 .appbase_modal .search_thumb{
      left: 9px;
-    top: 4px;
+    top: 6px;
     width: 14px;
     height: 14px;
         position: absolute;
