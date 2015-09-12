@@ -180,7 +180,6 @@
   height: auto !important;
   max-height: 150px;
   overflow: auto;
-  margin-top: 3px;
 }
 .appbase_modal .twitter-typeahead .tt-dataset{
   padding: 0 15px;
