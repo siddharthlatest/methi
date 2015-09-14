@@ -148,6 +148,9 @@
   border-radius: 4px;
   padding: 5px;
   padding-left: 22px;
+  font-size: 14px;
+  font-size: 14px;
+  line-height: 16px;
 }
 .appbase_modal .appabse_list .twitter-typeahead .tt-dataset{
   padding: 0;
@@ -340,8 +343,8 @@
   display: none;
 }
 .appbase_modal .search_thumb{
-     left: 9px;
-    top: 6px;
+     left: 10px;
+    top: 7px;
     width: 14px;
     height: 14px;
         position: absolute;
