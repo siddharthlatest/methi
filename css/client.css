@@ -393,4 +393,7 @@
   .done-btn{
     display: block;
   }
+  .appbase_side_container .appbase_block{
+    margin-bottom: 20px
+  }
 }

@@ -227,13 +227,17 @@ var appbase_app = function() {
 						'margin-top': 0,
 						'max-width': '960px'
 					});
+					var list_height = tt_height - 176 - 200;
+					var block_height = tt_height - 176 - 110;
 				} else {
 					jQuery(modal).find('.' + obj.abbr + 'modal_content').css({
 						'margin-top': '50px',
 						'max-width': '960px'
 					});
+					var list_height = tt_height - 176 - 85;
+					var block_height = tt_height - 176;
 				}
-				var list_height = tt_height - 176 - 85;
+				$('.appbase_block').eq(1).css('height',block_height);
 				$('.appbase_modal .appbase_block .tt-menu').css('max-height',list_height);
 			}
 			jQuery(window).resize(function() {
