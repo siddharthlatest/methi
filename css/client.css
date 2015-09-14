@@ -122,12 +122,12 @@
 .appabse_list{
   list-style: none;
   padding: 0;
-  margin: 0
+  margin: 0;
 }
 .appabse_list li{
   font-size: 13px;
   line-height: 26px;
-  padding: 0 0px;
+  padding: 0 5px;
   color: #2F649D;
   font-weight: bold;
   cursor: pointer;
@@ -138,8 +138,7 @@
     border-radius: 4px;
 }
 .brand_list {
-  /*max-height: 175px;
-  overflow: auto*/
+  margin-top: 3px;
 }
 .appabse_list .appbase_brand_search{
   width: 100%;
