@@ -217,26 +217,28 @@ var appbase_app = function() {
 				var win_height = jQuery(window).height();
 				var win_width = jQuery(window).width();
 				var modal_height = win_width < 768 ? win_height : win_height - 150;
-				var tt_height = modal_height - jQuery('.' + obj.abbr + 'input').height() - 50;
-				jQuery('.tt-menu').height(tt_height);
-				var side_height = tt_height + 25;
-				jQuery('.appbase_side_container').height(side_height+'px');
 				//jQuery(modal).find('.' + obj.abbr + 'modal_content').height(modal_height);
 				if (win_width < 768) {
 					jQuery(modal).find('.' + obj.abbr + 'modal_content').css({
 						'margin-top': 0,
 						'max-width': '960px'
 					});
-					var list_height = tt_height - 176 - 200;
-					var block_height = tt_height - 176 - 110;
+					var tt_height = modal_height - jQuery('.' + obj.abbr + 'input').height() - 100;
+					var side_height = tt_height + 25;
+					var list_height = tt_height - 176 - 150;
+					var block_height = tt_height - 176 - 60;
 				} else {
 					jQuery(modal).find('.' + obj.abbr + 'modal_content').css({
 						'margin-top': '50px',
 						'max-width': '960px'
 					});
+					var tt_height = modal_height - jQuery('.' + obj.abbr + 'input').height() - 50;
+					var side_height = tt_height + 25;
 					var list_height = tt_height - 176 - 85;
 					var block_height = tt_height - 176;
 				}
+				jQuery('.tt-menu').height(tt_height);
+				jQuery('.appbase_side_container').height(side_height+'px');
 				$('.appbase_block').eq(1).css('height',block_height);
 				$('.appbase_modal .appbase_block .tt-menu').css('max-height',list_height);
 			}
