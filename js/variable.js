@@ -271,7 +271,7 @@ variables.prototype = {
         data.fields.link = data.fields.link.toString().slice(0, -10)
       var single_record = jQuery('<a>').attr({
         'class': 'record_link modal_grid_view',
-        'href': data.fields.link,
+        'href': "http://" + data.fields.link,
         'target': '_blank'
       }).append(record_link_container);
     }
