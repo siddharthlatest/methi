@@ -106,7 +106,9 @@
 .appbase_block{
   background-color: #fff;
   padding: 10px;
-  margin-bottom: 20px;
+}
+.appbase_side_container .appbase_block:first-child{
+  margin-bottom: 20px
 }
 .appbase_side_container_inside{
   display: block;
@@ -177,7 +179,7 @@
   padding: 0 !important;
   margin: 0;
   height: auto !important;
-  max-height: 150px;
+  /*max-height: 150px;*/
   overflow: auto;
 }
 .appbase_modal .twitter-typeahead .tt-dataset{

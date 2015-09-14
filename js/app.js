@@ -219,7 +219,8 @@ var appbase_app = function() {
 				var modal_height = win_width < 768 ? win_height : win_height - 150;
 				var tt_height = modal_height - jQuery('.' + obj.abbr + 'input').height() - 50;
 				jQuery('.tt-menu').height(tt_height);
-				jQuery('.appbase_side_container').height(tt_height);
+				var side_height = tt_height + 25;
+				jQuery('.appbase_side_container').height(side_height+'px');
 				//jQuery(modal).find('.' + obj.abbr + 'modal_content').height(modal_height);
 				if (win_width < 768) {
 					jQuery(modal).find('.' + obj.abbr + 'modal_content').css({
@@ -232,6 +233,8 @@ var appbase_app = function() {
 						'max-width': '960px'
 					});
 				}
+				var list_height = tt_height - 176 - 85;
+				$('.appbase_modal .appbase_block .tt-menu').css('max-height',list_height);
 			}
 			jQuery(window).resize(function() {
 				appbase_resize();
