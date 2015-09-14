@@ -326,6 +326,7 @@
 .setting_thumb{
   position: absolute;
   left: 10px;
+  top: 0;
   display: none;
 }
 .appbase-btn{
