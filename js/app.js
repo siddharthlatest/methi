@@ -292,9 +292,9 @@ var appbase_app = function() {
 
 			//Events
 			// 1) Keyup events
-			// jQuery(obj.selector).on('keyup', function(){
-			// 	InitMethi(this);
-			// });
+			jQuery(obj.selector).on('keyup', function(){
+				InitMethi(this);
+			});
 			// 2) Focus events
 			jQuery(obj.selector).on('focus', function(){
 				InitMethi(this);
