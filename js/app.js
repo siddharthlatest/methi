@@ -66,11 +66,16 @@ var appbase_app = function() {
 
 		//Bloodhound Start
 		$this.engine = $this.variables.createEngine($this, function(length) {
+			if(options.filter_view){
+				tag_bind($this.variables.TAGS);
+			}
 			$this.appbase_total = length;
 			if (length)
 				$this.appbase_xhr_flag = true;
 			else
 				$this.appbase_xhr_flag = false;
+
+
 		}, scroll_callback);
 		//Bloodhound End
 
@@ -146,71 +151,64 @@ var appbase_app = function() {
 					'class': 'appbase_brand_search',
 					'placeholder': $this.variables.brand.placeholder
 				});
-				var single_list = jQuery('<li>').append(single_search).append(search_thumb);
+				var single_list = jQuery('<li>').addClass('appbase_brand_list_container').append(single_search).append(search_thumb);
 				brand_list.append(single_list);
 				var brand_label = jQuery('<label>').text($this.variables.brand.label);
-				var brand_list_container = jQuery('<div>').addClass('appbase_block').append(brand_label).append(brand_list);
+				var brand_tag_name = jQuery('<div>').addClass('tag_name');
+				var brand_list_container = jQuery('<div>').addClass('appbase_block tag_container').append(brand_label).append(brand_tag_name).append(brand_list);
 				obj.brand_list_container = brand_list_container;
 
 				var done_button = jQuery('<a>').addClass('appbase-btn done-btn').text('Done');
 				obj.done_button = done_button;
-
-				var substringMatcher = function(strs) {
-					return function findMatches(q, cb) {
-						var matches, substringRegex;
-
-						// an array that will be populated with substring matches
-						matches = [];
-
-						// regex used to determine if a string contains the substring `q`
-						substrRegex = new RegExp(q, 'i');
-
-						// iterate through the pool of strings and for any string that
-						// contains the substring `q`, add it to the `matches` array
-						$.each(strs, function(i, str) {
-							if (substrRegex.test(str)) {
-								matches.push(str);
-							}
-						});
-
-						cb(matches);
-					};
-				};
-
-				var states = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California',
-					'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii',
-					'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana',
-					'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota',
-					'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire',
-					'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota',
-					'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island',
-					'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont',
-					'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
-				];
-
-				jQuery(single_search).typeahead({
-					hint: true,
-					highlight: true,
-					minLength: 0
-				}, {
-					name: 'states',
-					limit: 100,
-					source: substringMatcher(states),
-					templates: {
-						pending: true,
-						suggestion: function(data) {
-							if (data) {
-								var single_record = $this.variables.createBrand(data);
-								return single_record;
-							} else
-								return;
-						}
-					}
-				});
 			}
 			//Bind events with html
 			html_events(obj, modal, overlay);
 		};
+
+		function tag_bind(tags){
+			var tags_length = tags.length;
+			var tags_ar = [];
+			for(var i =0; i< tags_length; i++){
+				tags_ar.push(tags[i]['key']);
+			}
+			
+			jQuery('.appbase_brand_search').html(' ');
+			var search_thumb = jQuery('<img>').attr({
+				src: $this.variables.SEARCH_THUMB,
+				class:'search_thumb'
+			});
+			
+			var single_search = jQuery('<input>').attr({
+				'type': 'text',
+				'class': 'appbase_brand_search',
+				'placeholder': $this.variables.brand.placeholder
+			});
+			jQuery('.appbase_brand_list_container').html('');
+			jQuery('.appbase_brand_list_container').append(single_search).append(search_thumb);
+
+			jQuery('.appbase_brand_search').typeahead({
+				hint: true,
+				highlight: true,
+				minLength: 0
+			}, {
+				name: 'tags',
+				limit: 100,
+				source: substringMatcher(tags_ar),
+				templates: {
+					pending: true,
+					suggestion: function(data) {
+						if (data) {
+							//var single_record = $this.variables.createBrand(data);
+							var single_record = $this.variables.CREATE_TAG('tag',data);
+							return single_record;
+						} else
+							return;
+					}
+				}
+			});
+			jQuery('.appbase_brand_search').typeahead('val', '').focus();	
+			$(window).trigger('resize');			
+		}
 
 		function html_size(obj, modal) {
 			function appbase_resize() {
@@ -383,6 +381,27 @@ var appbase_app = function() {
 	}
 }
 
+var substringMatcher = function(strs) {
+	return function findMatches(q, cb) {
+		var matches, substringRegex;
+
+		// an array that will be populated with substring matches
+		matches = [];
+
+		// regex used to determine if a string contains the substring `q`
+		substrRegex = new RegExp(q, 'i');
+
+		// iterate through the pool of strings and for any string that
+		// contains the substring `q`, add it to the `matches` array
+		$.each(strs, function(i, str) {
+			if (substrRegex.test(str)) {
+				matches.push(str);
+			}
+		});
+
+		cb(matches);
+	};
+};
 var Loader = function() {}
 Loader.prototype = {
 	require: function(scripts, callback) {

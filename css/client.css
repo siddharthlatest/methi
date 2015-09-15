@@ -349,6 +349,22 @@
     height: 14px;
         position: absolute;
 }
+.tag_name{
+    padding: 5px 0;
+    clear: both;
+}
+.single_tag{
+    background: #ddd;
+    padding: 3px 10px;
+    font-size: 12px;
+    border-radius: 5px;
+    margin: 5px 5px 0 0;
+    display: inline-block;
+}
+.tag_close{
+    padding-left: 10px;
+    font-weight: bold;
+}
 @media(max-width: 768px){
   .appbase_modal .appbase_logo{
     width: 70px;

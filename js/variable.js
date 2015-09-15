@@ -40,6 +40,8 @@ function variables(credentials, app_name, index_document_type, method, grid_view
   this.GRID_THUMB = 'images/grid_thumb.png';
   this.SEARCH_THUMB = 'images/search.png';
   this.VIEWFLAG = this.GridView;
+  this.TAGS = [];
+  this.SELECTED_TAGS = [];
   this.SEARCH_PAYLOAD = {
     "from": 0,
     "size": this.SIZE,
@@ -65,7 +67,16 @@ function variables(credentials, app_name, index_document_type, method, grid_view
           "no_match_size": 500
         }
       }
+    },
+    "aggs": {
+    "tags": {
+      "terms": {
+        "field": "tags",
+        "order" : { "_count" : "desc" },
+        "size": 0
+      }
     }
+  }
   };
   this.FUZZY_PAYLOAD = {
     "from": 0,
@@ -93,6 +104,15 @@ function variables(credentials, app_name, index_document_type, method, grid_view
           "no_match_size": 500
         }
       }
+    },
+    "aggs": {
+      "tags": {
+        "terms": {
+          "field": "tags",
+          "order" : { "_count" : "desc" },
+          "size": 0
+        }
+      }
     }
   };
   if (this.FILTER_VIEW) {
@@ -109,7 +129,7 @@ function variables(credentials, app_name, index_document_type, method, grid_view
           "gte": "0"
         }
       }
-    }
+    };    
   }
 }
 
@@ -158,6 +178,7 @@ variables.prototype = {
             parent_this.FUZZY_FLAG = false;
             $this.appbase_total = response.hits.total;
 
+            parent_this.TAGS = response.aggregations.tags.buckets;
             callback(response.hits.total);
 
             if (parent_this.method == 'client') {
@@ -195,6 +216,7 @@ variables.prototype = {
     this.FUZZY_PAYLOAD.query.multi_match.query = input_value;
     var request_data = JSON.stringify(this.FUZZY_PAYLOAD);
     var credentials = this.credentials;
+    var parent_this = this;
     jQuery.ajax({
       type: "POST",
       beforeSend: function(request) {
@@ -206,6 +228,8 @@ variables.prototype = {
       data: request_data,
       success: function(response) {
         $this.appbase_total = response.hits.total;
+
+        parent_this.TAGS = response.aggregations.tags.buckets;
         callback(response, 'fuzzy');
       }
     });
@@ -323,8 +347,67 @@ variables.prototype = {
       console.log($parent_this.brand.fetch);
     });
     return single_tag;
+},
+CREATE_TAG: function(type, data) {
+    $this = this;
+    var list = $this.SELECTED_TAGS;
+    var container = $('.' + type + '_container');
+    var checkbox = $('<input>').attr({
+      type: 'checkbox',
+      name: 'brand',
+      class: 'tag_checkbox',
+      container: type,
+      value: data
+    });
+    if ($.inArray(data, list) != -1)
+      checkbox.prop('checked', true);
+    var checkbox_text = $('<span>').text(data);
+    var single_tag = $('<label>').append(checkbox).append(checkbox_text);
+
+    checkbox.change(function() {
+      var checkbox_val = $(this).val();
+      var type = $(this).attr('container');
+      var check2 = checkbox_val;
+
+      if ($(this).is(':checked')) {
+        list.push(check2);
+        var tag_text = $('<span>').addClass('tag_text').text(checkbox_val);
+        var tag_close = $('<span>').addClass('tag_close').text('x').attr('val', checkbox_val);
+        var single_tag = $("<span>").addClass('single_tag').attr('val', checkbox_val).append(tag_text).append(tag_close);
+        $(tag_close).click(function() {
+          var val = $(this).attr('val');
+          $(single_tag).remove();
+          list.remove(val);
+          $this.SEARCH_WITH_FILTER();
+          container.find('.tag_checkbox[value="' + val + '"]').prop('checked', false);
+        });
+        container.find('.tag_name').append(single_tag);        
+          $this.SEARCH_WITH_FILTER();
+      } else {
+        container.find('.single_tag[val="' + checkbox_val + '"]').remove();
+        list.remove(check2);
+        $this.SEARCH_WITH_FILTER();
+      }
+      //console.log(list);
+    });
+    return single_tag;
+  },
+  SEARCH_WITH_FILTER:function(){
+    var list = this.SELECTED_TAGS;
+    if(list.length){
+      this.SEARCH_PAYLOAD['post_filter'] = {"terms": { "tags": list }};
+      this.FUZZY_PAYLOAD['post_filter'] = {"terms": { "tags": list }};
+    }
+    else{
+      delete this.SEARCH_PAYLOAD['post_filter'];
+      delete this.FUZZY_PAYLOAD['post_filter'];
+    }
+    var input_val = jQuery('.appbase_input').eq(1).val();
+    jQuery('.appbase_input').typeahead('val', '').typeahead('val', input_val).focus();
+    
   }
 }
+
 Array.prototype.remove = function() {
   var what, a = arguments,
     L = a.length,
