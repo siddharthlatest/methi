@@ -171,7 +171,7 @@ var appbase_app = function() {
 			for(var i =0; i< tags_length; i++){
 				tags_ar.push(tags[i]['key']);
 			}
-			
+
 			jQuery('.appbase_brand_search').html(' ');
 			var search_thumb = jQuery('<img>').attr({
 				src: $this.variables.SEARCH_THUMB,
@@ -207,6 +207,7 @@ var appbase_app = function() {
 				}
 			});
 			jQuery('.appbase_brand_search').typeahead('val', '').focus();	
+			jQuery('.appbase_input').focus();
 			$(window).trigger('resize');			
 		}
 
