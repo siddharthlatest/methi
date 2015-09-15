@@ -326,28 +326,6 @@ variables.prototype = {
     this.SEARCH_PAYLOAD.filter.range.created_at.gte = val;
     this.FUZZY_PAYLOAD.filter.range.created_at.gte = val;
   },
-  createBrand: function(data) {
-    var $parent_this = this;
-    var checkbox = jQuery('<input>').attr({
-      type: 'checkbox',
-      name: 'brand',
-      value: data
-    });
-    if (jQuery.inArray(data, $parent_this.brand.fetch) != -1)
-      checkbox.prop('checked', true);
-    var checkbox_text = jQuery('<span>').text(data);
-    var single_tag = jQuery('<label>').append(checkbox).append(checkbox_text);
-
-    checkbox.change(function() {
-      if (jQuery(this).is(':checked'))
-        $parent_this.brand.fetch.push(jQuery(this).val());
-      else {
-        $parent_this.brand.fetch.remove(jQuery(this).val());
-      }
-      console.log($parent_this.brand.fetch);
-    });
-    return single_tag;
-},
 CREATE_TAG: function(type, data) {
     $this = this;
     var list = $this.SELECTED_TAGS;
