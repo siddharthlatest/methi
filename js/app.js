@@ -246,7 +246,18 @@ var appbase_app = function() {
 			});
 			appbase_resize();
 		}
-
+		function checkScrollBars(container){
+			var container = '.appbase_modal .tt-menu:last-child';
+			var b = $(container);
+		    var normalw = 0;
+		    var scrollw = 0;
+		        normalw = $('.appbase_modal_content').width();
+		        tt_width = b.width();
+		        tt_dataset = b.find('.tt-dataset').outerWidth();
+		        var scrollw = tt_width - tt_dataset;
+		        console.log(normalw, tt_width, tt_dataset);
+		        b.css({marginRight:'-'+scrollw+'px'});
+		}
 		function close_modal() {
 			jQuery('.appbase_modal').fadeOut(150);
 			jQuery('.appbase_overlay').fadeOut(150);
@@ -323,6 +334,8 @@ var appbase_app = function() {
 				jQuery(modal).find('.' + obj.abbr + 'input').focus();
 				jQuery(eve).val('');
 				jQuery('html,body').css('overflow', 'hidden');
+				checkScrollBars('.tt-menu');
+				
 			}
 			jQuery(document).keyup(function(e) {
 				if (e.keyCode == 27) {

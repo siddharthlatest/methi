@@ -28,6 +28,7 @@
   border-radius: 5px;
   z-index: 10000;
   box-sizing: border-box;
+  overflow: hidden;
 }
 .appbase_modal .appbase_search_box{
   position: relative;
@@ -176,7 +177,7 @@
   margin-top: 5px;
 }
 .appbase_modal .twitter-typeahead.filter_append .tt-menu{
-  padding: 35px 250px 20px 20px;
+  padding: 35px 265px 20px 20px;
 }
 .appbase_modal .appabse_list .twitter-typeahead .tt-menu{
   padding: 0 !important;
@@ -365,6 +366,25 @@
     padding-left: 10px;
     font-weight: bold;
 }
+/*::-webkit-scrollbar {
+    width: 8px;
+}
+ 
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+}
+ 
+::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    background: rgba(200,200,200,0.8); 
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+}
+::-webkit-scrollbar-thumb:window-inactive {
+    background: rgba(200,200,200,0.4); 
+}*/
 @media(max-width: 768px){
   .appbase_modal .appbase_logo{
     width: 70px;
