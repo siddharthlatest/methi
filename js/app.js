@@ -11,7 +11,7 @@ var appbase_app = function() {
 		$this.default_options = {
 			title: 'Blazing fast search on your Documentation',
 			input_placeholder: 'search here',
-			logo: 'images/Appbase.png',
+			logo: 'http://cdn.appbase.io/methi/images/Appbase.png',
 			abbr: 'appbase_',
 			selector: '.appbase_external_search',
 			grid_view: false,
@@ -489,7 +489,7 @@ jquery_js.require([
 				appbase.initialize({
 					title: 'Blazing fast search1 on your Documentation',
 					input_placeholder: 'search here',
-					logo: 'images/Appbase.png',
+					logo: 'http://cdn.appbase.io/methi/images/Appbase.png',
 					selector: '.appbase_external_search',
 					credentials: appbase_variables.credentials,
 					app_name: appbase_variables.app_name,
