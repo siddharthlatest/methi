@@ -167,10 +167,11 @@ var appbase_app = function() {
 
 		function tag_bind(tags){
 			var tags_length = tags.length;
-			var tags_ar = [];
-			for(var i =0; i< tags_length; i++){
-				tags_ar.push(tags[i]['key']);
-			}
+			var tags_ar = tags;
+			// var tags_ar = [];
+			// for(var i =0; i< tags_length; i++){
+			// 	tags_ar.push(tags[i]['key']);
+			// }
 
 			jQuery('.appbase_brand_search').html(' ');
 			var search_thumb = jQuery('<img>').attr({
@@ -408,7 +409,7 @@ var substringMatcher = function(strs) {
 		// iterate through the pool of strings and for any string that
 		// contains the substring `q`, add it to the `matches` array
 		$.each(strs, function(i, str) {
-			if (substrRegex.test(str)) {
+			if (substrRegex.test(str.key)) {
 				matches.push(str);
 			}
 		});

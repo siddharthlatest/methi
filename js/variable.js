@@ -330,17 +330,23 @@ CREATE_TAG: function(type, data) {
     $this = this;
     var list = $this.SELECTED_TAGS;
     var container = $('.' + type + '_container');
+    console.log(data);
+    var tag_value = data.key;
+    var doc_count = data.doc_count;
     var checkbox = $('<input>').attr({
       type: 'checkbox',
       name: 'brand',
       class: 'tag_checkbox',
       container: type,
-      value: data
+      value: tag_value
     });
-    if ($.inArray(data, list) != -1)
+    if ($.inArray(tag_value, list) != -1)
       checkbox.prop('checked', true);
-    var checkbox_text = $('<span>').text(data);
-    var single_tag = $('<label>').append(checkbox).append(checkbox_text);
+    var checkbox_text = $('<span>').text(tag_value);
+    var tag_count = $('<span>').addClass('tag_count').text('('+doc_count+')');
+    var tag_inside_text = $('<span>').addClass('tag_inside_text').text(tag_value);
+    var tag_contain = $('<span>').addClass('tag_contain').append(tag_inside_text).append(tag_count);
+    var single_tag = $('<label>').append(checkbox).append(tag_contain);
 
     checkbox.change(function() {
       var checkbox_val = $(this).val();
