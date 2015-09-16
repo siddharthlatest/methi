@@ -470,8 +470,11 @@
   .appbase_side_container .appbase_block{
     margin-bottom: 20px
   }
-  .appbase_modal .appabse_list .twitter-typeahead .tt-suggestion input, .appbase_modal .appabse_list .twitter-typeahead .tt-suggestion span{
+  /*.appbase_modal .appabse_list .twitter-typeahead .tt-suggestion input, .appbase_modal .appabse_list .twitter-typeahead .tt-suggestion span{
     max-width: 90%
+  }*/
+  .appbase_modal .appabse_list .tag_contain{
+    width: 90%
   }
   .tag_container{
     min-height: 190px;
