@@ -479,8 +479,8 @@ jquery_js.require([
 	function() {
 		var typeahead_js = new Loader();
 		typeahead_js.require([
-				"js/typeahead.bundle.js",
 				"js/variable.js"
+				"http://cdn.appbase.io/methi/js/typeahead.bundle.js",
 			],
 			function() {
 				var appbase = new appbase_app();
