@@ -238,8 +238,8 @@ var appbase_app = function() {
 				}
 				jQuery('.tt-menu').height(tt_height);
 				jQuery('.appbase_side_container').height(side_height+'px');
-				$('.appbase_block').eq(1).css('height',block_height);
-				$('.appbase_modal .appbase_block .tt-menu').css('max-height',list_height);
+				//$('.appbase_block').eq(1).css('height',block_height);
+				//$('.appbase_modal .appbase_block .tt-menu').css('max-height',list_height);
 			}
 			jQuery(window).resize(function() {
 				appbase_resize();

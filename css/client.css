@@ -207,6 +207,9 @@
       float: left;    
       line-height: 19px;
     padding-left: 3px;
+    max-width: 145px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .appbase_modal .twitter-typeahead .record_link{
   width: 100%;
@@ -351,7 +354,7 @@
         position: absolute;
 }
 .tag_name{
-    padding: 5px 0;
+    /*padding: 5px 0;*/
     clear: both;
 }
 .single_tag{
@@ -362,9 +365,27 @@
     margin: 5px 5px 0 0;
     display: inline-block;
 }
+.single_tag .tag_text{
+  max-width: 145px;
+  overflow: hidden;
+  display: inline-block;
+  float: left;
+  text-overflow: ellipsis;
+}
 .tag_close{
     padding-left: 10px;
     font-weight: bold;
+    cursor: pointer;
+}
+.tag_container{
+  min-height: 250px;
+  padding-bottom: 0
+}
+.appbase_modal .appbase_block .tt-menu{
+  max-height: 173px
+}
+.tag_container .twitter-typeahead{
+  float: left;
 }
 /*::-webkit-scrollbar {
     width: 8px;
@@ -435,4 +456,14 @@
   .appbase_side_container .appbase_block{
     margin-bottom: 20px
   }
+  .appbase_modal .appabse_list .twitter-typeahead .tt-suggestion input, .appbase_modal .appabse_list .twitter-typeahead .tt-suggestion span{
+    max-width: 90%
+  }
+  .tag_container{
+    min-height: 190px;
+    padding-bottom: 0
+  }
+.appbase_modal .appbase_block .tt-menu{
+  max-height: 113px
+}
 }
