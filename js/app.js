@@ -68,7 +68,7 @@ var appbase_app = function() {
 		//Bloodhound Start
 		$this.engine = $this.variables.createEngine($this, function(length) {
 			if(options.filter_view && length){
-				jQuery('.appbase_side_container').removeClass('hide');
+				jQuery('.appbase_side_container_inside').removeClass('hide');
 				jQuery('.appbase_brand_search').typeahead('val', '').focus();	
 				jQuery('.appbase_input').focus();			
 				tag_bind($this.variables.TAGS);		
@@ -78,7 +78,7 @@ var appbase_app = function() {
 				$this.appbase_xhr_flag = true;
 			else{
 				$this.appbase_xhr_flag = false;				
-				jQuery('.appbase_side_container').addClass('hide');
+				jQuery('.appbase_side_container_inside').addClass('hide');
 			}			
 
 		}, scroll_callback);
@@ -295,8 +295,10 @@ var appbase_app = function() {
 			});
 
 			jQuery(modal).find('.' + obj.abbr + 'input').on('keyup', function() {
-				if (jQuery(this).val().length == 0)
+				if (jQuery(this).val().length == 0){
 					jQuery('.appbase_total_info').text($this.variables.INITIAL_TEXT);
+			        jQuery('.appbase_side_container_inside').addClass('hide');
+				}
 			});
 
 
@@ -308,8 +310,8 @@ var appbase_app = function() {
 			jQuery('.twitter-typeahead').prepend(obj.total_info_container);
 
 			if (options.filter_view) {	
-				var side_container = jQuery('<div>').addClass('appbase_side_container_inside').append(obj.date_list_container).append(obj.brand_list_container).append(obj.done_button);
-				var side_container_inside = jQuery('<div>').addClass('appbase_side_container  hide').append(side_container);
+				var side_container = jQuery('<div>').addClass('appbase_side_container_inside hide').append(obj.date_list_container).append(obj.brand_list_container).append(obj.done_button);
+				var side_container_inside = jQuery('<div>').addClass('appbase_side_container').append(side_container);
 				jQuery('.twitter-typeahead').addClass('filter_append').prepend(side_container_inside)
 			}
 

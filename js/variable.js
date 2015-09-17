@@ -319,7 +319,7 @@ variables.prototype = {
       if (jQuery('.appbase_input').eq(1).val().length)
         return count_result;
       else{
-        jQuery('.appbase_side_container').addClass('hide');
+        jQuery('.appbase_side_container_inside').addClass('hide');
         return this.INITIAL_TEXT;
       }
     } else
@@ -330,7 +330,7 @@ variables.prototype = {
       var final_text = this.NO_RESULT_TEXT_TAG;
     } else {
       var final_text = this.NO_RESULT_TEXT;
-      jQuery('.appbase_side_container').addClass('hide');
+      jQuery('.appbase_side_container_inside').addClass('hide');
     }
     jQuery(".appbase_total_info").text(final_text);
   },
