@@ -78,7 +78,7 @@ function variables(credentials, app_name, index_document_type, method, grid_view
           "order": {
             "_count": "desc"
           },
-          "size": 10
+          "size": 1
         }
       }
     }
@@ -117,7 +117,7 @@ function variables(credentials, app_name, index_document_type, method, grid_view
           "order": {
             "_count": "desc"
           },
-          "size": 0
+          "size": 1
         }
       }
     }
