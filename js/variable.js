@@ -78,7 +78,7 @@ function variables(credentials, app_name, index_document_type, method, grid_view
           "order": {
             "_count": "desc"
           },
-          "size": 0
+          "size": 10
         }
       }
     }
