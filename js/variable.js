@@ -291,8 +291,6 @@ variables.prototype = {
       });
       var record_img_container = jQuery('<span>').addClass('record_img_container').append(record_img);
       var record_link_container = jQuery('<div>').addClass('record_link_container').append(record_img_container).append(small_info_container);
-      if (data.fields.link.toString().match(/index.html$/))
-        data.fields.link = data.fields.link.toString().slice(0, -10)
       var single_record = jQuery('<a>').attr({
         'class': 'record_link modal_grid_view',
         'href': data.fields.link,
@@ -301,8 +299,6 @@ variables.prototype = {
     }
     // List View
     else {
-      if (data.fields.link.toString().match(/index.html$/))
-        data.fields.link = data.fields.link.toString().slice(0, -10)
       var single_record = jQuery('<a>').attr({
         'class': 'record_link',
         'href': data.fields.link,
