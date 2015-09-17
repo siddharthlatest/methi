@@ -473,7 +473,7 @@ function meta_head() {
 meta_head();
 var jquery_js = new Loader();
 jquery_js.require([
-		"http://cdn.appbase.io/methi/css/client.css",
+		"css/client.css",
 		"https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"
 	],
 	function() {
