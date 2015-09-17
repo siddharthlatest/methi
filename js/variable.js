@@ -40,6 +40,7 @@ function variables(credentials, app_name, index_document_type, method, grid_view
   this.LIST_THUMB = 'http://cdn.appbase.io/methi/images/list_thumb.png';
   this.GRID_THUMB = 'http://cdn.appbase.io/methi/images/grid_thumb.png';
   this.SEARCH_THUMB = 'http://cdn.appbase.io/methi/images/search.png';
+  this.SETTING_THUMB = 'images/settings.png';
   this.VIEWFLAG = this.GridView;
   this.TAGS = [];
   this.SELECTED_TAGS = [];

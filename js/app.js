@@ -114,7 +114,7 @@ var appbase_app = function() {
 				src: $this.variables.GRID_THUMB
 			});
 			var setting_thumb = jQuery('<img>').attr({
-				src: $this.variables.GRID_THUMB
+				src: $this.variables.SETTING_THUMB
 			});
 			var list_thumb_container = jQuery('<span>').addClass('list_thumb appbase-thumbnail ').attr('title', 'List view').append(list_thumb);
 			var grid_thumb_container = jQuery('<span>').addClass('grid_thumb appbase-thumbnail').attr('title', 'Grid view').append(grid_thumb);
