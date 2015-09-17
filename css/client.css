@@ -401,6 +401,9 @@
 .tag_container .twitter-typeahead{
   float: left;
 }
+.hide{
+  display: none;
+}
 /*::-webkit-scrollbar {
     width: 8px;
 }

@@ -53,7 +53,8 @@ var appbase_app = function() {
 				}
 				$this.appbase_xhr_flag = true;
 			} else {
-				jQuery(".appbase_total_info").html($this.variables.NO_RESULT_TEXT);
+				$this.variables.no_result();
+				//jQuery(".appbase_total_info").html($this.variables.NO_RESULT_TEXT);
 				jQuery('.tt-menu .tt-dataset.tt-dataset-my-dataset').html('');
 			}
 
@@ -66,15 +67,19 @@ var appbase_app = function() {
 
 		//Bloodhound Start
 		$this.engine = $this.variables.createEngine($this, function(length) {
-			if(options.filter_view){
-				tag_bind($this.variables.TAGS);
+			if(options.filter_view && length){
+				jQuery('.appbase_side_container').removeClass('hide');
+				jQuery('.appbase_brand_search').typeahead('val', '').focus();	
+				jQuery('.appbase_input').focus();			
+				tag_bind($this.variables.TAGS);		
 			}
 			$this.appbase_total = length;
 			if (length)
 				$this.appbase_xhr_flag = true;
-			else
-				$this.appbase_xhr_flag = false;
-
+			else{
+				$this.appbase_xhr_flag = false;				
+				jQuery('.appbase_side_container').addClass('hide');
+			}			
 
 		}, scroll_callback);
 		//Bloodhound End
@@ -304,7 +309,7 @@ var appbase_app = function() {
 
 			if (options.filter_view) {	
 				var side_container = jQuery('<div>').addClass('appbase_side_container_inside').append(obj.date_list_container).append(obj.brand_list_container).append(obj.done_button);
-				var side_container_inside = jQuery('<div>').addClass('appbase_side_container').append(side_container);
+				var side_container_inside = jQuery('<div>').addClass('appbase_side_container  hide').append(side_container);
 				jQuery('.twitter-typeahead').addClass('filter_append').prepend(side_container_inside)
 			}
 
