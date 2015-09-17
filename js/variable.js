@@ -2,7 +2,7 @@ function variables(credentials, app_name, index_document_type, method, grid_view
   this.credentials = credentials;
   this.app_name = app_name;
   this.index_document_type = index_document_type;
-  this.SIZE = 20;
+  this.SIZE = 10;
   this.method = method;
   this.NO_RESULT_TEXT = "No Results found";
   this.NO_RESULT_TEXT_TAG = "No results found. Try removing the tags for all results";
