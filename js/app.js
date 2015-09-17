@@ -473,14 +473,14 @@ function meta_head() {
 meta_head();
 var jquery_js = new Loader();
 jquery_js.require([
-		"css/client.css",
+		"http://cdn.appbase.io/methi/css/client.css",
 		"https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"
 	],
 	function() {
 		var typeahead_js = new Loader();
 		typeahead_js.require([
-				"js/variable.js"
 				"http://cdn.appbase.io/methi/js/typeahead.bundle.js",
+				"http://cdn.appbase.io/methi/js/variable.js"
 			],
 			function() {
 				var appbase = new appbase_app();
