@@ -5,7 +5,9 @@ function variables(credentials, app_name, index_document_type, method, grid_view
   this.SIZE = 20;
   this.method = method;
   this.NO_RESULT_TEXT = "No Results found";
+  this.NO_RESULT_TEXT_TAG = "No results found. Try removing the tags for all results";
   this.INITIAL_TEXT = "Start typing..";
+  this.NO_TAG_TEXT = "No tags found."
   this.FUZZY_FLAG = false;
   this.GridView = grid_view;
   this.FILTER_VIEW = filter_view;
@@ -39,6 +41,7 @@ function variables(credentials, app_name, index_document_type, method, grid_view
   this.LIST_THUMB = 'http://cdn.appbase.io/methi/images/list_thumb.png';
   this.GRID_THUMB = 'http://cdn.appbase.io/methi/images/grid_thumb.png';
   this.SEARCH_THUMB = 'http://cdn.appbase.io/methi/images/search.png';
+  this.SETTING_THUMB = 'images/settings.png';
   this.VIEWFLAG = this.GridView;
   this.TAGS = [];
   this.SELECTED_TAGS = [];
@@ -69,14 +72,16 @@ function variables(credentials, app_name, index_document_type, method, grid_view
       }
     },
     "aggs": {
-    "tags": {
-      "terms": {
-        "field": "tags",
-        "order" : { "_count" : "desc" },
-        "size": 0
+      "tags": {
+        "terms": {
+          "field": "tags",
+          "order": {
+            "_count": "desc"
+          },
+          "size": 10
+        }
       }
     }
-  }
   };
   this.FUZZY_PAYLOAD = {
     "from": 0,
@@ -109,7 +114,9 @@ function variables(credentials, app_name, index_document_type, method, grid_view
       "tags": {
         "terms": {
           "field": "tags",
-          "order" : { "_count" : "desc" },
+          "order": {
+            "_count": "desc"
+          },
           "size": 0
         }
       }
@@ -129,7 +136,7 @@ function variables(credentials, app_name, index_document_type, method, grid_view
           "gte": "0"
         }
       }
-    };    
+    };
   }
 }
 
@@ -196,9 +203,8 @@ variables.prototype = {
           } else {
             parent_this.FUZZY_FLAG = true;
             parent_this.fuzzy_call($this, on_fuzzy);
-
+            parent_this.no_result();
             return response.hits.hits;
-            jQuery(".appbase_total_info").text(parent_this.NO_RESULT_TEXT);
           }
         }
       }
@@ -313,16 +319,27 @@ variables.prototype = {
     if (this.method == 'client') {
       if (jQuery('.appbase_input').eq(1).val().length)
         return count_result;
-      else
+      else{
+        jQuery('.appbase_side_container_inside').addClass('hide');
         return this.INITIAL_TEXT;
+      }
     } else
       return count_result;
+  },
+  no_result: function() {
+    if (this.SELECTED_TAGS.length) {
+      var final_text = this.NO_RESULT_TEXT_TAG;
+    } else {
+      var final_text = this.NO_RESULT_TEXT;
+      jQuery('.appbase_side_container_inside').addClass('hide');
+    }
+    jQuery(".appbase_total_info").text(final_text);
   },
   set_date: function(val) {
     this.SEARCH_PAYLOAD.filter.range.created_at.gte = val;
     this.FUZZY_PAYLOAD.filter.range.created_at.gte = val;
   },
-CREATE_TAG: function(type, data) {
+  CREATE_TAG: function(type, data) {
     $this = this;
     var list = $this.SELECTED_TAGS;
     var container = $('.' + type + '_container');
@@ -339,7 +356,7 @@ CREATE_TAG: function(type, data) {
     if ($.inArray(tag_value, list) != -1)
       checkbox.prop('checked', true);
     var checkbox_text = $('<span>').text(tag_value);
-    var tag_count = $('<span>').addClass('tag_count').text('('+doc_count+')');
+    var tag_count = $('<span>').addClass('tag_count').text('(' + doc_count + ')');
     var tag_inside_text = $('<span>').addClass('tag_inside_text').text(tag_value);
     var tag_contain = $('<span>').addClass('tag_contain').append(tag_inside_text).append(tag_count);
     var single_tag = $('<label>').append(checkbox).append(tag_contain);
@@ -361,8 +378,8 @@ CREATE_TAG: function(type, data) {
           $this.SEARCH_WITH_FILTER();
           container.find('.tag_checkbox[value="' + val + '"]').prop('checked', false);
         });
-        container.find('.tag_name').append(single_tag);        
-          $this.SEARCH_WITH_FILTER();
+        container.find('.tag_name').append(single_tag);
+        $this.SEARCH_WITH_FILTER();
       } else {
         container.find('.single_tag[val="' + checkbox_val + '"]').remove();
         list.remove(check2);
@@ -372,19 +389,26 @@ CREATE_TAG: function(type, data) {
     });
     return single_tag;
   },
-  SEARCH_WITH_FILTER:function(){
+  SEARCH_WITH_FILTER: function() {
     var list = this.SELECTED_TAGS;
-    if(list.length){
-      this.SEARCH_PAYLOAD['post_filter'] = {"terms": { "tags": list }};
-      this.FUZZY_PAYLOAD['post_filter'] = {"terms": { "tags": list }};
-    }
-    else{
+    if (list.length) {
+      this.SEARCH_PAYLOAD['post_filter'] = {
+        "terms": {
+          "tags": list
+        }
+      };
+      this.FUZZY_PAYLOAD['post_filter'] = {
+        "terms": {
+          "tags": list
+        }
+      };
+    } else {
       delete this.SEARCH_PAYLOAD['post_filter'];
       delete this.FUZZY_PAYLOAD['post_filter'];
     }
     var input_val = jQuery('.appbase_input').eq(1).val();
     jQuery('.appbase_input').typeahead('val', '').typeahead('val', input_val).focus();
-    
+
   }
 }
 

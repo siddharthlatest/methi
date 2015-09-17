@@ -53,7 +53,8 @@ var appbase_app = function() {
 				}
 				$this.appbase_xhr_flag = true;
 			} else {
-				jQuery(".appbase_total_info").html($this.variables.NO_RESULT_TEXT);
+				$this.variables.no_result();
+				//jQuery(".appbase_total_info").html($this.variables.NO_RESULT_TEXT);
 				jQuery('.tt-menu .tt-dataset.tt-dataset-my-dataset').html('');
 			}
 
@@ -66,15 +67,19 @@ var appbase_app = function() {
 
 		//Bloodhound Start
 		$this.engine = $this.variables.createEngine($this, function(length) {
-			if(options.filter_view){
-				tag_bind($this.variables.TAGS);
+			if(options.filter_view && length){
+				jQuery('.appbase_side_container_inside').removeClass('hide');
+				jQuery('.appbase_brand_search').typeahead('val', '').focus();	
+				jQuery('.appbase_input').focus();			
+				tag_bind($this.variables.TAGS);		
 			}
 			$this.appbase_total = length;
 			if (length)
 				$this.appbase_xhr_flag = true;
-			else
-				$this.appbase_xhr_flag = false;
-
+			else{
+				$this.appbase_xhr_flag = false;				
+				jQuery('.appbase_side_container_inside').addClass('hide');
+			}			
 
 		}, scroll_callback);
 		//Bloodhound End
@@ -109,7 +114,7 @@ var appbase_app = function() {
 				src: $this.variables.GRID_THUMB
 			});
 			var setting_thumb = jQuery('<img>').attr({
-				src: $this.variables.GRID_THUMB
+				src: $this.variables.SETTING_THUMB
 			});
 			var list_thumb_container = jQuery('<span>').addClass('list_thumb appbase-thumbnail ').attr('title', 'List view').append(list_thumb);
 			var grid_thumb_container = jQuery('<span>').addClass('grid_thumb appbase-thumbnail').attr('title', 'Grid view').append(grid_thumb);
@@ -178,6 +183,8 @@ var appbase_app = function() {
 				src: $this.variables.SEARCH_THUMB,
 				class:'search_thumb'
 			});
+
+			var no_tag = jQuery('<span>').addClass('tag_default').text($this.variables.NO_TAG_TEXT);
 			
 			var single_search = jQuery('<input>').attr({
 				'type': 'text',
@@ -207,6 +214,9 @@ var appbase_app = function() {
 					}
 				}
 			});
+			if(!tags_ar.length){
+				jQuery('.appbase_brand_list_container').append(no_tag);	
+			}
 			jQuery('.appbase_brand_search').typeahead('val', '').focus();	
 			jQuery('.appbase_input').focus();
 			$(window).trigger('resize');			
@@ -290,8 +300,10 @@ var appbase_app = function() {
 			});
 
 			jQuery(modal).find('.' + obj.abbr + 'input').on('keyup', function() {
-				if (jQuery(this).val().length == 0)
+				if (jQuery(this).val().length == 0){
 					jQuery('.appbase_total_info').text($this.variables.INITIAL_TEXT);
+			        jQuery('.appbase_side_container_inside').addClass('hide');
+				}
 			});
 
 
@@ -303,7 +315,7 @@ var appbase_app = function() {
 			jQuery('.twitter-typeahead').prepend(obj.total_info_container);
 
 			if (options.filter_view) {	
-				var side_container = jQuery('<div>').addClass('appbase_side_container_inside').append(obj.date_list_container).append(obj.brand_list_container).append(obj.done_button);
+				var side_container = jQuery('<div>').addClass('appbase_side_container_inside hide').append(obj.date_list_container).append(obj.brand_list_container).append(obj.done_button);
 				var side_container_inside = jQuery('<div>').addClass('appbase_side_container').append(side_container);
 				jQuery('.twitter-typeahead').addClass('filter_append').prepend(side_container_inside)
 			}
