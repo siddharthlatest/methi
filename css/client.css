@@ -213,6 +213,7 @@
 }
 .appbase_modal .appabse_list .twitter-typeahead .tt-suggestion input{
   float: left;
+  margin: 3px;
   margin-top: 8px
 }
 .appbase_modal .appabse_list .tag_contain{
