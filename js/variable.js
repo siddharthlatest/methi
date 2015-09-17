@@ -7,6 +7,7 @@ function variables(credentials, app_name, index_document_type, method, grid_view
   this.NO_RESULT_TEXT = "No Results found";
   this.NO_RESULT_TEXT_TAG = "No results found. Try removing the tags for all results";
   this.INITIAL_TEXT = "Start typing..";
+  this.NO_TAG_TEXT = "No tags found."
   this.FUZZY_FLAG = false;
   this.GridView = grid_view;
   this.FILTER_VIEW = filter_view;

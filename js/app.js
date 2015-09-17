@@ -183,6 +183,8 @@ var appbase_app = function() {
 				src: $this.variables.SEARCH_THUMB,
 				class:'search_thumb'
 			});
+
+			var no_tag = jQuery('<span>').addClass('tag_default').text($this.variables.NO_TAG_TEXT);
 			
 			var single_search = jQuery('<input>').attr({
 				'type': 'text',
@@ -212,6 +214,9 @@ var appbase_app = function() {
 					}
 				}
 			});
+			if(!tags_ar.length){
+				jQuery('.appbase_brand_list_container').append(no_tag);	
+			}
 			jQuery('.appbase_brand_search').typeahead('val', '').focus();	
 			jQuery('.appbase_input').focus();
 			$(window).trigger('resize');			
