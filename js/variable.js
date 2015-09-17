@@ -295,7 +295,7 @@ variables.prototype = {
         data.fields.link = data.fields.link.toString().slice(0, -10)
       var single_record = jQuery('<a>').attr({
         'class': 'record_link modal_grid_view',
-        'href': "http://" + data.fields.link,
+        'href': data.fields.link,
         'target': '_blank'
       }).append(record_link_container);
     }
@@ -305,7 +305,7 @@ variables.prototype = {
         data.fields.link = data.fields.link.toString().slice(0, -10)
       var single_record = jQuery('<a>').attr({
         'class': 'record_link',
-        'href': "http://" + data.fields.link,
+        'href': data.fields.link,
         'target': '_blank'
       }).append(small_link).append(small_description);
     }
