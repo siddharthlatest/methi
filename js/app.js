@@ -10,7 +10,7 @@ var appbase_app = function() {
 		//Initialize Variables Start
 		$this.default_options = {
 			title: 'Blazing fast search on your Documentation',
-			input_placeholder: 'search here',
+			input_placeholder: 'Search this site',
 			logo: 'http://cdn.appbase.io/methi/images/Appbase.png',
 			abbr: 'appbase_',
 			selector: '.appbase_external_search',
