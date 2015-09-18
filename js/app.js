@@ -67,21 +67,21 @@ var appbase_app = function() {
 
 		//Bloodhound Start
 		$this.engine = $this.variables.createEngine($this, function(length) {
-			if(options.filter_view && length){
+			if (options.filter_view && length) {
 				jQuery('.appbase_side_container_inside').removeClass('hide');
-				jQuery('.appbase_brand_search').typeahead('val', '').focus();	
-				jQuery('.appbase_input').focus();			
-				if($this.variables.TAGS.length)
-					tag_bind($this.variables.TAGS);		
+				jQuery('.appbase_brand_search').typeahead('val', '').focus();
+				jQuery('.appbase_input').focus();
+				if ($this.variables.TAGS.length)
+					tag_bind($this.variables.TAGS);
 			}
 			$this.appbase_total = length;
 			if (length)
 				$this.appbase_xhr_flag = true;
-			else{
-				$this.appbase_xhr_flag = false;				
+			else {
+				$this.appbase_xhr_flag = false;
 			}
 			$this.variables.apply_agg('delete');
-   		}, scroll_callback);
+		}, scroll_callback);
 		//Bloodhound End
 
 		//Fire CreateHtml
@@ -148,9 +148,9 @@ var appbase_app = function() {
 				var brand_list = jQuery('<ul>').addClass('appabse_list brand_list');
 				var search_thumb = jQuery('<img>').attr({
 					src: $this.variables.SEARCH_THUMB,
-					class:'search_thumb'
+					class: 'search_thumb'
 				});
-				
+
 				var single_search = jQuery('<input>').attr({
 					'type': 'text',
 					'class': 'appbase_brand_search',
@@ -170,57 +170,59 @@ var appbase_app = function() {
 			html_events(obj, modal, overlay);
 		};
 
-		function tag_bind(tags){
+		function tag_bind(tags) {
 			var tags_length = tags.length;
-			var tags_ar = tags;
-			// var tags_ar = [];
+			//var tags_ar = tags;
+			var tags_ar = [];
 			// for(var i =0; i< tags_length; i++){
 			// 	tags_ar.push(tags[i]['key']);
 			// }
 
-			jQuery('.appbase_brand_search').html(' ');
-			var search_thumb = jQuery('<img>').attr({
-				src: $this.variables.SEARCH_THUMB,
-				class:'search_thumb'
-			});
+			if (tags_ar.length) {
+				jQuery('.appbase_brand_search').html(' ');
+				var search_thumb = jQuery('<img>').attr({
+					src: $this.variables.SEARCH_THUMB,
+					class: 'search_thumb'
+				});
 
-			var no_tag = jQuery('<span>').addClass('tag_default').text($this.variables.NO_TAG_TEXT);
-			
-			var single_search = jQuery('<input>').attr({
-				'type': 'text',
-				'class': 'appbase_brand_search',
-				'placeholder': $this.variables.brand.placeholder
-			});
-			jQuery('.appbase_brand_list_container').html('');
-			jQuery('.appbase_brand_list_container').append(single_search).append(search_thumb);
+				var single_search = jQuery('<input>').attr({
+					'type': 'text',
+					'class': 'appbase_brand_search',
+					'placeholder': $this.variables.brand.placeholder
+				});
+				jQuery('.appbase_brand_list_container').html('');
+				jQuery('.appbase_brand_list_container').append(single_search).append(search_thumb);
 
-			jQuery('.appbase_brand_search').typeahead({
-				hint: true,
-				highlight: true,
-				minLength: 0
-			}, {
-				name: 'tags',
-				limit: 100,
-				source: substringMatcher(tags_ar),
-				templates: {
-					pending: true,
-					suggestion: function(data) {
-						if (data) {
-							//var single_record = $this.variables.createBrand(data);
-							var single_record = $this.variables.CREATE_TAG('tag',data);
-							return single_record;
-						} else
-							return;
+				jQuery('.appbase_brand_search').typeahead({
+					hint: true,
+					highlight: true,
+					minLength: 0
+				}, {
+					name: 'tags',
+					limit: 100,
+					source: substringMatcher(tags_ar),
+					templates: {
+						pending: true,
+						suggestion: function(data) {
+							if (data) {
+								//var single_record = $this.variables.createBrand(data);
+								var single_record = $this.variables.CREATE_TAG('tag', data);
+								return single_record;
+							} else
+								return;
+						}
 					}
-				}
-			});
-			if(!tags_ar.length){
-				jQuery('.appbase_brand_list_container').append(no_tag);	
+				});
+
+				jQuery('.appbase_brand_search').typeahead('val', '').focus();
+				jQuery('.appbase_input').focus();
+				$(window).trigger('resize');
+			} else {
+				var no_tag = jQuery('<span>').addClass('tag_default').text($this.variables.NO_TAG_TEXT);
+				jQuery('.appbase_brand_list_container').html('');
+				jQuery('.appbase_brand_list_container').append(no_tag);
 			}
-			jQuery('.appbase_brand_search').typeahead('val', '').focus();	
-			jQuery('.appbase_input').focus();
-			$(window).trigger('resize');			
-		}
+		};
 
 		function html_size(obj, modal) {
 			function appbase_resize() {
@@ -248,7 +250,7 @@ var appbase_app = function() {
 					var block_height = tt_height - 176;
 				}
 				jQuery('.tt-menu').height(tt_height);
-				jQuery('.appbase_side_container').height(side_height+'px');
+				jQuery('.appbase_side_container').height(side_height + 'px');
 				//$('.appbase_block').eq(1).css('height',block_height);
 				//$('.appbase_modal .appbase_block .tt-menu').css('max-height',list_height);
 			}
@@ -257,18 +259,22 @@ var appbase_app = function() {
 			});
 			appbase_resize();
 		}
-		function checkScrollBars(container){
+
+		function checkScrollBars(container) {
 			var container = '.appbase_modal .tt-menu:last-child';
 			var b = $(container);
-		    var normalw = 0;
-		    var scrollw = 0;
-		        normalw = $('.appbase_modal_content').width();
-		        tt_width = b.width();
-		        tt_dataset = b.find('.tt-dataset').outerWidth();
-		        var scrollw = tt_width - tt_dataset;
-		        console.log(normalw, tt_width, tt_dataset);
-		        b.css({marginRight:'-'+scrollw+'px'});
+			var normalw = 0;
+			var scrollw = 0;
+			normalw = $('.appbase_modal_content').width();
+			tt_width = b.width();
+			tt_dataset = b.find('.tt-dataset').outerWidth();
+			var scrollw = tt_width - tt_dataset;
+			console.log(normalw, tt_width, tt_dataset);
+			b.css({
+				marginRight: '-' + scrollw + 'px'
+			});
 		}
+
 		function close_modal() {
 			jQuery('.appbase_modal').fadeOut(150);
 			jQuery('.appbase_overlay').fadeOut(150);
@@ -300,9 +306,9 @@ var appbase_app = function() {
 			});
 
 			jQuery(modal).find('.' + obj.abbr + 'input').on('keyup', function() {
-				if (jQuery(this).val().length == 0){
+				if (jQuery(this).val().length == 0) {
 					jQuery('.appbase_total_info').text($this.variables.INITIAL_TEXT);
-			        jQuery('.appbase_side_container_inside').addClass('hide');
+					jQuery('.appbase_side_container_inside').addClass('hide');
 				}
 			});
 
@@ -314,7 +320,7 @@ var appbase_app = function() {
 
 			jQuery('.twitter-typeahead').prepend(obj.total_info_container);
 
-			if (options.filter_view) {	
+			if (options.filter_view) {
 				var side_container = jQuery('<div>').addClass('appbase_side_container_inside hide').append(obj.date_list_container).append(obj.brand_list_container).append(obj.done_button);
 				var side_container_inside = jQuery('<div>').addClass('appbase_side_container').append(side_container);
 				jQuery('.twitter-typeahead').addClass('filter_append').prepend(side_container_inside)
@@ -324,18 +330,19 @@ var appbase_app = function() {
 
 			//Events
 			// 1) Keyup events
-			jQuery(obj.selector).on('keyup', function(){
+			jQuery(obj.selector).on('keyup', function() {
 				InitMethi(this);
 			});
 			// 2) Focus events
-			jQuery(obj.selector).on('focus', function(){
+			jQuery(obj.selector).on('focus', function() {
 				InitMethi(this);
 			});
 			// 3) Click events
-			jQuery(obj.selector).on('click', function(){
+			jQuery(obj.selector).on('click', function() {
 				InitMethi(this);
 			});
-			function InitMethi(eve){
+
+			function InitMethi(eve) {
 				var input_val = jQuery(eve).val();
 				jQuery(modal).find('.' + obj.abbr + 'input').val(input_val);
 				jQuery('.appbase_total_info').text($this.variables.INITIAL_TEXT);
@@ -348,7 +355,7 @@ var appbase_app = function() {
 				jQuery(eve).val('');
 				jQuery('html,body').css('overflow', 'hidden');
 				checkScrollBars('.tt-menu');
-				
+
 			}
 			jQuery(document).keyup(function(e) {
 				if (e.keyCode == 27) {
