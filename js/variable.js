@@ -70,17 +70,6 @@ function variables(credentials, app_name, index_document_type, method, grid_view
           "no_match_size": 500
         }
       }
-    },
-    "aggs": {
-      "tags": {
-        "terms": {
-          "field": "tags",
-          "order": {
-            "_count": "desc"
-          },
-          "size": 1
-        }
-      }
     }
   };
   this.FUZZY_PAYLOAD = {
@@ -109,7 +98,10 @@ function variables(credentials, app_name, index_document_type, method, grid_view
           "no_match_size": 500
         }
       }
-    },
+    }
+  };
+
+  this.AGG_OBJECT = {
     "aggs": {
       "tags": {
         "terms": {
@@ -122,26 +114,18 @@ function variables(credentials, app_name, index_document_type, method, grid_view
       }
     }
   };
-  if (this.FILTER_VIEW) {
-    this.SEARCH_PAYLOAD['filter'] = {
-      "range": {
-        "created_at": {
-          "gte": "0"
-        }
+  this.FILTER_OBJECT = {
+    "range": {
+      "created_at": {
+        "gte": "0"
       }
-    };
-    this.FUZZY_PAYLOAD['filter'] = {
-      "range": {
-        "created_at": {
-          "gte": "0"
-        }
-      }
-    };
-  }
-}
+    }
+  };
+};
 
 variables.prototype = {
   constructor: variables,
+
   createURL: function() {
     var created_url = 'http://scalr.api.appbase.io/' + this.app_name + '/' + this.index_document_type + '/_search';
     return created_url;
@@ -185,7 +169,7 @@ variables.prototype = {
             parent_this.FUZZY_FLAG = false;
             $this.appbase_total = response.hits.total;
 
-            parent_this.TAGS = response.aggregations.tags.buckets;
+            //parent_this.TAGS = response.aggregations.tags.buckets;
             callback(response.hits.total);
 
             if (parent_this.method == 'client') {
@@ -234,8 +218,7 @@ variables.prototype = {
       data: request_data,
       success: function(response) {
         $this.appbase_total = response.hits.total;
-
-        parent_this.TAGS = response.aggregations.tags.buckets;
+        //parent_this.TAGS = response.aggregations.tags.buckets;
         callback(response, 'fuzzy');
       }
     });
@@ -314,12 +297,21 @@ variables.prototype = {
 
     return single_record;
   },
+  apply_filter: function(method) {
+    if (method == 'append') {
+      this.SEARCH_PAYLOAD['filter'] = this.FILTER_OBJECT;
+      this.FUZZY_PAYLOAD['filter'] = this.FILTER_OBJECT;
+    } else if (method == 'delete') {
+      delete this.SEARCH_PAYLOAD['filter'];
+      delete this.FUZZY_PAYLOAD['filter'];
+    }
+  },
   showing_text: function(init_no, total_no, value, time) {
     var count_result = total_no + " results for \"" + value + "\"" + " in " + time + "ms";
     if (this.method == 'client') {
       if (jQuery('.appbase_input').eq(1).val().length)
         return count_result;
-      else{
+      else {
         jQuery('.appbase_side_container_inside').addClass('hide');
         return this.INITIAL_TEXT;
       }
@@ -331,13 +323,18 @@ variables.prototype = {
       var final_text = this.NO_RESULT_TEXT_TAG;
     } else {
       var final_text = this.NO_RESULT_TEXT;
-      jQuery('.appbase_side_container_inside').addClass('hide');
     }
     jQuery(".appbase_total_info").text(final_text);
   },
   set_date: function(val) {
-    this.SEARCH_PAYLOAD.filter.range.created_at.gte = val;
-    this.FUZZY_PAYLOAD.filter.range.created_at.gte = val;
+    if (val == '0')
+      this.apply_filter('delete');
+    else{
+      this.apply_filter('append');
+      console.log(this.SEARCH_PAYLOAD);
+      this.SEARCH_PAYLOAD.filter.range.created_at.gte = val;
+      this.FUZZY_PAYLOAD.filter.range.created_at.gte = val;
+    }
   },
   CREATE_TAG: function(type, data) {
     $this = this;

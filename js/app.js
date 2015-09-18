@@ -78,7 +78,6 @@ var appbase_app = function() {
 				$this.appbase_xhr_flag = true;
 			else{
 				$this.appbase_xhr_flag = false;				
-				jQuery('.appbase_side_container_inside').addClass('hide');
 			}			
 
 		}, scroll_callback);
