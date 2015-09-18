@@ -102,15 +102,13 @@ function variables(credentials, app_name, index_document_type, method, grid_view
   };
 
   this.AGG_OBJECT = {
-    "aggs": {
-      "tags": {
-        "terms": {
-          "field": "tags",
-          "order": {
-            "_count": "desc"
-          },
-          "size": 1
-        }
+    "tags": {
+      "terms": {
+        "field": "tags",
+        "order": {
+          "_count": "desc"
+        },
+        "size": 10
       }
     }
   };
@@ -159,6 +157,9 @@ variables.prototype = {
           //console.log(search_payload);
           search_payload.from = 0;
           query = query.toLowerCase();
+          if (parent_this.FILTER_VIEW) {
+            parent_this.apply_agg('append');
+          }
           search_payload.query.multi_match.query = query;
           settings.data = JSON.stringify(search_payload);
           return settings;
@@ -169,7 +170,8 @@ variables.prototype = {
             parent_this.FUZZY_FLAG = false;
             $this.appbase_total = response.hits.total;
 
-            //parent_this.TAGS = response.aggregations.tags.buckets;
+            if (response.hasOwnProperty('aggregations'))
+              parent_this.TAGS = response.aggregations.tags.buckets;
             callback(response.hits.total);
 
             if (parent_this.method == 'client') {
@@ -218,7 +220,8 @@ variables.prototype = {
       data: request_data,
       success: function(response) {
         $this.appbase_total = response.hits.total;
-        //parent_this.TAGS = response.aggregations.tags.buckets;
+        if (response.hasOwnProperty('aggregations'))
+          parent_this.TAGS = response.aggregations.tags.buckets;
         callback(response, 'fuzzy');
       }
     });
@@ -306,6 +309,15 @@ variables.prototype = {
       delete this.FUZZY_PAYLOAD['filter'];
     }
   },
+  apply_agg: function(method) {
+    if (method == 'append') {
+      this.SEARCH_PAYLOAD['aggs'] = this.AGG_OBJECT;
+      this.FUZZY_PAYLOAD['aggs'] = this.AGG_OBJECT;
+    } else if (method == 'delete') {
+      delete this.SEARCH_PAYLOAD['aggs'];
+      delete this.FUZZY_PAYLOAD['aggs'];
+    }
+  },
   showing_text: function(init_no, total_no, value, time) {
     var count_result = total_no + " results for \"" + value + "\"" + " in " + time + "ms";
     if (this.method == 'client') {
@@ -329,7 +341,7 @@ variables.prototype = {
   set_date: function(val) {
     if (val == '0')
       this.apply_filter('delete');
-    else{
+    else {
       this.apply_filter('append');
       console.log(this.SEARCH_PAYLOAD);
       this.SEARCH_PAYLOAD.filter.range.created_at.gte = val;

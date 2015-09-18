@@ -71,16 +71,17 @@ var appbase_app = function() {
 				jQuery('.appbase_side_container_inside').removeClass('hide');
 				jQuery('.appbase_brand_search').typeahead('val', '').focus();	
 				jQuery('.appbase_input').focus();			
-				tag_bind($this.variables.TAGS);		
+				if($this.variables.TAGS.length)
+					tag_bind($this.variables.TAGS);		
 			}
 			$this.appbase_total = length;
 			if (length)
 				$this.appbase_xhr_flag = true;
 			else{
 				$this.appbase_xhr_flag = false;				
-			}			
-
-		}, scroll_callback);
+			}
+			$this.variables.apply_agg('delete');
+   		}, scroll_callback);
 		//Bloodhound End
 
 		//Fire CreateHtml
