@@ -513,7 +513,7 @@ jquery_js.require([
 				appbase.initialize({
 					title: 'Blazing fast search1 on your Documentation',
 					input_placeholder: 'search here',
-					logo: 'http://cdn.appbase.io/methi/images/Appbase.png',
+					logo: 'images/methi.png',
 					selector: '.appbase_external_search',
 					credentials: appbase_variables.credentials,
 					app_name: appbase_variables.app_name,
