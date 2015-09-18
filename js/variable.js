@@ -3,11 +3,14 @@ function variables(credentials, app_name, index_document_type, method, grid_view
   this.app_name = app_name;
   this.index_document_type = index_document_type;
   this.SIZE = 10;
+  this.TAG_LENGTH = 10;
+  this.TAG_LOAD_SIZE = 1000;
   this.method = method;
   this.NO_RESULT_TEXT = "No Results found";
   this.NO_RESULT_TEXT_TAG = "No results found. Try removing the tags for all results";
   this.INITIAL_TEXT = "Start typing..";
-  this.NO_TAG_TEXT = "No tags found."
+  this.NO_TAG_TEXT = "No tags found.";
+  this.TAG_LOAD_TEXT = 'Load more';
   this.FUZZY_FLAG = false;
   this.GridView = grid_view;
   this.FILTER_VIEW = filter_view;
@@ -108,7 +111,7 @@ function variables(credentials, app_name, index_document_type, method, grid_view
         "order": {
           "_count": "desc"
         },
-        "size": 10
+        "size": this.TAG_LENGTH
       }
     }
   };
@@ -314,6 +317,7 @@ variables.prototype = {
       this.SEARCH_PAYLOAD['aggs'] = this.AGG_OBJECT;
       this.FUZZY_PAYLOAD['aggs'] = this.AGG_OBJECT;
     } else if (method == 'delete') {
+      this.AGG_OBJECT.tags.terms.size = this.TAG_LENGTH;
       delete this.SEARCH_PAYLOAD['aggs'];
       delete this.FUZZY_PAYLOAD['aggs'];
     }
@@ -354,49 +358,66 @@ variables.prototype = {
     var container = $('.' + type + '_container');
     console.log(data);
     var tag_value = data.key;
-    var doc_count = data.doc_count;
-    var checkbox = $('<input>').attr({
-      type: 'checkbox',
-      name: 'brand',
-      class: 'tag_checkbox',
-      container: type,
-      value: tag_value
-    });
-    if ($.inArray(tag_value, list) != -1)
-      checkbox.prop('checked', true);
-    var checkbox_text = $('<span>').text(tag_value);
-    var tag_count = $('<span>').addClass('tag_count').text('(' + doc_count + ')');
-    var tag_inside_text = $('<span>').addClass('tag_inside_text').text(tag_value);
-    var tag_contain = $('<span>').addClass('tag_contain').append(tag_inside_text).append(tag_count);
-    var single_tag = $('<label>').append(checkbox).append(tag_contain);
+    if (tag_value == $this.TAG_LOAD_TEXT) {
+      single_tag = $this.LOAD_BTN();
+    } 
+    else {
+      var doc_count = data.doc_count;
+      var checkbox = $('<input>').attr({
+        type: 'checkbox',
+        name: 'brand',
+        class: 'tag_checkbox',
+        container: type,
+        value: tag_value
+      });
+      if ($.inArray(tag_value, list) != -1)
+        checkbox.prop('checked', true);
+      var checkbox_text = $('<span>').text(tag_value);
+      var tag_count = $('<span>').addClass('tag_count').text('(' + doc_count + ')');
+      var tag_inside_text = $('<span>').addClass('tag_inside_text').text(tag_value);
+      var tag_contain = $('<span>').addClass('tag_contain').append(tag_inside_text).append(tag_count);
+      var single_tag = $('<label>').append(checkbox).append(tag_contain);
 
-    checkbox.change(function() {
-      var checkbox_val = $(this).val();
-      var type = $(this).attr('container');
-      var check2 = checkbox_val;
+      checkbox.change(function() {
+        var checkbox_val = $(this).val();
+        var type = $(this).attr('container');
+        var check2 = checkbox_val;
 
-      if ($(this).is(':checked')) {
-        list.push(check2);
-        var tag_text = $('<span>').addClass('tag_text').text(checkbox_val);
-        var tag_close = $('<span>').addClass('tag_close').text('x').attr('val', checkbox_val);
-        var single_tag = $("<span>").addClass('single_tag').attr('val', checkbox_val).append(tag_text).append(tag_close);
-        $(tag_close).click(function() {
-          var val = $(this).attr('val');
-          $(single_tag).remove();
-          list.remove(val);
+        if ($(this).is(':checked')) {
+          list.push(check2);
+          var tag_text = $('<span>').addClass('tag_text').text(checkbox_val);
+          var tag_close = $('<span>').addClass('tag_close').text('x').attr('val', checkbox_val);
+          var single_tag = $("<span>").addClass('single_tag').attr('val', checkbox_val).append(tag_text).append(tag_close);
+          $(tag_close).click(function() {
+            var val = $(this).attr('val');
+            $(single_tag).remove();
+            list.remove(val);
+            $this.SEARCH_WITH_FILTER();
+            container.find('.tag_checkbox[value="' + val + '"]').prop('checked', false);
+          });
+          container.find('.tag_name').append(single_tag);
           $this.SEARCH_WITH_FILTER();
-          container.find('.tag_checkbox[value="' + val + '"]').prop('checked', false);
-        });
-        container.find('.tag_name').append(single_tag);
-        $this.SEARCH_WITH_FILTER();
-      } else {
-        container.find('.single_tag[val="' + checkbox_val + '"]').remove();
-        list.remove(check2);
-        $this.SEARCH_WITH_FILTER();
-      }
-      //console.log(list);
-    });
+        } else {
+          container.find('.single_tag[val="' + checkbox_val + '"]').remove();
+          list.remove(check2);
+          $this.SEARCH_WITH_FILTER();
+        }
+        //console.log(list);
+      });
+    }
     return single_tag;
+  },
+  LOAD_BTN:function(){
+    var $this = this;
+    var load_link = $('<a>').addClass('appbase-tag-load').text(this.TAG_LOAD_TEXT);
+    load_link.click(function(){
+      $this.apply_agg('append');
+      $this.SEARCH_PAYLOAD.aggs.tags.terms.size = $this.TAG_LOAD_SIZE;
+      $this.FUZZY_PAYLOAD.aggs.tags.terms.size = $this.TAG_LOAD_SIZE;
+      var input_val = jQuery('.appbase_input').eq(1).val();
+      jQuery('.appbase_input').typeahead('val', '').typeahead('val', input_val).focus();
+    });
+    return load_link;
   },
   SEARCH_WITH_FILTER: function() {
     var list = this.SELECTED_TAGS;

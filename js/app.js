@@ -172,13 +172,18 @@ var appbase_app = function() {
 
 		function tag_bind(tags) {
 			var tags_length = tags.length;
-			//var tags_ar = tags;
-			var tags_ar = [];
+			var tags_ar = tags;
+			//var tags_ar = [];
 			// for(var i =0; i< tags_length; i++){
 			// 	tags_ar.push(tags[i]['key']);
 			// }
 
 			if (tags_ar.length) {
+				if(tags_ar.length == $this.variables.TAG_LENGTH){
+					tags_ar.push({
+						'key':$this.variables.TAG_LOAD_TEXT
+					});
+				}
 				jQuery('.appbase_brand_search').html(' ');
 				var search_thumb = jQuery('<img>').attr({
 					src: $this.variables.SEARCH_THUMB,
