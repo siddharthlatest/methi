@@ -66,6 +66,7 @@
   margin: auto;
   top: 10px;
   right: 10px;
+  cursor: pointer;
 }
 .appbase_modal .appbase_overlay{
   display: none;

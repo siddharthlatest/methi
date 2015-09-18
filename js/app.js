@@ -379,7 +379,7 @@ var appbase_app = function() {
 				}
 			});
 			jQuery('.' + obj.abbr + 'logo').click(function() {
-				close_modal();
+				window.location.href = $this.variables.METHI_PATH;
 			});
 
 			//Top row events
