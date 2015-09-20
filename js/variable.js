@@ -57,9 +57,9 @@ function variables(credentials, app_name, index_document_type, method, grid_view
     "query": {
       "multi_match": {
         "query": '',
-         "fields": [
-           "title_simple^2", "title_ngrams", "body"
-         ],
+        "fields": [
+          "title_simple^2", "title_ngrams", "body"
+        ],
         "operator": "and"
       }
     },
@@ -96,9 +96,9 @@ function variables(credentials, app_name, index_document_type, method, grid_view
     }
   };
   this.BODY_OBJECT = {
-      "fragment_size": 100,
-      "number_of_fragments": 2,
-      "no_match_size": 180
+    "fragment_size": 100,
+    "number_of_fragments": 2,
+    "no_match_size": 180
   };
   this.AGG_OBJECT = {
     "tags": {
@@ -159,7 +159,7 @@ variables.prototype = {
           if (parent_this.FILTER_VIEW) {
             parent_this.apply_agg('append');
           }
-           parent_this.apply_body();
+          parent_this.apply_body();
           search_payload.query.multi_match.query = query;
           settings.data = JSON.stringify(search_payload);
           return settings;
@@ -267,8 +267,8 @@ variables.prototype = {
   },
   createRecord: function(data) {
     var small_link = jQuery('<span>').addClass('small_link').html(data.highlight.title);
-    if(data.highlight.hasOwnProperty('body')){
-        var small_description = jQuery('<p>').addClass('small_description').html(data.highlight.body.join('...') + '...');
+    if (data.highlight.hasOwnProperty('body')) {
+      var small_description = jQuery('<p>').addClass('small_description').html(data.highlight.body.join('...') + '...');
     }
     // Grid View 
     if (this.VIEWFLAG) {
@@ -320,12 +320,11 @@ variables.prototype = {
       delete this.FUZZY_PAYLOAD['aggs'];
     }
   },
-  apply_body:function(){
-    if(this.VIEWFLAG && this.MOBILE_VIEW){
+  apply_body: function() {
+    if (this.VIEWFLAG && this.MOBILE_VIEW) {
       delete this.SEARCH_PAYLOAD.highlight.fields['body'];
-      delete this.FUZZY_PAYLOAD.highlight.fields['body']; 
-    }
-    else{
+      delete this.FUZZY_PAYLOAD.highlight.fields['body'];
+    } else {
       this.SEARCH_PAYLOAD.highlight.fields['body'] = this.BODY_OBJECT;
       this.FUZZY_PAYLOAD.highlight.fields['body'] = this.BODY_OBJECT;
     }
@@ -355,7 +354,6 @@ variables.prototype = {
       this.apply_filter('delete');
     else {
       this.apply_filter('append');
-      console.log(this.SEARCH_PAYLOAD);
       this.SEARCH_PAYLOAD.filter.range.created_at.gte = val;
       this.FUZZY_PAYLOAD.filter.range.created_at.gte = val;
     }
@@ -364,12 +362,10 @@ variables.prototype = {
     $this = this;
     var list = $this.SELECTED_TAGS;
     var container = $('.' + type + '_container');
-    console.log(data);
     var tag_value = data.key;
     if (tag_value == $this.TAG_LOAD_TEXT) {
       single_tag = $this.LOAD_BTN();
-    } 
-    else {
+    } else {
       var doc_count = data.doc_count;
       var checkbox = $('<input>').attr({
         type: 'checkbox',
@@ -415,17 +411,106 @@ variables.prototype = {
     }
     return single_tag;
   },
-  LOAD_BTN:function(){
+  LOAD_BTN: function() {
     var $this = this;
     var load_link = $('<a>').addClass('appbase-tag-load').text(this.TAG_LOAD_TEXT);
-    load_link.click(function(){
+    load_link.click(function() {
       $this.apply_agg('append');
       $this.SEARCH_PAYLOAD.aggs.tags.terms.size = $this.TAG_LOAD_SIZE;
       $this.FUZZY_PAYLOAD.aggs.tags.terms.size = $this.TAG_LOAD_SIZE;
       var input_val = jQuery('.appbase_input').eq(1).val();
-      jQuery('.appbase_input').typeahead('val', '').typeahead('val', input_val).focus();
+      $this.LOAD_ALL();
     });
     return load_link;
+  },
+  LOAD_ALL: function() {
+    var $this = this;
+    var fuzzy_flag = this.FUZZY_FLAG;
+    var fuzzy_payload = this.FUZZY_PAYLOAD;
+    var search_payload = this.SEARCH_PAYLOAD;
+    var credentials = this.credentials;
+    var input_value = jQuery('.appbase_input').eq(1).val();
+    input_value = input_value.toLowerCase();
+    if (fuzzy_flag) {
+      var Load_payload = jQuery.extend({}, search_payload);
+    } else {
+      var Load_payload = jQuery.extend({}, fuzzy_payload);
+    }
+
+    Load_payload.query.multi_match.query = input_value;
+    Load_payload.size = 0;
+    var request_data = JSON.stringify(Load_payload);
+
+    jQuery.ajax({
+      type: "POST",
+      beforeSend: function(request) {
+        request.setRequestHeader("Authorization", "Basic " + btoa(credentials));
+      },
+      'url': this.createURL(),
+      dataType: 'json',
+      contentType: "application/json",
+      data: request_data,
+      success: function(full_data) {
+        $this.TAG_BIND(full_data.aggregations.tags.buckets);
+      }
+    });
+  },
+  TAG_BIND: function(tags) {
+    var tags_length = tags.length;
+    var tags_ar = tags;
+    var $this = this;
+    $this.TAGS = tags;
+    $this.SEARCH_PAYLOAD.aggs.tags.terms.size = $this.TAG_LENGTH;
+    $this.FUZZY_PAYLOAD.aggs.tags.terms.size = $this.TAG_LENGTH;
+    if (tags_ar.length) {
+      if (tags_ar.length == $this.TAG_LENGTH) {
+        tags_ar.push({
+          'key': $this.TAG_LOAD_TEXT
+        });
+      }
+      jQuery('.appbase_brand_search').html(' ');
+      var search_thumb = jQuery('<img>').attr({
+        src: $this.SEARCH_THUMB,
+        class: 'search_thumb'
+      });
+
+      var single_search = jQuery('<input>').attr({
+        'type': 'text',
+        'class': 'appbase_brand_search',
+        'placeholder': $this.brand.placeholder
+      });
+      jQuery('.appbase_brand_list_container').html('');
+      jQuery('.appbase_brand_list_container').append(single_search).append(search_thumb);
+
+      jQuery('.appbase_brand_search').typeahead({
+        hint: true,
+        highlight: true,
+        minLength: 0
+      }, {
+        name: 'tags',
+        limit: 100,
+        source: substringMatcher(tags_ar),
+        templates: {
+          pending: true,
+          suggestion: function(data) {
+            if (data) {
+              //var single_record = $this.variables.createBrand(data);
+              var single_record = $this.CREATE_TAG('tag', data);
+              return single_record;
+            } else
+              return;
+          }
+        }
+      });
+
+      jQuery('.appbase_brand_search').typeahead('val', '').focus();
+      jQuery('.appbase_input').focus();
+      $(window).trigger('resize');
+    } else {
+      var no_tag = jQuery('<span>').addClass('tag_default').text($this.NO_TAG_TEXT);
+      jQuery('.appbase_brand_list_container').html('');
+      jQuery('.appbase_brand_list_container').append(no_tag);
+    }
   },
   SEARCH_WITH_FILTER: function() {
     var list = this.SELECTED_TAGS;

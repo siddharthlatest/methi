@@ -73,7 +73,7 @@ var appbase_app = function() {
 				jQuery('.appbase_brand_search').typeahead('val', '').focus();
 				jQuery('.appbase_input').focus();
 				if ($this.variables.TAGS.length)
-					tag_bind($this.variables.TAGS);
+					$this.variables.TAG_BIND($this.variables.TAGS);
 			}
 			$this.appbase_total = length;
 			if (length)
@@ -169,65 +169,6 @@ var appbase_app = function() {
 			}
 			//Bind events with html
 			html_events(obj, modal, overlay);
-		};
-
-		function tag_bind(tags) {
-			var tags_length = tags.length;
-			var tags_ar = tags;
-			//var tags_ar = [];
-			// for(var i =0; i< tags_length; i++){
-			// 	tags_ar.push(tags[i]['key']);
-			// }
-
-			if (tags_ar.length) {
-				if(tags_ar.length == $this.variables.TAG_LENGTH){
-					tags_ar.push({
-						'key':$this.variables.TAG_LOAD_TEXT
-					});
-				}
-				jQuery('.appbase_brand_search').html(' ');
-				var search_thumb = jQuery('<img>').attr({
-					src: $this.variables.SEARCH_THUMB,
-					class: 'search_thumb'
-				});
-
-				var single_search = jQuery('<input>').attr({
-					'type': 'text',
-					'class': 'appbase_brand_search',
-					'placeholder': $this.variables.brand.placeholder
-				});
-				jQuery('.appbase_brand_list_container').html('');
-				jQuery('.appbase_brand_list_container').append(single_search).append(search_thumb);
-
-				jQuery('.appbase_brand_search').typeahead({
-					hint: true,
-					highlight: true,
-					minLength: 0
-				}, {
-					name: 'tags',
-					limit: 100,
-					source: substringMatcher(tags_ar),
-					templates: {
-						pending: true,
-						suggestion: function(data) {
-							if (data) {
-								//var single_record = $this.variables.createBrand(data);
-								var single_record = $this.variables.CREATE_TAG('tag', data);
-								return single_record;
-							} else
-								return;
-						}
-					}
-				});
-
-				jQuery('.appbase_brand_search').typeahead('val', '').focus();
-				jQuery('.appbase_input').focus();
-				$(window).trigger('resize');
-			} else {
-				var no_tag = jQuery('<span>').addClass('tag_default').text($this.variables.NO_TAG_TEXT);
-				jQuery('.appbase_brand_list_container').html('');
-				jQuery('.appbase_brand_list_container').append(no_tag);
-			}
 		};
 
 		function html_size(obj, modal) {
