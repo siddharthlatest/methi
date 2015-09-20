@@ -20,7 +20,8 @@ var appbase_app = function() {
 
 		//Variable js		
 		var options = $.extend($this.default_options, options);
-		$this.variables = new variables(options.credentials, options.app_name, options.index_document_type, 'client', options.grid_view, options.filter_view);
+		options.mobile_view = jQuery(window).width() < 768 ? true:false;
+		$this.variables = new variables(options.credentials, options.app_name, options.index_document_type, 'client', options.grid_view, options.filter_view, options.mobile_view);
 		$this.url = $this.variables.createURL();
 		$this.appbase_total = 0;
 		$this.appbase_increment = $this.variables.SIZE;

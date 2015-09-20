@@ -1,4 +1,4 @@
-function variables(credentials, app_name, index_document_type, method, grid_view, filter_view) {
+function variables(credentials, app_name, index_document_type, method, grid_view, filter_view, mobile_view) {
   this.credentials = credentials;
   this.app_name = app_name;
   this.index_document_type = index_document_type;
@@ -14,6 +14,7 @@ function variables(credentials, app_name, index_document_type, method, grid_view
   this.FUZZY_FLAG = false;
   this.GridView = grid_view;
   this.FILTER_VIEW = filter_view;
+  this.MOBILE_VIEW = mobile_view;
   this.date = {
     label: 'Date Range',
     content: [{
@@ -56,19 +57,14 @@ function variables(credentials, app_name, index_document_type, method, grid_view
     "query": {
       "multi_match": {
         "query": '',
-        "fields": [
-          "title_simple^2", "title_ngrams", "body"
-        ],
+         "fields": [
+           "title_simple^2", "title_ngrams", "body"
+         ],
         "operator": "and"
       }
     },
     "highlight": {
       "fields": {
-        "body": {
-          "fragment_size": 100,
-          "number_of_fragments": 2,
-          "no_match_size": 180
-        },
         "title": {
           "fragment_size": 500,
           "no_match_size": 500
@@ -92,11 +88,6 @@ function variables(credentials, app_name, index_document_type, method, grid_view
     },
     "highlight": {
       "fields": {
-        "body": {
-          "fragment_size": 100,
-          "number_of_fragments": 2,
-          "no_match_size": 180
-        },
         "title": {
           "fragment_size": 500,
           "no_match_size": 500
@@ -104,7 +95,11 @@ function variables(credentials, app_name, index_document_type, method, grid_view
       }
     }
   };
-
+  this.BODY_OBJECT = {
+      "fragment_size": 100,
+      "number_of_fragments": 2,
+      "no_match_size": 180
+  };
   this.AGG_OBJECT = {
     "tags": {
       "terms": {
@@ -164,6 +159,7 @@ variables.prototype = {
           if (parent_this.FILTER_VIEW) {
             parent_this.apply_agg('append');
           }
+           parent_this.apply_body();
           search_payload.query.multi_match.query = query;
           settings.data = JSON.stringify(search_payload);
           return settings;
@@ -271,8 +267,9 @@ variables.prototype = {
   },
   createRecord: function(data) {
     var small_link = jQuery('<span>').addClass('small_link').html(data.highlight.title);
-    var small_description = jQuery('<p>').addClass('small_description').html(data.highlight.body.join('...') + '...');
-
+    if(data.highlight.hasOwnProperty('body')){
+        var small_description = jQuery('<p>').addClass('small_description').html(data.highlight.body.join('...') + '...');
+    }
     // Grid View 
     if (this.VIEWFLAG) {
       if (data.fields.hasOwnProperty('image_url') && data.fields.image_url[0] != 'None')
@@ -321,6 +318,16 @@ variables.prototype = {
       this.AGG_OBJECT.tags.terms.size = this.TAG_LENGTH;
       delete this.SEARCH_PAYLOAD['aggs'];
       delete this.FUZZY_PAYLOAD['aggs'];
+    }
+  },
+  apply_body:function(){
+    if(this.VIEWFLAG && this.MOBILE_VIEW){
+      delete this.SEARCH_PAYLOAD.highlight.fields['body'];
+      delete this.FUZZY_PAYLOAD.highlight.fields['body']; 
+    }
+    else{
+      this.SEARCH_PAYLOAD.highlight.fields['body'] = this.BODY_OBJECT;
+      this.FUZZY_PAYLOAD.highlight.fields['body'] = this.BODY_OBJECT;
     }
   },
   showing_text: function(init_no, total_no, value, time) {
