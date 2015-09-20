@@ -196,6 +196,8 @@
 .appbase_modal .twitter-typeahead .tt-suggestion{
   background: #fff;
   border-bottom: 1px solid #f7f7f7;
+  float: left;
+  width: 100%;
 }
 .appbase_modal .appabse_list .twitter-typeahead label.tt-suggestion{
     width: 100%;
