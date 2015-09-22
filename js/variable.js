@@ -431,7 +431,7 @@ variables.prototype = {
     var credentials = this.credentials;
     var input_value = jQuery('.appbase_input').eq(1).val();
     input_value = input_value.toLowerCase();
-    if (fuzzy_flag) {
+    if (!fuzzy_flag) {
       var Load_payload = jQuery.extend({}, search_payload);
     } else {
       var Load_payload = jQuery.extend({}, fuzzy_payload);
