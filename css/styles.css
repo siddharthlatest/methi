@@ -485,6 +485,9 @@ textarea.code_snippet {
   color: #555 !important;
   opacity: 1;
 }
+.appbase_methi_logo{
+  top:-7px;
+}
 /*Demo Page END*/
 
 @media (min-width: 767px) and (max-width: 1024px)  {
