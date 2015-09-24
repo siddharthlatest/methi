@@ -301,8 +301,9 @@ var appbase_app = function() {
 				jQuery(modal).find('.' + obj.abbr + 'input').focus();
 				jQuery(eve).val('');
 				jQuery('html,body').css('overflow', 'hidden');
-				checkScrollBars('.tt-menu');
-
+				if($this.variables.FILTER_VIEW){
+					checkScrollBars('.tt-menu');
+				}
 			}
 			jQuery(document).keyup(function(e) {
 				if (e.keyCode == 27) {
