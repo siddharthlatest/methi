@@ -322,7 +322,7 @@ var appbase_app = function() {
 				}
 			});
 			jQuery('.' + obj.abbr + 'logo').click(function() {
-				window.location.href = $this.variables.METHI_PATH;
+				window.open($this.variables.METHI_PATH, '_blank');
 			});
 
 			//Top row events
