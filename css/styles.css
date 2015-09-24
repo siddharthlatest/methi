@@ -205,8 +205,8 @@ body.index{
 .index .show-block{
   height: 120px;
   line-height: 120px;
-  background-color: rgba(222,222,222,0.70);
-  color: #0A66C9;
+  background-color: #4f86e5;
+  /*color: #5895FF;*/
   font-size: 20px;
 }
 .index .short-line{
