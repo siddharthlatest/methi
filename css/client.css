@@ -399,7 +399,8 @@
 }
 .tag_container{
   min-height: 240px;
-  padding-bottom: 0
+  padding-bottom: 0;
+  float: left;
 }
 .appbase_modal .appbase_block .tt-menu{
   max-height: 173px
