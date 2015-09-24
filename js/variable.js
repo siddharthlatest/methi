@@ -315,9 +315,9 @@ variables.prototype = {
       this.SEARCH_PAYLOAD['aggs'] = this.AGG_OBJECT;
       this.FUZZY_PAYLOAD['aggs'] = this.AGG_OBJECT;
     } else if (method == 'delete') {
-      if($this.SEARCH_PAYLOAD.hasOwnProperty('aggs')){
-        $this.SEARCH_PAYLOAD.aggs.tags.terms.size = $this.TAG_LENGTH;
-        $this.FUZZY_PAYLOAD.aggs.tags.terms.size = $this.TAG_LENGTH;
+      if(this.SEARCH_PAYLOAD.hasOwnProperty('aggs')){
+        this.SEARCH_PAYLOAD.aggs.tags.terms.size = this.TAG_LENGTH;
+        this.FUZZY_PAYLOAD.aggs.tags.terms.size = this.TAG_LENGTH;
       }
       this.AGG_OBJECT.tags.terms.size = this.TAG_LENGTH;
       delete this.SEARCH_PAYLOAD['aggs'];
