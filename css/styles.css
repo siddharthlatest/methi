@@ -593,8 +593,9 @@ textarea.code_snippet {
  }
   
 }
-
-
+.footer{
+  padding: 30px 0px !important;
+}
 p{
   color: #999 !important;
 }
