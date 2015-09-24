@@ -431,7 +431,7 @@ textarea.code_snippet {
 }
 .demo_page .features .img-container img,
 .index .experience .img-container img{
-  max-width: 120px
+  max-width: 100px
 }
 .demo_page .features .feature-block,
 .index .experience .feature-block{
@@ -451,8 +451,8 @@ textarea.code_snippet {
   line-height: 2rem
 }
 .font-lg{
-  font-size: 2rem;
-  line-height: 2.6rem
+  font-size: 1.7rem;
+  line-height: 2.1rem
 }
 .demo_page h1, .index h1.methi-main-text{
   font-size: 3.5rem;
