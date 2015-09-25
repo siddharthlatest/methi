@@ -455,7 +455,7 @@ jquery_js.require([
 				var filter_view = appbase_variables.hasOwnProperty('filter') ? appbase_variables.filter : false;
 				appbase.initialize({
 					title: 'Blazing fast search1 on your Documentation',
-					input_placeholder: 'search here',
+					input_placeholder: 'Search this site',
 					logo: 'images/methi.png',
 					selector: '.appbase_external_search',
 					credentials: appbase_variables.credentials,
