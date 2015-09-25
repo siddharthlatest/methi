@@ -225,7 +225,7 @@
   float: left;
   display: inline-block;
   position: relative;
-  width: 145px;
+  width: 150px;
 }
 .appbase_modal .appabse_list .tag_count{
   padding-left: 5px;
@@ -328,6 +328,10 @@
     padding: 6px;
     background-color: #fff;
     cursor: pointer;
+}
+.appbase-tag-load{
+  color: #337ab7;
+  text-align: center;
 }
 .appbase-thumbnail img{
   width: 100%;
