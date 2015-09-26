@@ -515,7 +515,7 @@ textarea.code_snippet {
 }
 .plan-body-part{
   padding: 0;
-  padding-right: 3px;
+  padding-right: 10px;
 }
 .plan-body .plan-body-part:last-child{
   padding-right: 15px
