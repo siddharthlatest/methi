@@ -453,10 +453,11 @@ jquery_js.require([
 				var appbase = new appbase_app();
 				var grid_view = appbase_variables.hasOwnProperty('grid') ? appbase_variables.grid : false;
 				var filter_view = appbase_variables.hasOwnProperty('filter') ? appbase_variables.filter : false;
+				var logo = appbase_variables.hasOwnProperty('logo') ? appbase_variables.logo : 'images/methi.png'; 
 				appbase.initialize({
 					title: 'Blazing fast search1 on your Documentation',
 					input_placeholder: 'Search this site',
-					logo: 'images/methi.png',
+					logo: logo,
 					selector: '.appbase_external_search',
 					credentials: appbase_variables.credentials,
 					app_name: appbase_variables.app_name,
