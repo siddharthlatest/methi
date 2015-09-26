@@ -488,7 +488,25 @@ textarea.code_snippet {
   top:-7px;
 }
 /*Demo Page END*/
-
+/*Pricing START*/
+.pricing .pricing-container{
+  position: relative;
+}
+.pricing .plan-header{
+  position: absolute;
+  left: 0;
+  top: 0;
+  width:150px;
+  height: 100%
+}
+.pricing .plan-body{
+  padding-left: 150px
+}
+.pricing .plan-header-field, .pricing .plan-body-header, .pricing .plan-body-field{
+  height: 60px;
+  display: inline-block;  
+}
+/*Pricing END*/
 @media (min-width: 767px) and (max-width: 1024px)  {
   html{
     font-size: 12px !important;
