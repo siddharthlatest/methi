@@ -237,7 +237,7 @@ body.index{
   overflow: hidden;
   border-radius: 5px;
   background: rgba(0,0,0,0.2);
-  display: block; 
+  display: inline-block; 
 }
 .notif-btn:hover{
   background: rgba(0,0,0,0.5);
@@ -544,6 +544,25 @@ textarea.code_snippet {
   line-height: 1.5rem;
   font-weight: bold;
   color: #999;
+}
+.price-gap{
+  margin-top: 30px;
+  margin-bottom: 0;
+}
+.price-btn{
+  background: #986EFA
+}
+.price-btn:hover{
+  background: #674BA8
+}
+.price-img img{
+  max-width: 200px;
+}
+.seprator{
+  width: 200px;
+  display: inline-block;
+  margin: 30px auto 0;
+  border-bottom: 1px solid #ccc;
 }
 /*Pricing END*/
 @media (min-width: 767px) and (max-width: 1024px)  {
