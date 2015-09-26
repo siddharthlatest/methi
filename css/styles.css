@@ -493,13 +493,15 @@ textarea.code_snippet {
   position: relative;
   float: none;
   margin: 0 auto;
+  padding-top: 30px;
 }
 .pricing .plan-header{
   position: absolute;
   left: 0;
   top: 0;
   width:150px;
-  height: 100%
+  height: 100%;
+  color: #999;
 }
 .pricing .plan-body{
   padding-left: 150px;
@@ -508,6 +510,7 @@ textarea.code_snippet {
   height: 5rem;
   display: inline-block;  
   padding: 0.5rem 0;
+  display: table;
 }
 .plan-body-part{
   padding: 0;
@@ -525,15 +528,21 @@ textarea.code_snippet {
 .plan-body-field-text{
   color: #5895FF;
 }
+
+.pricing .plan-header-field-text{
+  display: table-cell;
+  vertical-align: middle;
+  font-size: 1.2rem;
+}
 .plan-body-header-text, .plan-body-field-text{
   font-size: 1.5rem; 
   line-height: 2.5rem;
 }
 .plan-body-header-small, .plan-body-field-small{
-  font-size: 0.9rem;
+  font-size: 1rem;
   line-height: 1.5rem;
   font-weight: bold;
-  color: #999 
+  color: #999;
 }
 /*Pricing END*/
 @media (min-width: 767px) and (max-width: 1024px)  {
@@ -646,6 +655,17 @@ textarea.code_snippet {
   padding-left: 0;
   padding-right: 0;
  }
+.pricing .plan-header-field, .pricing .plan-body-header, .pricing .plan-body-field{
+  height: 5.3rem;
+}
+ .plan-body-header-text, .plan-body-field-text{
+  font-size: 2rem; 
+  line-height: 3rem;
+}
+.plan-body-header-small, .plan-body-field-small{
+  font-size: 1.3rem;
+  line-height: 2.3rem;
+}
 }
 .footer{
   padding: 30px 0px !important;
