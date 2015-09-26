@@ -491,6 +491,8 @@ textarea.code_snippet {
 /*Pricing START*/
 .pricing .pricing-container{
   position: relative;
+  float: none;
+  margin: 0 auto;
 }
 .pricing .plan-header{
   position: absolute;
@@ -501,8 +503,6 @@ textarea.code_snippet {
 }
 .pricing .plan-body{
   padding-left: 150px;
-      max-height: 250px;
-    overflow: auto;
 }
 .pricing .plan-header-field, .pricing .plan-body-header, .pricing .plan-body-field{
   height: 5rem;
@@ -510,7 +510,8 @@ textarea.code_snippet {
   padding: 0.5rem 0;
 }
 .plan-body-part{
-  padding: 0
+  padding: 0;
+  padding-right: 3px;
 }
 .plan-body .plan-body-part:last-child{
   padding-right: 15px
@@ -586,6 +587,10 @@ textarea.code_snippet {
  .important-msg{
   text-align: center;
  }
+ .pricing .plan-body{
+  padding-left: 0;
+  padding-right: 0;
+ }
 }
 @media (max-width: 468px){
 
@@ -637,6 +642,10 @@ textarea.code_snippet {
   text-align: center;
  }
   
+ .pricing .plan-body{
+  padding-left: 0;
+  padding-right: 0;
+ }
 }
 .footer{
   padding: 30px 0px !important;
