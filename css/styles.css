@@ -502,6 +502,7 @@ textarea.code_snippet {
   width:150px;
   height: 100%;
   color: #999;
+  top: 30px;
 }
 .pricing .plan-body{
   padding-left: 150px;
