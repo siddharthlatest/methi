@@ -93,7 +93,7 @@
                        <a class="login-box col-xs-12 btn notif-btn">
                         Get for your website >> 
                       </a>
-                      <a href="installation.html" class="btn notif-btn hide-it">
+                      <a id="dashboard-link" class="btn notif-btn hide-it">
                         Go To Dashboard >>  
                       </a>
                     </span>
@@ -449,7 +449,7 @@
           Our <b>free plan</b> includes 100k searches and 100mb storage
         </p>
         <div class="col-xs-12">
-          <a href="installation.html" class="btn notif-btn price-btn price-gap">
+          <a class="btn notif-btn price-btn price-gap">
             SIGN UP FOR FREE  
           </a>
         </div>
@@ -527,7 +527,16 @@
         $('.login-box, .login-show').click(function(){
           $('.modal').modal('show');
         });
-
+        $('#dashboard-link').click(function(){
+          window.location.href = 'installation.html';
+        });
+        $('.price-btn').click(function(){
+          $('.login-box-container').find('.notif-btn').each(function(k2,v2){
+            if($(v2).is(':visible')){
+              $(this).trigger('click');
+            }
+          }); 
+        });
         $.ajaxSetup({
           crossDomain: true,
           xhrFields: {
