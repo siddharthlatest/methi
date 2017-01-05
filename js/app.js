@@ -11,7 +11,7 @@ var appbase_app = function() {
 		$this.default_options = {
 			title: 'Blazing fast search on your Documentation',
 			input_placeholder: 'Search this site',
-			logo: 'http://cdn.appbase.io/methi/images/Appbase.png',
+			logo: 'https://cdn.rawgit.com/siddharthlatest/methi/master/images/Appbase.png',
 			abbr: 'appbase_',
 			selector: '.appbase_external_search',
 			grid_view: false,
@@ -446,7 +446,7 @@ jquery_js.require([
 	function() {
 		var typeahead_js = new Loader();
 		typeahead_js.require([
-				"http://cdn.appbase.io/methi/js/typeahead.bundle.js",
+				"https://cdn.rawgit.com/siddharthlatest/methi/master/js/typeahead.bundle.js",
 				"js/variable.js"
 			],
 			function() {
